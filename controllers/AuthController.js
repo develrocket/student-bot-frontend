@@ -60,8 +60,6 @@ module.exports = function (app) {
 		if (users.length > 0) {
 			sess = req.session;
 			sess.user = users[0];
-
-			res.redirect('/');
 		} else {
 			let user = new StudentModel({
 				firstName,
@@ -73,9 +71,8 @@ module.exports = function (app) {
 
 			sess = req.session;
 			sess.user = user;
-
-			res.redirect('/');
 		}
+		return res.json({result: "success"});
 	});
 
 
