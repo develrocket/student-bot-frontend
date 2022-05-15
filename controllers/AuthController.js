@@ -13,10 +13,9 @@ const mock = new MockAdapter(axios);
 const TOKEN = '5356303521:AAFu494SZVr82jDE8mA65z_-w8s_EJFw8Pw';
 const {TelegramLogin} = require('node-telegram-login');
 const MySiteLogin = new TelegramLogin(TOKEN);
+const StudentModel = require('../models/student');
 
-let users = [
-	{ id: 1, username: 'admin', password: '123456', email: 'admin@themesbrand.com' }
-];
+
 
 // Mock GET request to /users when param `searchText` is 'John'
 mock.onGet("/users", { params: { searchText: "John" } }).reply(200, {
@@ -24,24 +23,6 @@ mock.onGet("/users", { params: { searchText: "John" } }).reply(200, {
 });
 
 module.exports = function (app) {
-
-	// Inner Auth
-	app.get('/auth-login', function (req, res) {
-		res.locals = { title: 'Login' };
-		res.render('AuthInner/auth-login');
-	});
-	app.get('/auth-register', function (req, res) {
-		res.locals = { title: 'Register' };
-		res.render('AuthInner/auth-register');
-	});
-	app.get('/auth-recoverpw', function (req, res) {
-		res.locals = { title: 'Recover Password' };
-		res.render('AuthInner/auth-recoverpw');
-	});
-	app.get('/auth-lock-screen', function (req, res) {
-		res.locals = { title: 'Lock Screen' };
-		res.render('AuthInner/auth-lock-screen');
-	});
 
 
 	// Auth Pages
@@ -64,25 +45,6 @@ module.exports = function (app) {
 	});
 
 
-	app.get('/register', function (req, res) {
-		if (req.user) { res.redirect('Dashboard/index'); }
-		else {
-			res.render('Auth/auth-register', { 'message': req.flash('message'), 'error': req.flash('error') });
-		}
-	});
-
-	app.post('/post-register', urlencodeParser, function (req, res) {
-		let tempUser = { username: req.body.username, email: req.body.email, password: req.body.password };
-		users.push(tempUser);
-
-		// Assign value in session
-		sess = req.session;
-		sess.user = tempUser;
-
-		res.redirect('/');
-	});
-
-
 	// app.get('/login', function (req, res) {
 	// 	res.render('Auth/auth-login', { 'message': req.flash('message'), 'error': req.flash('error') });
 	// });
@@ -95,36 +57,33 @@ module.exports = function (app) {
 	// 	console.log(res.locals.telegram_user) //null if not from telegram, contains login data otherwise;
 	// });
 
-	app.post('/post-login', urlencodeParser, function (req, res) {
-		const validUser = users.filter(usr => usr.email === req.body.email && usr.password === req.body.password);
-		if (validUser['length'] === 1) {
+	app.post('/post-login', urlencodeParser, async function (req, res) {
 
-			// Assign value in session
+		const {firstName, lastName, telegramId, username} = req.body;
+
+		let users = await StudentModel.find({telegramId: telegramId});
+
+		if (users.length > 0) {
 			sess = req.session;
-			sess.user = validUser;
+			sess.user = users[0];
 
 			res.redirect('/');
-
 		} else {
-			req.flash('error', 'Incorrect email or password!');
-			res.redirect('/login');
+			let user = new StudentModel({
+				firstName,
+				lastName,
+				telegramId,
+				username
+			});
+			user = await user.save();
+
+			sess = req.session;
+			sess.user = user;
+
+			res.redirect('/');
 		}
 	});
 
-	app.get('/forgot-password', function (req, res) {
-		res.render('Auth/auth-forgot-password', { 'message': req.flash('message'), 'error': req.flash('error') });
-	});
-
-	app.post('/post-forgot-password', urlencodeParser, function (req, res) {
-		const validUser = users.filter(usr => usr.email === req.body.email);
-		if (validUser['length'] === 1) {
-			req.flash('message', 'We have e-mailed your password reset link!');
-			res.redirect('/forgot-password');
-		} else {
-			req.flash('error', 'Email Not Found !!');
-			res.redirect('/forgot-password');
-		}
-	});
 
 	app.get('/logout', function (req, res) {
 

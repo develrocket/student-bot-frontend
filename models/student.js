@@ -5,8 +5,9 @@ const {Schema} = mongoose;
 // create a schema
 const TitleSchema = new Schema({
     telegramId: String,
-    fullName: String,
-    userId: String
+    firstName: String,
+    lastName: String,
+    username: String
 });
 
 // create the model
