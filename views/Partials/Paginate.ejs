@@ -1,0 +1,27 @@
+<% if (paginate.hasPreviousPages || paginate.hasNextPages(pageCount)) { %>
+    <div class="navigation well-sm" id="pagination">
+        <ul class="pagination">
+            <% if (paginate.hasPreviousPages) { %>
+                <li class="page-item">
+                    <a href="<%= paginate.href(true) %>" class="page-link">
+                        <i class="fa fa-arrow-circle-left"></i>
+                    </a>
+                </li>
+            <% } %>
+            <% if (pages) { %>
+                <% pages.forEach(function(page) { %>
+                    <li class="page-item">
+                        <a href="<%= page.url %>" class="page-link"><%= page.number %></a>
+                    </li>
+                <% }); %>
+            <% } %>
+            <% if (paginate.hasNextPages(pageCount)) { %>
+                <li class="page-item">
+                    <a href="<%= paginate.href() %>" class="page-link">
+                        <i class="fa fa-arrow-circle-right"></i>
+                    </a>
+                </li>
+            <% } %>
+        </ul>
+    </div>
+<% } %>

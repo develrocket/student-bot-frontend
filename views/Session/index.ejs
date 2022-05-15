@@ -1,0 +1,68 @@
+<%- contentFor('HeaderCss') %>
+
+<%- contentFor('breadcrumb') %>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Sessions</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Mineable</a></li>
+                    <li class="breadcrumb-item active">Sessions</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<%- contentFor('body') %>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                        <tr>
+                            <th>Session No</th>
+                            <th>Language</th>
+                            <th>Type</th>
+                            <th>Name</th>
+                            <th>Questions</th>
+                            <th>Start At</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% sessions.forEach(function(session) { %>
+                            <tr>
+                                <th scope="row"><%= session.session_no %></th>
+                                <td><%= session.language %></td>
+                                <td><%= session.session_type %></td>
+                                <td><%= session.session_name %></td>
+                                <td><%= session.questions_no %></td>
+                                <td><%= moment(session.session_start).format('YYYY-MM-DD') %></td>
+                            </tr>
+                        <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="card-footer text-center d-flex justify-content-between">
+                <label>Total Counts: <%= itemCount %></label>
+                <%- include ('../Partials/Paginate')  %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- contentFor('FooterJs') %>
+
+<%- contentFor('BottomJs') %>
