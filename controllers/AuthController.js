@@ -16,12 +16,6 @@ const MySiteLogin = new TelegramLogin(TOKEN);
 const StudentModel = require('../models/student');
 
 
-
-// Mock GET request to /users when param `searchText` is 'John'
-mock.onGet("/users", { params: { searchText: "John" } }).reply(200, {
-	users: users,
-});
-
 module.exports = function (app) {
 
 
