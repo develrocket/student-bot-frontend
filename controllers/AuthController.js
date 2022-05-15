@@ -83,13 +83,13 @@ module.exports = function (app) {
 	});
 
 
-	app.get('/login', function (req, res) {
-		res.render('Auth/auth-login', { 'message': req.flash('message'), 'error': req.flash('error') });
-	});
-
 	// app.get('/login', function (req, res) {
-	// 	res.render('Auth/tele-login', { 'message': req.flash('message'), 'error': req.flash('error') });
+	// 	res.render('Auth/auth-login', { 'message': req.flash('message'), 'error': req.flash('error') });
 	// });
+
+	app.get('/login', function (req, res) {
+		res.render('Auth/tele-login', { 'message': req.flash('message'), 'error': req.flash('error') });
+	});
 
 	// app.get('/login', MySiteLogin.defaultMiddleware(), (req, res) => {
 	// 	console.log(res.locals.telegram_user) //null if not from telegram, contains login data otherwise;
