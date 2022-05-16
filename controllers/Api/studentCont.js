@@ -54,6 +54,23 @@ module.exports = function(){
             return res.json({result: "success"});
         },
 
+        resetSessionId: async function(req, res) {
+            let results = await StudentResultModel.find({});
+            for (let i = 0; i < results.length; i ++) {
+                let sessions = await SessionModel.find({session_no: results[i].session_no}).lean().exec();
+                if (sessions.length > 0) {
+                    await StudentResultModel.update({
+                        _id: results[i]._id
+                    }, {
+                        $set: {
+                            session: sessions[0]._id
+                        }
+                    })
+                }
+            }
+            return res.json({result: "success"});
+        },
+
         fetchSession: async function(req, res) {
             await fetchSession();
             return res.json({result: "success"});
