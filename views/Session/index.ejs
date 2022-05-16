@@ -28,10 +28,19 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-body">
-                <form>
+                <form id="searchForm">
                     <div class="mb-3 row" style="background: #dcdfff; padding: 10px;">
-                        <label class="col-md-2 col-form-label">Delivered On</label>
-                        <div class="col-md-8">
+                        <label class="col-md-2 col-form-label text-end">Sort By</label>
+                        <div class="col-md-2">
+                            <select class="form-control" name="sort" onchange="submitSearchForm()">
+                                <option value="0" <%= sort == 0 ? 'selected' : '' %>>Lastest session no</option>
+                                <option value="1" <%= sort == 1 ? 'selected' : '' %>>Oldest session no</option>
+                                <option value="2" <%= sort == 2 ? 'selected' : '' %>>Players DESC</option>
+                                <option value="3" <%= sort == 3 ? 'selected' : '' %>>Players ASC</option>
+                            </select>
+                        </div>
+                        <label class="col-md-2 col-form-label text-end">Delivered On</label>
+                        <div class="col-md-4">
                             <div class="input-daterange input-group" id="datepicker6" data-date-format="yyyy-mm-dd" data-date-autoclose="true" data-provide="datepicker" data-date-container='#datepicker6'>
                                 <input type="text" class="form-control" name="start" placeholder="Start Date" value="<%= start %>"/>
                                 <input type="text" class="form-control" name="end" placeholder="End Date" value="<%= end %>"/>
@@ -136,3 +145,8 @@
 <script src="public/assets/libs/@chenfengyuan/datepicker/datepicker.min.js"></script>
 
 <%- contentFor('BottomJs') %>
+<script>
+    function submitSearchForm() {
+        $('#searchForm').submit();
+    }
+</script>

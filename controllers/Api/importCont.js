@@ -161,8 +161,16 @@ module.exports = function() {
                             sum_point: sumPoint,
                             total_fortuna_user: sumFortuna,
                         });
-                        newRes.save();
 
+                        await newRes.save();
+
+                        await SessionModel.update({
+                            session_no: stuResult.session_no
+                        }, {
+                            $inc: {
+                                playerCount: 1
+                            }
+                        })
                     }
                 }
             }

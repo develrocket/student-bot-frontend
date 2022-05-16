@@ -46,6 +46,7 @@ module.exports = function(){
             const searchKey = req.query.search || '';
             const start = req.query.start || '';
             const end = req.query.end || '';
+            const sort = req.query.sort || 0;
 
             let searchQuery = {};
             if (searchKey) {
@@ -61,8 +62,17 @@ module.exports = function(){
                 searchQuery = {...searchQuery, session_start: {$gte: start + ' 00:00', $lte: end + ' 23:59'}}
             }
 
+            let sortOption = {session_no: -1};
+            if (sort * 1 === 1) {
+                sortOption = {session_no: 1};
+            } else if (sort * 1 === 2) {
+                sortOption = {playerCount: -1};
+            } else if (sort * 1 === 3) {
+                sortOption = {playerCount: 1};
+            }
+
             const [ sessions, itemCount ] = await Promise.all([
-                SessionModel.find(searchQuery).sort({session_no: -1}).limit(req.query.limit).skip(req.skip).lean().exec(),
+                SessionModel.find(searchQuery).sort(sortOption).limit(req.query.limit).skip(req.skip).lean().exec(),
                 SessionModel.count(searchQuery)
             ]);
             const pageCount = Math.ceil(itemCount / req.query.limit);
@@ -80,6 +90,7 @@ module.exports = function(){
                 searchKey,
                 start,
                 end,
+                sort,
                 pages: paginate.getArrayPages(req)(3, pageCount, req.query.page)
             });
         },

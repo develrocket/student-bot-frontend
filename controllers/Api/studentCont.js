@@ -39,6 +39,21 @@ const fetchSession = async function() {
 module.exports = function(){
 
     return {
+        setPlayerCount: async function(req, res) {
+            let sessions = await SessionModel.find({});
+            for (let i = 0; i < sessions.length; i ++) {
+                let results = await StudentResultModel.find({session_no: sessions[i].session_no}).lean().exec();
+                await SessionModel.update({
+                    _id: sessions[i]._id
+                }, {
+                    $set: {
+                        playerCount: results.length
+                    }
+                })
+            }
+            return res.json({result: "success"});
+        },
+
         fetchSession: async function(req, res) {
             await fetchSession();
             return res.json({result: "success"});
