@@ -41,7 +41,7 @@ module.exports = function(){
 
     return {
         list: async function(req, res) {
-            // await fetchSession();
+            await fetchSession();
 
             const searchKey = req.query.search || '';
             const start = req.query.start || '';
