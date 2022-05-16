@@ -7,7 +7,7 @@ const axios = require('axios').default;
 
 const fetchSession = async function() {
     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
-    let lastId = sessions[0].session_no;
+    let lastId = sessions.length > 0 ? sessions[0].session_no : 0;
     try {
         let res = await axios.get('https://fortunaenglish.com/api/fetch/livesession?lastId=' + lastId);
 
