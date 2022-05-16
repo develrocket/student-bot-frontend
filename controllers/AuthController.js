@@ -44,7 +44,7 @@ module.exports = function (app) {
 
 		const {firstName, lastName, telegramId, username} = req.body;
 
-		let users = await StudentModel.find({telegramId: telegramId});
+		let users = await StudentModel.find({telegramId: telegramId}).lean().exec();
 
 		if (users.length > 0) {
 			sess = req.session;
@@ -68,6 +68,7 @@ module.exports = function (app) {
 		} else {
 			sess.user.title = 'student';
 		}
+		console.log(sess.user);
 		return res.json({result: "success"});
 	});
 
