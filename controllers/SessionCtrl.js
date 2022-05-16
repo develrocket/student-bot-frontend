@@ -41,9 +41,12 @@ module.exports = function(){
 
     return {
         list: async function(req, res) {
-            await fetchSession();
+            // await fetchSession();
 
             const searchKey = req.query.search || '';
+            const start = req.query.start || '';
+            const end = req.query.end || '';
+
             let searchQuery = {};
             if (searchKey) {
                 searchQuery = {$or: [
@@ -53,6 +56,13 @@ module.exports = function(){
                         {session_no: searchKey}
                     ]}
             }
+            if (start) {
+                searchQuery = {...searchQuery, session_start: {$gte: start + ' 00:00:00'}}
+            }
+            if (end) {
+                searchQuery = {...searchQuery, session_start: {$lte: end + ' 23:59:59'}}
+            }
+
             const [ sessions, itemCount ] = await Promise.all([
                 SessionModel.find(searchQuery).sort({session_no: -1}).limit(req.query.limit).skip(req.skip).lean().exec(),
                 SessionModel.count(searchQuery)
@@ -70,6 +80,8 @@ module.exports = function(){
                 pageCount,
                 itemCount,
                 searchKey,
+                start,
+                end,
                 pages: paginate.getArrayPages(req)(3, pageCount, req.query.page)
             });
         },
