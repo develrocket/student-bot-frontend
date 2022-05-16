@@ -56,11 +56,9 @@ module.exports = function(){
                         {session_no: searchKey}
                     ]}
             }
+
             if (start) {
-                searchQuery = {...searchQuery, session_start: {$gte: start + ' 00:00:00'}}
-            }
-            if (end) {
-                searchQuery = {...searchQuery, session_start: {$lte: end + ' 23:59:59'}}
+                searchQuery = {...searchQuery, session_start: {$gte: start + ' 00:00', $lte: end + ' 23:59'}}
             }
 
             const [ sessions, itemCount ] = await Promise.all([
