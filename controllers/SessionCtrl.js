@@ -4,7 +4,7 @@ const paginate = require('express-paginate');
 
 const SessionModel = require('../models/sessionResult');
 const ResultModel = require('../models/studentResult');
-const axios = require('axios').default;
+const axios = require('axios');
 
 const fetchSession = async function() {
     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);

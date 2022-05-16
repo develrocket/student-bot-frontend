@@ -6,7 +6,7 @@ const ResultModel = require('../../models/studentResult');
 const SessionModel = require('../../models/sessionResult');
 const TitleModel = require('../../models/studentTitle');
 const Utils = require('../../helpers/utils');
-const axios = require('axios').default;
+const axios = require('axios');
 
 const fetchSession = async function() {
     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
