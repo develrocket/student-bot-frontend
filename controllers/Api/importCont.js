@@ -6,13 +6,21 @@ const ResultModel = require('../../models/studentResult');
 const SessionModel = require('../../models/sessionResult');
 const TitleModel = require('../../models/studentTitle');
 const Utils = require('../../helpers/utils');
-const axios = require('axios');
+const axios = require('axios').default;
 
 const fetchSession = async function() {
     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
-    let lastId = sessions[0].session_no;
+    let lastId = sessions.length > 0 ? sessions[0].session_no : 0;
     try {
-        let res = await axios.get('https://fortunaenglish.com/api/fetch/livesession?lastId=' + lastId);
+        let config = {
+            method: 'get',
+            url: 'https://fortunaenglish.com/api/fetch/livesession?lastId=' + lastId,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        };
+
+        let res = await axios(config);
 
         for (const sessionItem of res.data) {
             const newSessionItem = new SessionModel();
@@ -20,8 +28,9 @@ const fetchSession = async function() {
             newSessionItem.session_type = sessionItem.type;
             newSessionItem.session_name = sessionItem.session_name;
             newSessionItem.session_no = sessionItem.id;
-            newSessionItem.session_start = sessionItem.start_time;
+            newSessionItem.session_start = sessionItem.start_time.replaceAll('/', '-');
             newSessionItem.questions_no = sessionItem.questions;
+            newSessionItem.level = sessionItem.level;
             await newSessionItem.save();
         }
         console.log('insert-new-session:', res.data.length);

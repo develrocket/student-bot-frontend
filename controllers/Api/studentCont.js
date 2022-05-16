@@ -25,7 +25,7 @@ const fetchSession = async function() {
             newSessionItem.session_type = sessionItem.type;
             newSessionItem.session_name = sessionItem.session_name;
             newSessionItem.session_no = sessionItem.id;
-            newSessionItem.session_start = sessionItem.start_time;
+            newSessionItem.session_start = sessionItem.start_time.replaceAll('/', '-');
             newSessionItem.questions_no = sessionItem.questions;
             newSessionItem.level = sessionItem.level;
             await newSessionItem.save();
