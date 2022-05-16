@@ -2989,18 +2989,7 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
     position: relative;
 }
 
-.authentication-bg:before {
-    content: ' ';
-    display: block;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100vh;
-    opacity: 0.6;
-    background: url('../images/login_bg.jpg') no-repeat center;
-    background-size: cover;
-}
+.authentication-bg:before {content: ' ';display: block;position: fixed;left: 0;top: 0;width: 100%;height: 100vh;opacity: 0.6;background: url('../images/login_bg.jpg') no-repeat center;background-size: cover;z-index: -1;}
 
 .authentication-bg .auth-logo .logo {
     margin: 0px auto; }
