@@ -5,11 +5,21 @@ const StudentResultModel = require('../../models/studentResult');
 const SessionModel = require('../../models/sessionResult');
 const axios = require('axios');
 
+
+
+
+
 const fetchSession = async function() {
     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
     let lastId = sessions.length > 0 ? sessions[0].session_no : 0;
     try {
-        let res = await axios.get('https://fortunaenglish.com/api/fetch/livesession?lastId=' + lastId);
+        let config = {
+            method: 'get',
+            url: 'https://fortunaenglish.com/api/fetch/livesession?lastId=' + lastId,
+            headers: { }
+        };
+
+        let res = await axios(config);
 
         for (const sessionItem of res.data) {
             const newSessionItem = new SessionModel();
