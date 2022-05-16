@@ -1,18 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const urlencodeParser = bodyParser.urlencoded({ extended: false });
-
-const validator = require('express-validator');
-const config = require('../config/config');
-const axios = require("axios");
-const MockAdapter = require("axios-mock-adapter");
-
-// This sets the mock adapter on the default instance
-const mock = new MockAdapter(axios);
-
-const TOKEN = '5356303521:AAFu494SZVr82jDE8mA65z_-w8s_EJFw8Pw';
-const {TelegramLogin} = require('node-telegram-login');
-const MySiteLogin = new TelegramLogin(TOKEN);
 const StudentModel = require('../models/student');
 
 
