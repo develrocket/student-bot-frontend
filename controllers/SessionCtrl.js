@@ -3,11 +3,12 @@ const moment = require('moment');
 const paginate = require('express-paginate');
 
 const SessionModel = require('../models/sessionResult');
+const ResultModel = require('../models/studentResult');
 const axios = require('axios').default;
 
 const fetchSession = async function() {
     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
-    let lastId = sessions[0].session_no;
+    let lastId = sessions.length > 0 ? sessions[0].session_no : 0;
     try {
         let res = await axios.get('https://fortunaenglish.com/api/fetch/livesession?lastId=' + lastId);
 
@@ -19,6 +20,7 @@ const fetchSession = async function() {
             newSessionItem.session_no = sessionItem.id;
             newSessionItem.session_start = sessionItem.start_time;
             newSessionItem.questions_no = sessionItem.questions;
+            newSessionItem.level = sessionItem.level;
             await newSessionItem.save();
         }
         console.log('insert-new-session:', res.data.length);
@@ -48,6 +50,11 @@ module.exports = function(){
                 SessionModel.count(searchQuery)
             ]);
             const pageCount = Math.ceil(itemCount / req.query.limit);
+
+            for (let i = 0; i < sessions.length; i ++) {
+                let results = await ResultModel.find({session_no: sessions[i].session_no}).lean().exec();
+                sessions[i].players = results;
+            }
 
             res.locals = {...res.locals, title: 'Sessions', moment };
             res.render('Session/index', {

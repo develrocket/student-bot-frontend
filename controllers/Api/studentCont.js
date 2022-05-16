@@ -19,6 +19,7 @@ const fetchSession = async function() {
             newSessionItem.session_no = sessionItem.id;
             newSessionItem.session_start = sessionItem.start_time;
             newSessionItem.questions_no = sessionItem.questions;
+            newSessionItem.level = sessionItem.level;
             await newSessionItem.save();
         }
         console.log('insert-new-session:', res.data.length);

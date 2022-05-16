@@ -9,7 +9,8 @@ const config = {
         database: {
             url: `mongodb://${process.env.DB_HOST || 'localhost'}:${process.env.DB_HOST || 27017}/${process.env.DB_NAME}`,
         },
-        teleBotToken: process.env.TELE_BOT_TOKEN
+        teleBotToken: process.env.TELE_BOT_TOKEN,
+        isDev: true,
     },
     production: {
         server: {
@@ -19,7 +20,8 @@ const config = {
         database: {
             url: `mongodb://${process.env.DB_HOST || 'localhost'}:${process.env.DB_HOST || 27017}/${process.env.DB_NAME}`,
         },
-        teleBotToken: process.env.TELE_BOT_TOKEN
+        teleBotToken: process.env.TELE_BOT_TOKEN,
+        isDev: false
     },
 };
 config[env].isDev = env === 'development';

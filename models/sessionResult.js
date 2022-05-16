@@ -12,6 +12,7 @@ const SessionSchema = new Schema({
     session_start: Date,
     questions_no: Number,
     students_no: Number,
+    level: Number
 });
 
 // create the model

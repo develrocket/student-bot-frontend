@@ -31,22 +31,28 @@
                         <thead>
                         <tr>
                             <th>Session No</th>
-                            <th>Language</th>
-                            <th>Type</th>
-                            <th>Name</th>
+                            <th>Topic</th>
+                            <th>Level</th>
+                            <th>Players</th>
                             <th>Questions</th>
-                            <th>Start At</th>
+                            <th>Delivered On</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
                         <% sessions.forEach(function(session) { %>
                             <tr>
                                 <th scope="row"><%= session.session_no %></th>
-                                <td><%= session.language %></td>
-                                <td><%= session.session_type %></td>
                                 <td><%= session.session_name %></td>
+                                <td><%= session.level %></td>
+                                <td><%= session.players.length %></td>
                                 <td><%= session.questions_no %></td>
                                 <td><%= moment(session.session_start).format('YYYY-MM-DD') %></td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-primary waves-effect waves-light btn-sm" data-bs-toggle="modal" data-bs-target="#myModal<%= session.session_no %>">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                </td>
                             </tr>
                         <% }); %>
                         </tbody>
@@ -62,6 +68,49 @@
         </div>
     </div>
 </div>
+
+<% sessions.forEach(function(session) { %>
+    <div id="myModal<%= session.session_no %>" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0" id="myModalLabel">Session Players</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table mb-0">
+                        <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Username</th>
+                            <th>Telegram ID</th>
+                            <th>Points</th>
+                            <th>Rank</th>
+                            <th>Title</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% session.players.forEach(function(player, index) { %>
+                            <tr>
+                                <th scope="row"><%= index + 1 %></th>
+                                <td><%= player.username %></td>
+                                <td><%= player.telegramId %></td>
+                                <td><%= player.session_points %></td>
+                                <td><%= player.session_rank %></td>
+                                <td><%= player.title %></td>
+                            </tr>
+                        <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<% }); %>
 
 <%- contentFor('FooterJs') %>
 
