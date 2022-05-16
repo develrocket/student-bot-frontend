@@ -3,11 +3,7 @@ const router = express.Router();
 
 const StudentResultModel = require('../../models/studentResult');
 const SessionModel = require('../../models/sessionResult');
-const axios = require('axios');
-
-
-
-
+const axios = require('axios').default;
 
 const fetchSession = async function() {
     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
