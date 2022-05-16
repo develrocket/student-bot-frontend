@@ -9,7 +9,7 @@ const SessionSchema = new Schema({
     session_type: String,
     session_name: String,
     session_no: Number,
-    session_start: Date,
+    session_start: String,
     questions_no: Number,
     students_no: Number,
     level: String
