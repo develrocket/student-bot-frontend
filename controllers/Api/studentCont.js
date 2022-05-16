@@ -16,7 +16,9 @@ const fetchSession = async function() {
         let config = {
             method: 'get',
             url: 'https://fortunaenglish.com/api/fetch/livesession?lastId=' + lastId,
-            headers: { }
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
         };
 
         let res = await axios(config);
