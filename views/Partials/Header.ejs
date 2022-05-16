@@ -5,19 +5,19 @@
             <div class="navbar-brand-box">
                 <a href="/" class="logo logo-dark">
                     <span class="logo-sm">
-                        <img src="public/assets/images/logo-sm.png" alt="" height="22">
+                        <img src="public/assets/images/logo-sm-own.png" alt="" height="30">
                     </span>
                     <span class="logo-lg">
-                        <img src="public/assets/images/logo-dark.png" alt="" height="20">
+                        <img src="public/assets/images/logo-light-own-trimmy.png" alt="" height="30">
                     </span>
                 </a>
 
                 <a href="/" class="logo logo-light">
                     <span class="logo-sm">
-                        <img src="public/assets/images/logo-sm.png" alt="" height="22">
+                        <img src="public/assets/images/logo-sm-own.png" alt="" height="30">
                     </span>
                     <span class="logo-lg">
-                        <img src="public/assets/images/logo-light.png" alt="" height="20">
+                        <img src="public/assets/images/logo-light-own-trimmy.png" alt="" height="30">
                     </span>
                 </a>
             </div>
@@ -67,14 +67,14 @@
             <div class="dropdown d-inline-block">
                 <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded-circle header-profile-user" src="public/assets/images/users/avatar-4.jpg"
+                    <img class="rounded-circle header-profile-user" src="public/assets/images/title/<%= user.title %>.jpg"
                         alt="Header Avatar">
                     <span class="d-none d-xl-inline-block ms-1 fw-medium font-size-15"><%= user.username %></span>
                     <i class="uil-angle-down d-none d-xl-inline-block font-size-15"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
                     <!-- item-->
-                    <a class="dropdown-item" href="#"><i class="uil uil-user-circle font-size-18 align-middle text-muted me-1"></i> <span class="align-middle"><%=translation.Profile%></span></a>
+                    <a class="dropdown-item" href="/profile"><i class="uil uil-user-circle font-size-18 align-middle text-muted me-1"></i> <span class="align-middle"><%=translation.Profile%></span></a>
                     <a class="dropdown-item" href="/logout"><i class="uil uil-sign-out-alt font-size-18 align-middle me-1 text-muted"></i> <span class="align-middle"><%=translation.Sign_out%></span></a>
                 </div>
             </div>

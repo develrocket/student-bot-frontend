@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const urlencodeParser = bodyParser.urlencoded({ extended: false });
 const StudentModel = require('../models/student');
+const ResultModel = require('../models/studentResult');
 
 
 module.exports = function (app) {
@@ -48,6 +49,7 @@ module.exports = function (app) {
 		if (users.length > 0) {
 			sess = req.session;
 			sess.user = users[0];
+
 		} else {
 			let user = new StudentModel({
 				firstName,
@@ -59,6 +61,12 @@ module.exports = function (app) {
 
 			sess = req.session;
 			sess.user = user;
+		}
+		let result = await ResultModel.find({telegramId: sess.user.telegramId}).sort({session_no: -1}).lean().exec();
+		if (result.length > 0) {
+			sess.user.title = result[0].title.toLowerCase();
+		} else {
+			sess.user.title = 'student';
 		}
 		return res.json({result: "success"});
 	});
