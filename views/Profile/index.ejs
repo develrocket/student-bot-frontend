@@ -15,7 +15,7 @@
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item"><a href="javascript: void(0);">Minible</a></li>
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Africa</a></li>
                     <li class="breadcrumb-item active">Profile Page</li>
                 </ol>
             </div>
@@ -34,11 +34,11 @@
         <div class="card">
             <img class="card-img-top img-fluid" src="public/assets/images/title/<%= user.title %>.jpg" alt="<%= user.username %>">
             <div class="card-body">
-                <h4 class="card-title mt-0 text-center"><%= user.firstName + ' ' + user.lastName %></h4>
-                <p class="card-text text-center">@<%= user.username %></p>
-                <p class="card-text text-center">Telegram ID: <%= user.telegramId %></p>
+                <h4 class="card-title mt-0"><%= user.firstName + ' ' + (user.lastName ? user.lastName : '') %></h4>
+                <p class="card-text">@<%= user.username %></p>
+                <p class="card-text">Telegram ID: <%= user.telegramId %></p>
                 <% if (joinDate) { %>
-                <p class="card-text text-center">Joined At: <%= moment(joinDate).format('YYYY-MM-DD') %></p>
+                <p class="card-text">Joined At: <%= moment(joinDate).format('YYYY-MM-DD') %></p>
                 <% } %>
             </div>
         </div>
@@ -74,6 +74,14 @@
                 </table>
             </div>
         </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Pie Chart</h4>
+
+                <div id="pie_chart" class="apex-charts" dir="ltr"></div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -94,9 +102,55 @@
 <script src="public/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
 <script src="public/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
 
+<!-- apexcharts -->
+<script src="public/assets/libs/apexcharts/apexcharts.min.js"></script>
+
 <%- contentFor('BottomJs') %>
 <script type="text/javascript">
     $(document).ready(function() {
         $('#datatable').DataTable();
+
+        let allCount = '<%= sessionCount %>' * 1;
+        let attendCount = '<%= result.length %>' * 1;
+
+        console.log(allCount, attendCount);
+
+        let options = {
+            chart: {
+                height: 320,
+                type: 'pie',
+            },
+            series: [attendCount, allCount - attendCount],
+            labels: ["Delivered", "Undelivered"],
+            colors: ["#34c38f", "#5b73e8"],
+            legend: {
+                show: true,
+                position: 'bottom',
+                horizontalAlign: 'center',
+                verticalAlign: 'middle',
+                floating: false,
+                fontSize: '14px',
+                offsetX: 0
+            },
+            responsive: [{
+                breakpoint: 600,
+                options: {
+                    chart: {
+                        height: 240
+                    },
+                    legend: {
+                        show: false
+                    },
+                }
+            }]
+
+        }
+
+        var chart = new ApexCharts(
+            document.querySelector("#pie_chart"),
+            options
+        );
+
+        chart.render();
     });
 </script>
