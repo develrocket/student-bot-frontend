@@ -57,11 +57,10 @@
                                 <a class="dropdown-toggle text-reset" href="#" id="dropdownMenuButton5"
                                    data-bs-toggle="dropdown" aria-haspopup="true"
                                    aria-expanded="false">
-                                    <span class="fw-semibold">Period:</span> <span class="text-muted" id="periodText">All<i class="mdi mdi-chevron-down ms-1"></i></span>
+                                    <span class="fw-semibold">Period:</span> <span class="text-muted" id="periodText">Last 7days<i class="mdi mdi-chevron-down ms-1"></i></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton5">
-                                    <a class="dropdown-item" href="#" onclick="setPeriod(0)">All</a>
                                     <a class="dropdown-item" href="#" onclick="setPeriod(1)">Last 7days</a>
                                     <a class="dropdown-item" href="#" onclick="setPeriod(2)">Last 1month</a>
                                     <a class="dropdown-item" href="#" onclick="setPeriod(3)">Last 3month</a>
@@ -70,7 +69,7 @@
                         </div>
                         <h4 class="card-title mb-4">Sales Analytics</h4>
 
-                        <div id="mixed_chart" class="apex-charts" dir="ltr"></div>
+                        <div id="line_chart_datalabel" class="apex-charts" dir="ltr"></div>
                     </div>
                 </div>
 
@@ -92,15 +91,17 @@
 <script type="text/javascript">
 
     let sData = [];
-    let tData = [];
     let labels = [];
-    let texts = ['All', 'Last 7days', 'Last 1month', 'Last 3months'];
+
+    <% labels.forEach(function(ritem) { %>
+        labels.push('<%= ritem %>')
+    <% }); %>
 
     <% results.forEach(function(ritem) { %>
-        sData.push('<%= ritem.session_rank %>' * 1);
-        tData.push('<%= ritem.total_rank %>' * 1);
-        labels.push('<%= ritem.session_no %>');
+        sData.push('<%= ritem %>')
     <% }); %>
+
+    let texts = ['All', 'Last 7days', 'Last 1month', 'Last 3months'];
 
     function setPeriod(val) {
         $('#periodText').html(texts[val] + '<i class="mdi mdi-chevron-down ms-1"></i>');
@@ -112,76 +113,77 @@
         $('#periodText').html(texts['<%= period %>' * 1] + '<i class="mdi mdi-chevron-down ms-1"></i>');
         var options = {
             chart: {
-                height: 350,
+                height: 380,
                 type: 'line',
-                stacked: false,
+                zoom: {
+                    enabled: false
+                },
                 toolbar: {
                     show: false
                 }
             },
+            colors: ['#5b73e8', '#f1b44c'],
+            dataLabels: {
+                enabled: false,
+            },
             stroke: {
-                width: [0, 2, 4],
-                curve: 'smooth'
+                width: [3, 3],
+                curve: 'straight'
             },
-            plotOptions: {
-                bar: {
-                    columnWidth: '50%'
-                }
-            },
-            colors: ['#34c38f', '#ef1017'],
             series: [{
-                name: 'Session Rank',
-                type: 'column',
+                name: "Rank",
                 data: sData
-            }, {
-                name: 'Total Rank',
-                type: 'line',
-                data: tData
             }],
-            fill: {
-                opacity: [0.85, 0.25, 1],
-                gradient: {
-                    inverseColors: false,
-                    shade: 'light',
-                    type: "vertical",
-                    opacityFrom: 0.85,
-                    opacityTo: 0.55,
-                    stops: [0, 100, 100, 100]
-                }
+            title: {
+                text: 'Overall Rank Chart',
+                align: 'left'
             },
-            labels: labels,
+            grid: {
+                row: {
+                    colors: ['transparent', 'transparent'], // takes an array which will be repeated on columns
+                    opacity: 0.2
+                },
+                borderColor: '#f1f1f1'
+            },
             markers: {
-                size: 0
+                style: 'inverted',
+                size: 6
             },
-
             xaxis: {
-                type: 'Session'
+                categories: labels,
+                title: {
+                    text: 'Date'
+                }
             },
             yaxis: {
                 title: {
-                    text: 'Rank',
-                },
-            },
-            tooltip: {
-                shared: true,
-                intersect: false,
-                y: {
-                    formatter: function (y) {
-                        if (typeof y !== "undefined") {
-                            return y.toFixed(0) + " points";
-                        }
-                        return y;
-
-                    }
+                    text: 'Rate'
                 }
             },
-            grid: {
-                borderColor: '#f1f1f1'
-            }
+            legend: {
+                position: 'top',
+                horizontalAlign: 'right',
+                floating: true,
+                offsetY: -25,
+                offsetX: -5
+            },
+            responsive: [{
+                breakpoint: 600,
+                options: {
+                    chart: {
+                        toolbar: {
+                            show: false
+                        }
+                    },
+                    legend: {
+                        show: false
+                    },
+                }
+            }]
         }
 
         var chart = new ApexCharts(
-            document.querySelector("#mixed_chart"),
+            document.querySelector("#line_chart_datalabel"),
             options
         );
 
