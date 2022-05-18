@@ -25,8 +25,8 @@ module.exports = function (app) {
 
     }
 
-    app.get('/', isUserAllowed, SessionCtrl.list);
-    app.get('/profile', isUserAllowed, ProfileCtrl.index);
+    app.get('/', isUserAllowed, ProfileCtrl.index);
+    app.get('/session', isUserAllowed, SessionCtrl.list);
     app.get('/rank', isUserAllowed, RankCtrl.index);
 
 }
