@@ -31,19 +31,19 @@
                 <ul class="nav nav-pills nav-justified bg-light" role="tablist">
                     <li class="nav-item waves-effect waves-light">
                         <a class="nav-link active" href="/rank">
-                            <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                            <span class="d-block d-sm-none"><i class="fas fa-bookmark"></i></span>
                             <span class="d-none d-sm-block">Top 50</span>
                         </a>
                     </li>
                     <li class="nav-item waves-effect waves-light">
                         <a class="nav-link" href="/rank?tab=mine">
-                            <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
+                            <span class="d-block d-sm-none"><i class="fas fa-book-reader"></i></span>
                             <span class="d-none d-sm-block">My Ranking</span>
                         </a>
                     </li>
                     <li class="nav-item waves-effect waves-light">
                         <a class="nav-link" href="/rank?tab=progress">
-                            <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
+                            <span class="d-block d-sm-none"><i class="fas fa-chart-line"></i></span>
                             <span class="d-none d-sm-block">My Progress</span>
                         </a>
                     </li>
@@ -52,45 +52,52 @@
                 <!-- Tab panes -->
                 <div class="tab-content p-3 text-muted">
                     <div class="tab-pane active" id="home1" role="tabpanel">
-                        <div class="float-start mt-1 mb-1">
-                            <div class="dropdown">
-                                <a class="dropdown-toggle text-reset" href="#" id="dropdownMenuButton5"
-                                   data-bs-toggle="dropdown" aria-haspopup="true"
-                                   aria-expanded="false">
-                                    <span class="fw-semibold">Time Frame:</span> <span class="text-muted" id="periodText">All<i class="mdi mdi-chevron-down ms-1"></i></span>
-                                </a>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="float-start mt-1 mb-1">
+                                    <div class="dropdown">
+                                        <a class="dropdown-toggle text-reset" href="#" id="dropdownMenuButton5"
+                                           data-bs-toggle="dropdown" aria-haspopup="true"
+                                           aria-expanded="false">
+                                            <span class="fw-semibold">Time Frame:</span> <span class="text-muted" id="periodText">All<i class="mdi mdi-chevron-down ms-1"></i></span>
+                                        </a>
 
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton5">
-                                    <a class="dropdown-item" href="#" onclick="setPeriod(0)">All</a>
-                                    <a class="dropdown-item" href="#" onclick="setPeriod(1)">Today</a>
-                                    <a class="dropdown-item" href="#" onclick="setPeriod(2)">Last 7days</a>
-                                    <a class="dropdown-item" href="#" onclick="setPeriod(3)">Last 1month</a>
+                                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton5">
+                                            <a class="dropdown-item" href="#" onclick="setPeriod(0)">All</a>
+                                            <a class="dropdown-item" href="#" onclick="setPeriod(1)">Today</a>
+                                            <a class="dropdown-item" href="#" onclick="setPeriod(2)">Last 7days</a>
+                                            <a class="dropdown-item" href="#" onclick="setPeriod(3)">Last 1month</a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <table class="table mb-0">
-                            <thead>
-                            <tr>
-                                <th>Rank</th>
-                                <th>Username</th>
-                                <th>Telegram Id</th>
-                                <th>Total Points</th>
-                                <th>Title</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <% results.forEach(function(result, index) { %>
+
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
                                 <tr>
-                                    <th scope="row"><%= index + 1 %></th>
-                                    <td><%= result.username %></td>
-                                    <td><%= result.telegramId %></td>
-                                    <td><%= result.sum_point %></td>
-                                    <td><%= result.title %></td>
+                                    <th>Rank</th>
+                                    <th>Username</th>
+                                    <th>Telegram Id</th>
+                                    <th>Total Points</th>
+                                    <th>Title</th>
                                 </tr>
-                            <% }); %>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                <% results.forEach(function(result, index) { %>
+                                    <tr>
+                                        <th scope="row"><%= index + 1 %></th>
+                                        <td><%= result.username %></td>
+                                        <td><%= result.telegramId %></td>
+                                        <td><%= result.sum_point %></td>
+                                        <td><%= result.title %></td>
+                                    </tr>
+                                <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
