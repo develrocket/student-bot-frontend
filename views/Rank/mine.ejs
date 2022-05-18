@@ -1,0 +1,114 @@
+<%- contentFor('HeaderCss') %>
+<link href="public/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+<link href="public/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+<!-- Responsive datatable examples -->
+<link href="public/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+<%- contentFor('breadcrumb') %>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Rank Page</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Africa</a></li>
+                    <li class="breadcrumb-item active">Rank Page</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<%- contentFor('body') %>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-pills nav-justified bg-light" role="tablist">
+                    <li class="nav-item waves-effect waves-light">
+                        <a class="nav-link" href="/rank">
+                            <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                            <span class="d-none d-sm-block">Top 50</span>
+                        </a>
+                    </li>
+                    <li class="nav-item waves-effect waves-light">
+                        <a class="nav-link active" href="/rank?tab=mine">
+                            <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
+                            <span class="d-none d-sm-block">My Ranking</span>
+                        </a>
+                    </li>
+                    <li class="nav-item waves-effect waves-light">
+                        <a class="nav-link" href="/rank?tab=progress">
+                            <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
+                            <span class="d-none d-sm-block">My Progress</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content p-3 text-muted">
+                    <div class="tab-pane active" id="home1" role="tabpanel">
+                        <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <thead>
+                            <tr>
+                                <th>Session No</th>
+                                <th>Session Points</th>
+                                <th>Session Rank</th>
+                                <th>Total Rank</th>
+                                <th>Delivered On</th>
+                                <th>Title</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <% results.forEach(function(ritem) { %>
+                                <tr>
+                                    <th scope="row"><%= ritem.session_no %></th>
+                                    <td><%= ritem.session_points %></td>
+                                    <td><%= ritem.session_rank %></td>
+                                    <td><%= ritem.total_rank %></td>
+                                    <td><%= ritem.session ? ritem.session.session_start : '' %></td>
+                                    <td><%= ritem.title %></td>
+                                </tr>
+                            <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- contentFor('FooterJs') %>
+<script src="public/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="public/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+<!-- Buttons examples -->
+<script src="public/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="public/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+<script src="public/assets/libs/jszip/jszip.min.js"></script>
+<script src="public/assets/libs/pdfmake/build/pdfmake.min.js"></script>
+<script src="public/assets/libs/pdfmake/build/vfs_fonts.js"></script>
+<script src="public/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="public/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="public/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+
+<!-- Responsive examples -->
+<script src="public/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="public/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+
+<%- contentFor('BottomJs') %>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#datatable').DataTable();
+    });
+</script>

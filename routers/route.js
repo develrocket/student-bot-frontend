@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser');
 const SessionCtrl = require('../controllers/SessionCtrl')();
 const ProfileCtrl = require('../controllers/ProfileCtrl')();
+const RankCtrl = require('../controllers/RankCtrl')();
 const config = require('../config/config');
 
 module.exports = function (app) {
@@ -26,5 +27,6 @@ module.exports = function (app) {
 
     app.get('/', isUserAllowed, SessionCtrl.list);
     app.get('/profile', isUserAllowed, ProfileCtrl.index);
+    app.get('/rank', isUserAllowed, RankCtrl.index);
 
 }

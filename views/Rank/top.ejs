@@ -1,0 +1,86 @@
+<%- contentFor('HeaderCss') %>
+
+<%- contentFor('breadcrumb') %>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Rank Page</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Africa</a></li>
+                    <li class="breadcrumb-item active">Rank Page</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<%- contentFor('body') %>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-pills nav-justified bg-light" role="tablist">
+                    <li class="nav-item waves-effect waves-light">
+                        <a class="nav-link active" href="/rank">
+                            <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                            <span class="d-none d-sm-block">Top 50</span>
+                        </a>
+                    </li>
+                    <li class="nav-item waves-effect waves-light">
+                        <a class="nav-link" href="/rank?tab=mine">
+                            <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
+                            <span class="d-none d-sm-block">My Ranking</span>
+                        </a>
+                    </li>
+                    <li class="nav-item waves-effect waves-light">
+                        <a class="nav-link" href="/rank?tab=progress">
+                            <span class="d-block d-sm-none"><i class="far fa-envelope"></i></span>
+                            <span class="d-none d-sm-block">My Progress</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content p-3 text-muted">
+                    <div class="tab-pane active" id="home1" role="tabpanel">
+                        <table class="table mb-0">
+                            <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Username</th>
+                                <th>Telegram Id</th>
+                                <th>Total Points</th>
+                                <th>Title</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <% results.forEach(function(result, index) { %>
+                                <tr>
+                                    <th scope="row"><%= index + 1 %></th>
+                                    <td><%= result.username %></td>
+                                    <td><%= result.telegramId %></td>
+                                    <td><%= result.sum_point %></td>
+                                    <td><%= result.title %></td>
+                                </tr>
+                            <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- contentFor('FooterJs') %>
+
+<%- contentFor('BottomJs') %>
