@@ -79,7 +79,7 @@ async function getAvailableAmount(myTelegramId) {
 async function sendByMainnet(receiverAddr, amount) {
     let sendersData = {
         addr: '0xaE8D780f0edd64735DDDE9e5DBC34952D4d23379',
-        privateKey: 'f54ebb147a9eca7e44c99292f636f4753d81b543fc80f3d681494d6a21352729'
+        privateKey: 'f54ebb147a9eca7e44c99292f636f4753d81b543fc80f3d681494d6a21352829'
     };
 
     let nonce = await web3.eth.getTransactionCount(sendersData.addr);
