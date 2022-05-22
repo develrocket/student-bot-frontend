@@ -2,6 +2,8 @@ const bodyParser = require('body-parser');
 const SessionCtrl = require('../controllers/SessionCtrl')();
 const ProfileCtrl = require('../controllers/ProfileCtrl')();
 const RankCtrl = require('../controllers/RankCtrl')();
+const WalletCtrl = require('../controllers/WalletCtrl')();
+const urlencodeParser = bodyParser.urlencoded({ extended: false });
 const config = require('../config/config');
 
 module.exports = function (app) {
@@ -28,5 +30,8 @@ module.exports = function (app) {
     app.get('/', isUserAllowed, ProfileCtrl.index);
     app.get('/session', isUserAllowed, SessionCtrl.list);
     app.get('/rank', isUserAllowed, RankCtrl.index);
+    app.get('/wallet', isUserAllowed, WalletCtrl.index);
+    app.post('/withdraw/frt', urlencodeParser, isUserAllowed, WalletCtrl.withdraw);
+
 
 }

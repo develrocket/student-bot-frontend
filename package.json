@@ -20,6 +20,7 @@
     "ejs": "^3.1.5",
     "ejs-lint": "^1.1.0",
     "ejs-locals": "^1.0.2",
+    "ethereumjs-tx": "^2.1.2",
     "express": "^4.17.1",
     "express-ejs-layouts": "^2.5.0",
     "express-flash-messages": "^0.1.1",
@@ -35,6 +36,7 @@
     "path": "^0.12.7",
     "pug": "^3.0.0",
     "req-flash": "^0.0.3",
+    "web3": "^1.7.3",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

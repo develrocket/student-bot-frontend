@@ -1,0 +1,163 @@
+<%- contentFor('HeaderCss') %>
+
+<%- contentFor('breadcrumb') %>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Wallet Page</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Africa</a></li>
+                    <li class="breadcrumb-item active">Wallet Page</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<%- contentFor('body') %>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <% if(error.length> 0) { %>
+                    <div class="alert alert-danger text-center mb-4 flash" role="alert">
+                        <%= error %>
+                    </div>
+                <% } %>
+                <% if(message.length> 0) { %>
+                    <div class="alert alert-success text-center mb-4 flash" role="alert">
+                        <%= message %>
+                    </div>
+                <% } %>
+
+                <button type="button" class="btn btn-primary waves-effect waves-light hidden" id="connectButton">Primary</button>
+
+
+                <div id="walletContainer" class="hidden">
+                    <div class="table-responsive">
+                        <table class="table mb-0 table-primary">
+                            <thead>
+                            <tr>
+                                <th>Wallet Address</th>
+                                <th>Fortuna Point</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td id="walletAddr"></td>
+                                <td><%= availableAmount.toFixed(1) %></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-center mt-5">
+                        <form action="/withdraw/frt" method="post">
+                            <input type="hidden" name="addr" id="userWallet"/>
+                            <button type="submit" class="btn btn-primary waves-effect waves-light" id="getFRTToken">Get FRT Token</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- contentFor('FooterJs') %>
+<script src="public/assets/libs/metamask-onboarding.bundle.js"></script>
+
+<%- contentFor('BottomJs') %>
+<script type="text/javascript">
+    const forwarderOrigin = 'http://localhost:9010';
+    let isConnected = false;
+    let accountAddr = '';
+
+    const initialize = () => {
+        //Basic Actions Section
+        const onboardButton = document.getElementById('connectButton');
+        const { ethereum } = window;
+
+        //Created check function to see if the MetaMask extension is installed
+        const isMetaMaskInstalled = () => {
+            //Have to check the ethereum binding on the window object to see if it's installed
+            return Boolean(ethereum && ethereum.isMetaMask);
+        };
+
+        const getAccounts = async () => {
+            if (ethereum) {
+                const accounts = await ethereum.request({ method: 'eth_accounts' });
+                console.log('get-accounts:', accounts);
+                if (accounts.length > 0) {
+                    $('#walletAddr').html(accounts[0]);
+                    $('#userWallet').val(accounts[0]);
+                    accountAddr = accounts[0];
+                    isConnected = true;
+                }
+            }
+
+            if (isConnected) {
+                $('#walletContainer').removeClass('hidden');
+                $('#connectButton').addClass('hidden');
+            } else {
+                $('#walletContainer').addClass('hidden');
+                $('#connectButton').removeClass('hidden');
+            }
+        }
+
+        //We create a new MetaMask onboarding object to use in our app
+        const onboarding = new MetaMaskOnboarding({ forwarderOrigin });
+
+        //This will start the onboarding proccess
+        const onClickInstall = () => {
+            onboardButton.innerText = 'Onboarding in progress';
+            onboardButton.disabled = true;
+            //On this object we have startOnboarding which will start the onboarding process for our end user
+            onboarding.startOnboarding();
+        };
+
+        const onClickConnect = async () => {
+            try {
+                // Will open the MetaMask UI
+                // You should disable this button while the request is pending!
+                await ethereum.request({ method: 'eth_requestAccounts' });
+
+                await getAccounts();
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        const MetaMaskClientCheck = async () => {
+            //Now we check to see if Metmask is installed
+
+            await getAccounts();
+
+            if (!isMetaMaskInstalled()) {
+                //If it isn't installed we ask the user to click to install it
+                onboardButton.innerText = 'Click here to install MetaMask!';
+                //When the button is clicked we call th is function
+                onboardButton.onclick = onClickInstall;
+                //The button is now disabled
+                onboardButton.disabled = false;
+            } else {
+                //If MetaMask is installed we ask the user to connect to their wallet
+                onboardButton.innerText = 'Connect';
+                //When the button is clicked we call this function to connect the users MetaMask Wallet
+                onboardButton.onclick = onClickConnect;
+                //The button is now disabled
+                onboardButton.disabled = false;
+            }
+        };
+
+        MetaMaskClientCheck();
+    };
+
+    window.addEventListener('DOMContentLoaded', initialize);
+</script>

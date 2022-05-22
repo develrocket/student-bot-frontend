@@ -2,6 +2,8 @@
 
 const studentCont = require('../controllers/Api/studentCont')();
 const importCont = require('../controllers/Api/importCont')();
+const bodyParser = require('body-parser');
+const urlencodeParser = bodyParser.urlencoded({ extended: false });
 
 module.exports = function (app) {
     // home
@@ -9,8 +11,8 @@ module.exports = function (app) {
 
     app.get('/api/import-excel', importCont.importExcel);
 
-    app.post('/api/get_session_data', importCont.getSessionData);
-    app.post('/api/get_student_results', importCont.getStudentResult);
+    app.post('/api/get_session_data', urlencodeParser, importCont.getSessionData);
+    app.post('/api/get_student_results', urlencodeParser, importCont.getStudentResult);
 
     app.get('/api/student_result', studentCont.filter);
     app.get('/api/sort_student', studentCont.sort);
