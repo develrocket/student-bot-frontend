@@ -54,6 +54,20 @@ module.exports = function(){
             return res.json({result: "success"});
         },
 
+        resetFortunaPoint: async function(req, res) {
+            let results = await StudentResultModel.find({});
+            for (let i = 0; i < results.length; i ++) {
+                await StudentResultModel.update({
+                    _id: results[i]._id
+                }, {
+                    $set: {
+                        fortuna_points: results[i].session_points * 0.1
+                    }
+                });
+            }
+            return res.json({result: "success"});
+        },
+
         resetSessionId: async function(req, res) {
             let results = await StudentResultModel.find({});
             for (let i = 0; i < results.length; i ++) {
