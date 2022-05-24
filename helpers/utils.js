@@ -19,12 +19,12 @@ module.exports = {
 
     async getTitle(sumPoint) {
         const titles = await TitleModel.find();
-        for (let i = 0; i < titles.length; i++) {
+        for (let i = 1; i < titles.length; i++) {
             if (sumPoint < titles[i].limit) {
                 return titles[i - 1].title;
             }
         }
-        return "";
+        return titles[0].title;
     },
 
     async getPupilsInfo() {
