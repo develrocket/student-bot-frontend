@@ -169,8 +169,6 @@ module.exports = function(){
                 let results = [];
                 let myTelegramId = res.locals.user.telegramId;
 
-                console.log('here-rank-analytic');
-
                 for (let i = subday - 1; i >= 0; i --) {
                     labels.push(moment().subtract(i,'d').format('MM/DD'));
                     let end = moment().subtract(i,'d').format('YYYY-MM-DD') + ' 23:59:59';
@@ -199,8 +197,6 @@ module.exports = function(){
                         results.push(0);
                     }
                 }
-
-                console.log(results);
 
                 res.render('Rank/' + tab, {results, period, labels});
             }
