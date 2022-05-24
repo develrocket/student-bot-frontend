@@ -13,6 +13,8 @@ module.exports = function(){
 
             res.locals = {...res.locals, title: 'Rank', moment };
 
+            console.log('my-rank:', tab);
+
             if (tab === 'top') {
 
                 let period = req.query.period || 0;
@@ -171,11 +173,12 @@ module.exports = function(){
                     labels.push(moment().subtract(i,'d').format('MM/DD'));
                     let end = moment().subtract(i,'d').format('YYYY-MM-DD') + ' 23:59:59';
                     let sessions = await SessionModel.find({session_start: {$lte: end}}).sort({session_no: -1}).lean().exec();
+                    console.log(sessions.length, end);
                     if (sessions.length > 0) {
                         let lastSessionNo = sessions[0]
                         let aResults = await ResultModel.aggregate([
                             {
-                                $match: { session_no: {$lte: lastSessionNo} }
+                                $match: { session_no: {$lte: lastSessionNo.session_no} }
                             },
                             {
                                 $group: { _id: "$telegramId", totalPoints: { $sum: "$session_points" } }

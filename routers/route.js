@@ -14,7 +14,7 @@ module.exports = function (app) {
             res.locals = {...res.locals, user: {
                     username: 'developer',
                     title: 'student',
-                    telegramId: 19867578885
+                    telegramId: 865996339
                 }, searchKey: ''};
             return next();
         } else {
