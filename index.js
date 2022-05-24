@@ -21,6 +21,7 @@ app.use(bodyParser.json());
 const config = require('./config/config');
 const db = require('./config/db');
 const debug = require('debug')('myapp:app');
+const cronService = require('./cronService')();
 
 app.use(session({
     key: 'user_sid',
@@ -70,5 +71,7 @@ db.on('connected', () => {
         console.log(`www.${config.server.hostname  }:${  config.server.port}`);
         debug(`App listening on ${config.server.hostname} port: ${config.server.port}`);
         app.emit('appStarted');
+
+        cronService.start();
     });
 });
