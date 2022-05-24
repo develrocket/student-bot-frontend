@@ -107,30 +107,32 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <table class="table mb-0">
-                        <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Username</th>
-                            <th>Telegram ID</th>
-                            <th>Points</th>
-                            <th>Rank</th>
-                            <th>Title</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <% session.players.forEach(function(player, index) { %>
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead>
                             <tr>
-                                <th scope="row"><%= index + 1 %></th>
-                                <td><%= player.username %></td>
-                                <td><%= player.telegramId %></td>
-                                <td><%= player.session_points %></td>
-                                <td><%= player.session_rank %></td>
-                                <td><%= player.title %></td>
+                                <th>No</th>
+                                <th>Username</th>
+                                <th>Telegram ID</th>
+                                <th>Points</th>
+                                <th>Rank</th>
+                                <th>Title</th>
                             </tr>
-                        <% }); %>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            <% session.players.forEach(function(player, index) { %>
+                                <tr>
+                                    <th scope="row"><%= index + 1 %></th>
+                                    <td><%= player.username %></td>
+                                    <td><%= player.telegramId %></td>
+                                    <td><%= player.session_points %></td>
+                                    <td><%= player.session_rank %></td>
+                                    <td><%= player.title %></td>
+                                </tr>
+                            <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>

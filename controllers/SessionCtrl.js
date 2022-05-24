@@ -79,7 +79,7 @@ module.exports = function(){
 
             for (let i = 0; i < sessions.length; i ++) {
                 let results = await ResultModel.find({session_no: sessions[i].session_no}).lean().exec();
-                results.sort((a, b) => b.session_rank - a.session_rank);
+                results.sort((a, b) => a.session_rank - b.session_rank);
                 sessions[i].players = results;
             }
 
