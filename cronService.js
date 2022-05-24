@@ -3,6 +3,7 @@ const SessionModel = require('./models/sessionResult');
 const ResultModel = require('./models/studentResult');
 const TitleModel = require('./models/studentTitle');
 const Utils = require('./helpers/utils');
+const moment = require('moment');
 
 // const serverUrl = 'http://my.loc/test/';
 const serverUrl = 'https://vmi586933.contaboserver.net/';
@@ -11,7 +12,6 @@ const fetchSession = async function() {
     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
     let lastId = sessions.length > 0 ? sessions[0].session_no : 8696;
     console.log('fetch-session-lastId:', lastId);
-    let newSessionNos = [];
     try {
         let config = {
             method: 'get',
@@ -32,14 +32,10 @@ const fetchSession = async function() {
             newSessionItem.questions_no = sessionItem.questions;
             newSessionItem.level = sessionItem.level;
             await newSessionItem.save();
-
-            newSessionNos.push(sessionItem.sess_id);
         }
     } catch (err) {
         console.log(err);
     }
-
-    return newSessionNos;
 }
 
 const fetchResult = async function(sessId) {
@@ -141,11 +137,11 @@ module.exports = function(){
         start: function() {
             let lastIds = [];
             setInterval(async function() {
-                let newSessIds = await fetchSession();
+                await fetchSession();
 
-                if (newSessIds.length > 0) {
-                    lastIds = [].concat(newSessIds);
-                }
+                let end = moment().subtract(1,'d').format('YYYY-MM-DD') + ' 00:00:00';
+                let sessions = await SessionModel.find({session_start: {$gte: end}});
+                let lastIds = sessions.map(item => item.session_no);
 
                 for (let i = 0; i < lastIds.length; i ++) {
                     console.log('======> fetch result session:', lastIds[i]);
