@@ -88,7 +88,7 @@ const fetchResult = async function(sessId) {
         for (let i = 0; i < rItems.length; i ++) {
             let rItem = rItems[i];
             rItem.session_rank = points.indexOf(rItem.session_points) + 1;
-            rItem.fortuna_points = (points.indexOf(rItem.session_points) + 1) * 0.1;
+            rItem.fortuna_points = rItem.session_points * 0.1;
 
             let totalPoint = rItem.session_points;
             let totalFortuna = rItem.fortuna_points;

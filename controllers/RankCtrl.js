@@ -119,46 +119,52 @@ module.exports = function(){
                     res.render('Rank/' + tab, {results, period});
                 }
             } else if (tab === 'mine') {
-                let period = req.query.period || 0;
-
                 let searchQuery = {};
                 let startSessionNo = 0;
 
-                if (period * 1 > 0) {
-                    let subdays = [0, 7, 30];
+                let subdays = [0, 7, 30];
+                let labels = ['Today', 'Last 7 days', 'Last 30 days'];
+                let myTelegramId = res.locals.user.telegramId;
+                let fResults = [];
+
+                for (let i = 0; i < 3; i ++) {
                     let end = moment().format('YYYY-MM-DD') + ' 23:59:59';
-                    let start = moment().subtract(subdays[period - 1],'d').format('YYYY-MM-DD') + ' 00:00:00';
+                    let start = moment().subtract(subdays[i],'d').format('YYYY-MM-DD') + ' 00:00:00';
                     let sessions = await SessionModel.find({session_start: {$gte: start, $lte: end}}).sort({session_no: 1}).lean().exec();
                     let sessionNos = sessions.map(item => item.session_no);
-                    searchQuery = {session_no: {$in: sessionNos}};
-                    startSessionNo = sessionNos[0];
-                }
 
-                searchQuery = {...searchQuery, telegramId: res.locals.user.telegramId};
-
-                let myTelegramId = res.locals.user.telegramId;
-                let results = await ResultModel.find(searchQuery).sort({session_no: -1}).populate('session').lean().exec();
-                for (let i = results.length - 1; i >= 0; i --) {
-                    let aResults = await ResultModel.aggregate([
+                    let results = await ResultModel.aggregate([
                         {
-                            $match: { session_no: {$lte: results[i].session_no, $gte: startSessionNo} }
+                            $match: { session_no: {$in: sessionNos} }
                         },
                         {
                             $group: { _id: "$telegramId", totalPoints: { $sum: "$session_points" } }
                         }
                     ]);
 
+                    let myTelegramId = res.locals.user.telegramId;
                     let points = [];
                     let myPoint = 0;
-                    for (let j = 0; j < aResults.length; j ++) {
-                        if (points.indexOf(aResults[j].totalPoints.toFixed(2)) < 0) points.push(aResults[j].totalPoints.toFixed(2));
-                        if (aResults[j]._id + '' === myTelegramId + '') myPoint = aResults[j].totalPoints.toFixed(2);
+
+                    for (let j = 0; j < results.length;j ++) {
+
+                        if (results[j]._id + '' === myTelegramId + '') {
+                            myPoint = results[j].totalPoints;
+                        }
+                        if (points.indexOf(results[j].totalPoints) < 0) {
+                            points.push(results[j].totalPoints)
+                        }
                     }
-                    points.sort((a, b) => a - b);
-                    results[i].total_rank = points.indexOf(myPoint) + 1;
+                    points.sort((a, b) => b - a);
+
+                    fResults.push({
+                        label: labels[i],
+                        totalPoint: myPoint,
+                        totalRank: points.indexOf(myPoint) + 1
+                    });
                 }
 
-                res.render('Rank/' + tab, {results, period});
+                res.render('Rank/' + tab, {results: fResults});
             } else {
                 let period = req.query.period || 1;
                 let periods = [7, 30, 90];

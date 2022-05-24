@@ -57,52 +57,27 @@
                 <!-- Tab panes -->
                 <div class="tab-content p-3 text-muted">
                     <div class="tab-pane active" id="home1" role="tabpanel">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="float-start mt-1 mb-1" style="margin-right: 20px;">
-                                    <div class="dropdown">
-                                        <a class="dropdown-toggle text-reset" href="#" id="dropdownMenuButton5"
-                                           data-bs-toggle="dropdown" aria-haspopup="true"
-                                           aria-expanded="false">
-                                            <span class="fw-semibold">Time Frame:</span> <span class="text-muted" id="periodText">All<i class="mdi mdi-chevron-down ms-1"></i></span>
-                                        </a>
-
-                                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton5">
-                                            <a class="dropdown-item" href="#" onclick="setPeriod(0)">All</a>
-                                            <a class="dropdown-item" href="#" onclick="setPeriod(1)">Today</a>
-                                            <a class="dropdown-item" href="#" onclick="setPeriod(2)">Last 7days</a>
-                                            <a class="dropdown-item" href="#" onclick="setPeriod(3)">Last 1month</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                            <thead>
-                            <tr>
-                                <th>Session No</th>
-                                <th>Session Name</th>
-                                <th>Session Points</th>
-                                <th>Session Rank</th>
-                                <th>Overall Rank</th>
-                                <th>Delivered On</th>
-                            </tr>
-                            </thead>
-
-                            <tbody>
-                            <% results.forEach(function(ritem) { %>
+                        <div class="table-responsive">
+                            <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                <thead>
                                 <tr>
-                                    <th scope="row"><%= ritem.session_no %></th>
-                                    <td><%= ritem.session ? ritem.session.session_name: '' %></td>
-                                    <td><%= ritem.session_points %></td>
-                                    <td><%= ritem.session_rank %></td>
-                                    <td><%= ritem.total_rank %></td>
-                                    <td><%= ritem.session ? ritem.session.session_start : '' %></td>
+                                    <th>Period</th>
+                                    <th>Points</th>
+                                    <th>Overall rank</th>
                                 </tr>
-                            <% }); %>
-                            </tbody>
-                        </table>
+                                </thead>
+
+                                <tbody>
+                                <% results.forEach(function(ritem) { %>
+                                    <tr>
+                                        <td><%= ritem.label %></td>
+                                        <td><%= ritem.totalPoint %></td>
+                                        <td><%= ritem.totalRank %></td>
+                                    </tr>
+                                <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -134,17 +109,8 @@
 
 <%- contentFor('BottomJs') %>
 <script type="text/javascript">
-    let texts = ['All', 'Today', 'Last 7days', 'Last 1month'];
-
-    function setPeriod(val) {
-        $('#periodText').html(texts[val] + '<i class="mdi mdi-chevron-down ms-1"></i>');
-        $('#period').val(val);
-        $('#periodForm').submit();
-    }
 
     $(document).ready(function() {
-        $('#periodText').html(texts['<%= period %>' * 1] + '<i class="mdi mdi-chevron-down ms-1"></i>');
-
         $('#datatable').DataTable();
     });
 </script>
