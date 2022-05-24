@@ -138,11 +138,14 @@ const fetchResult = async function(sessId) {
 
 module.exports = function(){
     return {
-        start: async function() {
-            let newSessIds = await fetchSession();
+        start: function() {
+            let lastIds = [];
+            setInterval(async function() {
+                let newSessIds = await fetchSession();
 
-            if (newSessIds.length > 0) {
-                let lastIds = [].concat(newSessIds);
+                if (newSessIds.length > 0) {
+                    lastIds = [].concat(newSessIds);
+                }
 
                 for (let i = 0; i < lastIds.length; i ++) {
                     console.log('======> fetch result session:', lastIds[i]);
@@ -150,7 +153,7 @@ module.exports = function(){
                 }
 
                 console.log('-----> finished get result');
-            }
+            }, 30000);
         },
     };
 };
