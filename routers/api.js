@@ -22,4 +22,5 @@ module.exports = function (app) {
     app.get('/api/fetch-session', studentCont.fetchSession);
     app.get('/api/set-player-count', studentCont.setPlayerCount);
     app.get('/api/reset-session-id', studentCont.resetSessionId);
+    app.get('/api/reset-fortuna-points', studentCont.resetFortunaPoint);
 };
