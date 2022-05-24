@@ -4,8 +4,8 @@ const ResultModel = require('./models/studentResult');
 const TitleModel = require('./models/studentTitle');
 const Utils = require('./helpers/utils');
 
-const serverUrl = 'http://my.loc/test/';
-// const serverUrl = 'https://vmi586933.contaboserver.net/';
+// const serverUrl = 'http://my.loc/test/';
+const serverUrl = 'https://vmi586933.contaboserver.net/';
 
 const fetchSession = async function() {
     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
