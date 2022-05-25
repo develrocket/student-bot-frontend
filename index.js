@@ -22,6 +22,9 @@ const config = require('./config/config');
 const db = require('./config/db');
 const debug = require('debug')('myapp:app');
 const cronService = require('./cronService')();
+const TelegramBot = require('node-telegram-bot-api');
+const token = '5356303521:AAFu494SZVr82jDE8mA65z_-w8s_EJFw8Pw';
+const bot = new TelegramBot(token, {polling: true});
 
 app.use(session({
     key: 'user_sid',
@@ -74,4 +77,13 @@ db.on('connected', () => {
 
         cronService.start();
     });
+});
+
+
+bot.on('message', (msg) => {
+    console.log('telegram-bot-new-msg:', msg);
+});
+
+bot.onText(/\/tip/, (msg) => {
+    console.log('tele-tip-msg:', msg);
 });
