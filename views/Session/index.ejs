@@ -126,7 +126,18 @@
                                     <td><%= player.username %></td>
                                     <td><%= player.telegramId %></td>
                                     <td><%= player.session_points %></td>
-                                    <td><%= player.session_rank %></td>
+                                    <td style="display: flex;">
+                                      <% if (index === 0) { %>
+                                          <img src="public/assets/images/gold-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>
+                                      <% } %>
+                                      <% if (index === 1) { %>
+                                          <img src="public/assets/images/silver-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>
+                                      <% } %>
+                                      <% if (index === 2) { %>
+                                          <img src="public/assets/images/third-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>
+                                      <% } %>
+                                      <%= player.session_rank %>
+                                    </td>
                                     <td><%= player.title %></td>
                                 </tr>
                             <% }); %>

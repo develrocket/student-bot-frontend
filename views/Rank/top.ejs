@@ -89,7 +89,18 @@
                                 <% results.forEach(function(result, index) { %>
                                     <% if (index < 50) { %>
                                         <tr>
-                                            <th scope="row"><%= index + 1 %></th>
+                                            <th scope="row" style="display: flex;">
+                                                <% if (index === 0) { %>
+                                                    <img src="public/assets/images/gold-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>
+                                                <% } %>
+                                                <% if (index === 1) { %>
+                                                    <img src="public/assets/images/silver-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>
+                                                <% } %>
+                                                <% if (index === 2) { %>
+                                                    <img src="public/assets/images/third-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>
+                                                <% } %>
+                                                <%= index + 1 %>
+                                            </th>
                                             <td><%= result.username %></td>
                                             <td><%= result.telegramId %></td>
                                             <td><%= result.sum_point %></td>
