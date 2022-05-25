@@ -73,7 +73,8 @@ module.exports = function(){
                     created_at: session[0].session_start,
                     fortuna_point: item.fortuna_points,
                     total_point: userPoint[item.telegramId],
-                    state: 0
+                    state: 0,
+                    session_no: item.session_no
                 });
                 await hItem.save();
             }
