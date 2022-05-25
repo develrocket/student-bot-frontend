@@ -72,7 +72,7 @@ module.exports = function(){
                     telegramId: item.telegramId,
                     created_at: session[0].session_start,
                     fortuna_point: item.fortuna_points,
-                    total_point: userPoint[item.telegramId],
+                    // total_point: userPoint[item.telegramId],
                     state: 0,
                     session_no: item.session_no
                 });

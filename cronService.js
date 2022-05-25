@@ -62,7 +62,8 @@ const fetchResult = async function(sessId) {
                 telegramId: rItem.user_id,
                 username: username,
                 session_no: rItem.session_id,
-                session_points: point
+                session_points: point,
+                date: rItem.date
             });
 
             if (points.indexOf(point) < 0) {
@@ -122,6 +123,29 @@ const fetchResult = async function(sessId) {
                         playerCount: 1
                     }
                 })
+            }
+
+            let lastHistory = await FortunaHistoryModel.find({session_no: sessId, telegramId: rItem.telegramId}).lean().exec();
+            if (lastHistory.length > 0) {
+                lastHistory = lastHistory[0];
+                let newData = {
+                    created_at: rItem.date,
+                    fortuna_point: rItem.fortuna_points,
+                };
+                await FortunaHistoryModel.update({
+                    _id: lastHistory._id
+                }, {
+                    $set: newData
+                });
+            } else {
+                let hItem = new FortunaHistoryModel({
+                    telegramId: rItem.telegramId,
+                    created_at: rItem.date,
+                    fortuna_point: rItem.fortuna_points,
+                    state: 0,
+                    session_no: sessId
+                });
+                await hItem.save();
             }
         }
 
