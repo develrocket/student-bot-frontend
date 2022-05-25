@@ -3,6 +3,7 @@ const router = express.Router();
 
 const StudentResultModel = require('../../models/studentResult');
 const SessionModel = require('../../models/sessionResult');
+const FortunaHistoryModel = require('../../models/fortunaHistory');
 const axios = require('axios').default;
 
 const fetchSession = async function() {
@@ -50,6 +51,31 @@ module.exports = function(){
                         playerCount: results.length
                     }
                 })
+            }
+            return res.json({result: "success"});
+        },
+
+        setFortunaHistory: async function(req, res) {
+            let results = await StudentResultModel.find({}).sort({session_no: 1}).lean().exec();
+            let sessions = await SessionModel.find({}).lean().exec();
+            let userPoint = {};
+            for (let i = 0; i < results.length; i++) {
+                let item = results[i];
+                if (!userPoint[item.telegramId]) {
+                    userPoint[item.telegramId] = 0;
+                }
+
+                let session = sessions.filter(sitem => sitem._id + '' === item.session + '');
+
+                userPoint[item.telegramId] += item.fortuna_points;
+                let hItem = new FortunaHistoryModel({
+                    telegramId: item.telegramId,
+                    created_at: session[0].session_start,
+                    fortuna_point: item.fortuna_points,
+                    total_point: userPoint[item.telegramId],
+                    state: 0
+                });
+                await hItem.save();
             }
             return res.json({result: "success"});
         },
