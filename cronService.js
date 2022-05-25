@@ -2,6 +2,7 @@ const axios = require('axios').default;
 const SessionModel = require('./models/sessionResult');
 const ResultModel = require('./models/studentResult');
 const TitleModel = require('./models/studentTitle');
+const FortunaHistoryModel = require('./models/fortunaHistory');
 const Utils = require('./helpers/utils');
 const moment = require('moment');
 

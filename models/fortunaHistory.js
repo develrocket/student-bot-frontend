@@ -6,6 +6,7 @@ const {Schema} = mongoose;
 const FortunaHistorySchema = new Schema({
     telegramId: String,
     fortuna_point: Number,
+    session_no: String,
     state: Number,          //0: received by test, 1: received by tip, 2: Send, 3: withdraw to FRT token
     created_at: String,
     senderId: String,       // sender telegramId,
