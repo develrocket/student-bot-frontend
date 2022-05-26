@@ -160,6 +160,7 @@ bot.on('message', async (msg) => {
 
 bot.onText(/\/tip/, async (msg) => {
     console.log('tele-tip-msg:', msg);
+    if (msg.text.split(' ').length < 3) return;
     let receiverName = msg.text.split(' ')[1].trim();
     let value = msg.text.split(' ')[2].trim();
 
