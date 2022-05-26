@@ -1,5 +1,5 @@
 const app = require('express')();
-
+const moment = require('moment');
 const express = require('express');
 const paginate = require('express-paginate');
 const path = require('path');
@@ -105,7 +105,7 @@ async function transferFortuan(senderId, senderName, receiverId, receiverName, v
 
     try {
         let sItem = new FortunaHistoryModel({
-            telegramId: myTelegramId,
+            telegramId: senderId,
             created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
             fortuna_point: -value,
             state: 2,
@@ -116,7 +116,7 @@ async function transferFortuan(senderId, senderName, receiverId, receiverName, v
         await sItem.save();
 
         let rItem = new FortunaHistoryModel({
-            telegramId: myTelegramId,
+            telegramId: receiverId,
             created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
             fortuna_point: value,
             state: 1,
@@ -128,6 +128,7 @@ async function transferFortuan(senderId, senderName, receiverId, receiverName, v
 
         return 0;
     } catch (error) {
+        console.log('save-error:', error);
         return 2;
     }
 }
@@ -140,34 +141,40 @@ bot.on('message', async (msg) => {
         console.log('==========================================================');
         console.log('telegram-bot-new-msg:', msg);
         console.log('==========================================================');
-        if (msg.text.indexOf('/tip') >= 0) {
-            let value = 0;
-            let parts = msg.text.split(' ');
-            for (let i = 1; i < parts.length; i++) {
-                if (parts[i].trim())  {
-                    value = parts[i].trim();
-                    break;
+        try {
+            if (msg.text.indexOf('/tip') >= 0) {
+                let value = 0;
+                let parts = msg.text.split(' ');
+                for (let i = 1; i < parts.length; i++) {
+                    if (parts[i].trim())  {
+                        value = parts[i].trim();
+                        break;
+                    }
                 }
-            }
-            if (value >= 0.05 && value <= 5) {
-                let senderId = msg.from.id;
-                let senderName = msg.from.username;
-                let receiverId = msg.reply_to_message.from.id;
-                let receiverName = msg.reply_to_message.from.username;
+                if (value >= 0.05 && value <= 5) {
+                    let senderId = msg.from.id;
+                    let senderName = msg.from.username;
+                    let receiverId = msg.reply_to_message.from.id;
+                    let receiverName = msg.reply_to_message.from.username;
 
-                let result = await transferFortuan(senderId, senderName, receiverId, receiverName, value);
+                    let result = await transferFortuan(senderId, senderName, receiverId, receiverName, value);
 
-                if (result == 0) {
-                    console.log('~~~~~~~~~~~~~~~~~~~~~ send *success* message to', msg.chat.id, msg.from.username);
-                    bot.sendMessage(msg.chat.id, "🤑 @" + senderName + " tipped @" + receiverName + " with " + value + " Fortuna!");
-                } else if (result == 1) {
-                    console.log('~~~~~~~~~~~~~~~~~~~~~ send ^balance^ message to', msg.chat.id, msg.from.username);
-                    bot.sendMessage(msg.chat.id, "🤑 You have insufficient Fortuna into your account. Get smarter! Get Fortuna by answering to quizzes.");
+                    if (result == 0) {
+                        console.log('~~~~~~~~~~~~~~~~~~~~~ send *success* message to', msg.chat.id, msg.from.username);
+                        bot.sendMessage(msg.chat.id, "🤑 @" + senderName + " tipped @" + receiverName + " with " + value + " Fortuna!");
+                    } else if (result == 1) {
+                        console.log('~~~~~~~~~~~~~~~~~~~~~ send ^balance^ message to', msg.chat.id, msg.from.username);
+                        bot.sendMessage(msg.chat.id, "🤑 You have insufficient Fortuna into your account. Get smarter! Get Fortuna by answering to quizzes.");
+                    }
+                } else {
+                    console.log('~~~~~~~~~~~~~~~~~~~~~ send $value$ message to', msg.chat.id, msg.from.username);
+                    bot.sendMessage(msg.chat.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
                 }
             } else {
-                console.log('~~~~~~~~~~~~~~~~~~~~~ send $value$ message to', msg.chat.id, msg.from.username);
-                bot.sendMessage(msg.chat.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
+                console.log('**** not found tip:', msg.text.indexOf('/tip'));
             }
+        } catch (error) {
+            console.log('+++++++++++ error occurred:', error);
         }
     }
 });
