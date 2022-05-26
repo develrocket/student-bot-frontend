@@ -142,7 +142,7 @@ bot.on('message', async (msg) => {
         console.log('telegram-bot-new-msg:', msg);
         console.log('==========================================================');
         try {
-            if (msg.text.indexOf('/tip') >= 0) {
+            if (msg.text.indexOf('/give') >= 0) {
                 let value = 0;
                 let parts = msg.text.split(' ');
                 for (let i = 1; i < parts.length; i++) {
@@ -171,7 +171,7 @@ bot.on('message', async (msg) => {
                     bot.sendMessage(msg.chat.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
                 }
             } else {
-                console.log('**** not found tip:', msg.text.indexOf('/tip'));
+                console.log('**** not found tip:', msg.text.indexOf('/give'));
             }
         } catch (error) {
             console.log('+++++++++++ error occurred:', error);
@@ -179,7 +179,7 @@ bot.on('message', async (msg) => {
     }
 });
 
-bot.onText(/\/tip/, async (msg) => {
+bot.onText(/\/give/, async (msg) => {
     if (msg.text.split(' ').length < 3) return;
 
     console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
