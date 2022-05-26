@@ -70,6 +70,79 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mt-0">Fortuna History</h4>
+
+                <form id="searchForm">
+                    <div class="mb-3 row" style="background: #dcdfff; padding: 10px;">
+                        <label class="col-md-4 col-form-label text-end">Total Point: <b><%= availableAmount.toFixed(1) %></b></label>
+                        <label class="col-md-2 col-form-label text-end">Filter By</label>
+                        <div class="col-md-2">
+                            <select class="form-control" name="filter" onchange="submitSearchForm()">
+                                <option value="-1" <%= filter == -1 ? 'selected' : '' %>>All</option>
+                                <option value="0" <%= filter == 0 ? 'selected' : '' %>>Received By Answering to Quizees</option>
+                                <option value="1" <%= filter == 1 ? 'selected' : '' %>>Received By Tip</option>
+                                <option value="2" <%= filter == 2 ? 'selected' : '' %>>Send Tip</option>
+                                <option value="3" <%= filter == 3 ? 'selected' : '' %>>Withdraw to FRT Token</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary waves-effect waves-light">Search</button>
+                        </div>
+                    </div>
+                </form>
+
+                <hr/>
+
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Fortuna Point</th>
+                            <th>Info</th>
+                            <th>Created At</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% histories.forEach(function(history) { %>
+                            <tr>
+                                <td><%= types[history.state] %></td>
+                                <td><%= history.fortuna_point.toFixed(1) %></td>
+                                <td>
+                                    <% if (history.state == 0) { %>
+                                        Session No: <%= history.session_no %>
+                                    <% } %>
+                                    <% if (history.state == 1) { %>
+                                        Sender ID: <%= history.senderId %>, Sender Name: <%= history.senderName %>
+                                    <% } %>
+                                    <% if (history.state == 2) { %>
+                                        Recevier ID: <%= history.senderId %>, Receiver Name: <%= history.senderName %>
+                                    <% } %>
+                                    <% if (history.state == 3) { %>
+                                        Wallet address: <%= history.walletAddr %>
+                                    <% } %>
+                                </td>
+                                <td><%= moment(history.created_at).format('YYYY-MM-DD HH:mm:ss') %></td>
+                            </tr>
+                        <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="card-footer text-center d-flex justify-content-between">
+                <label>Total Counts: <%= itemCount %></label>
+                <%- include ('../Partials/Paginate')  %>
+            </div>
+        </div>
+    </div>
+</div>
+
 <%- contentFor('FooterJs') %>
 <script src="public/assets/libs/metamask-onboarding.bundle.js"></script>
 
@@ -78,6 +151,10 @@
     const forwarderOrigin = 'http://localhost:9010';
     let isConnected = false;
     let accountAddr = '';
+
+    function submitSearchForm() {
+        $('#searchForm').submit();
+    }
 
     const initialize = () => {
         //Basic Actions Section

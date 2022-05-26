@@ -1,9 +1,10 @@
 const express = require('express');
 const moment = require('moment');
-
+const paginate = require('express-paginate');
 const SessionModel = require('../models/sessionResult');
 const ResultModel = require('../models/studentResult');
 const WithdrawModel = require('../models/withdraw');
+const FortunaHistoryModel = require('../models/fortunaHistory');
 const axios = require('axios').default;
 const Web3 = require("web3");
 const EthereumTx = require('ethereumjs-tx').Transaction;
@@ -122,7 +123,7 @@ module.exports = function(){
         index: async function(req, res) {
             let myTelegramId = res.locals.user.telegramId;
 
-            let result = await ResultModel.aggregate([
+            let result = await FortunaHistoryModel.aggregate([
                 {
                     $match: { telegramId: myTelegramId + '' }
                 },
@@ -130,29 +131,44 @@ module.exports = function(){
                     $group:
                         {
                             _id: "$telegramId",
-                            totalPoints: { $sum: "$fortuna_points" }
+                            totalPoints: { $sum: "$fortuna_point" }
                         }
                 }
             ]);
 
-            let withdraws = await WithdrawModel.aggregate([
-                {
-                    $match: { telegramId: myTelegramId + '' }
-                },
-                {
-                    $group:
-                        {
-                            _id: "$telegramId",
-                            totalPoints: { $sum: "$amount" }
-                        }
-                }
-            ]);
+            console.log('wallet-result:', result);
 
             let totalPoints = result.length > 0 ? result[0].totalPoints : 0;
-            let withdrawAmounts = withdraws.length > 0 ? withdraws[0].totalPoints : 0;
 
             res.locals = {...res.locals, title: 'Profile', moment };
-            res.render('Wallet/index', {availableAmount: totalPoints - withdrawAmounts, error: req.flash('error'), message: req.flash('success')});
+
+            let filter = req.query.filter || -1;
+            let page = req.query.page || 1;
+
+            let searchQuery = {telegramId: myTelegramId, fortuna_point: {$ne: 0}};
+            if (filter >= 0) {
+                searchQuery = {...searchQuery, state: filter};
+            }
+
+            const [ histories, itemCount ] = await Promise.all([
+                FortunaHistoryModel.find(searchQuery).sort({created_at: -1}).limit(req.query.limit).skip(req.skip).lean().exec(),
+                FortunaHistoryModel.count(searchQuery)
+            ]);
+            const pageCount = Math.ceil(itemCount / req.query.limit);
+
+            let types = ['Received by Answering to Quizees', 'Received by Tip', 'Send Tip', 'Withdraw to FRT Token'];
+
+            res.render('Wallet/index', {
+                availableAmount: totalPoints,
+                error: req.flash('error'),
+                message: req.flash('success'),
+                histories,
+                pageCount,
+                itemCount,
+                filter,
+                types,
+                pages: paginate.getArrayPages(req)(3, pageCount, req.query.page)
+            });
         },
 
         withdraw: async function(req, res) {
@@ -172,8 +188,17 @@ module.exports = function(){
                 status: 0
             });
 
+            let hItem = new FortunaHistoryModel({
+                telegramId: myTelegramId,
+                created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+                fortuna_point: -amount,
+                state: 3,
+                walletAddr: req.body.addr
+            });
+
             try {
                 history = await history.save();
+                hitem = await hItem.save();
             } catch (e) {
                 console.log('save-history-err:', e);
             }
@@ -185,6 +210,7 @@ module.exports = function(){
 
             if (newAmount < 0) {
                 await WithdrawModel.remove({_id: history._id});
+                await FortunaHistoryModel.remove({_id: hItem._id});
                 return res.json({result: 'success'});
             }
 

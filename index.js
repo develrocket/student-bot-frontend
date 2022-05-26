@@ -25,6 +25,9 @@ const cronService = require('./cronService')();
 const TelegramBot = require('node-telegram-bot-api');
 const token = '5326855662:AAF1R4AaVYq4w5G3aiw4vix9XferGNFYaJ8';
 const bot = new TelegramBot(token, {polling: true});
+const FortunaHistoryModel = require('./models/fortunaHistory');
+const StudentModel = require('./models/student');
+const StudentResultModel = require('./models/studentResult');
 
 app.use(session({
     key: 'user_sid',
@@ -80,10 +83,118 @@ db.on('connected', () => {
 });
 
 
-bot.on('message', (msg) => {
+async function transferFortuan(senderId, senderName, receiverId, receiverName, value) {
+    let result = await FortunaHistoryModel.aggregate([
+        {
+            $match: { telegramId: senderId + '' }
+        },
+        {
+            $group:
+                {
+                    _id: "$telegramId",
+                    totalPoints: { $sum: "$fortuna_point" }
+                }
+        }
+    ]);
+
+    let totalPoints = result.length > 0 ? result[0].totalPoints : 0;
+
+    if (totalPoints < value) {
+        return 1; // Insufficient Fund
+    }
+
+    try {
+        let sItem = new FortunaHistoryModel({
+            telegramId: myTelegramId,
+            created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+            fortuna_point: -value,
+            state: 2,
+            receiverId: receiverId,
+            receiverName: receiverName
+        });
+
+        await sItem.save();
+
+        let rItem = new FortunaHistoryModel({
+            telegramId: myTelegramId,
+            created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+            fortuna_point: value,
+            state: 1,
+            senderId: senderId,
+            senderName: senderName
+        });
+
+        await rItem.save();
+
+        return 0;
+    } catch (error) {
+        return 2;
+    }
+}
+
+bot.on('message', async (msg) => {
     console.log('telegram-bot-new-msg:', msg);
+    if (msg.reply_to_message && Object.keys(msg.reply_to_message).length > 0) {
+        if (msg.text.indexOf('/tip') >= 0) {
+            let value = msg.text.split(' ')[1];
+            value = value * 1;
+            if (value >= 0.05 && value <= 5) {
+                let senderId = msg.from.id;
+                let senderName = msg.from.username;
+                let receiverId = msg.reply_to_message.from.id;
+                let receiverName = msg.reply_to_message.from.username;
+
+                let result = await transferFortuan(senderId, senderName, receiverId, receiverName, value);
+
+                if (result == 0) {
+                    bot.sendMessage(msg.chat.id, "🤑 @" + senderName + " tipped @" + receiverName + " with " + value + " Fortuna!");
+                } else if (result == 1) {
+                    bot.sendMessage(msg.chat.id, "🤑 You have insufficient Fortuna into your account. Get smarter! Get Fortuna by answering to quizzes.");
+                }
+            } else {
+                bot.sendMessage(msg.chat.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
+            }
+        }
+    }
 });
 
-bot.onText(/\/tip/, (msg) => {
+bot.onText(/\/tip/, async (msg) => {
     console.log('tele-tip-msg:', msg);
+    let receiverName = msg.text.split(' ')[1].trim();
+    let value = msg.text.split(' ')[2].trim();
+
+    if (receiverName.indexOf('@') >= 0) {
+        receiverName = receiverName.substr(1);
+    }
+
+    let receiverId = '';
+
+    let student = await StudentModel.find({username: receiverName}).lean().exec();
+    if (student.length > 0) {
+        student = student[0];
+        receiverId = student.telegramId;
+    } else {
+        student = await StudentResultModel.find({usernane: receiverName}).lean().exec();
+        if (student.length > 0) {
+            student = student[0];
+            receiverId = student.telegramId;
+        }
+    }
+
+    if (receiverId && value * 1 >= 0.05 && value * 1 <= 5) {
+        let senderId = msg.from.id;
+        let senderName = msg.from.username;
+
+        let result = await transferFortuan(senderId, senderName, receiverId, receiverName, value);
+
+        if (result == 0) {
+            bot.sendMessage(msg.chat.id, "🤑 @" + senderName + " tipped @" + receiverName + " with " + value + " Fortuna!");
+        } else if (result == 1) {
+            bot.sendMessage(msg.chat.id, "🤑 You have insufficient Fortuna into your account. Get smarter! Get Fortuna by answering to quizzes.");
+        }
+    } else if (!receiverId) {
+        bot.sendMessage(msg.chat.id, "🤑 Receiver is not user of Myafrica.link .");
+    } else {
+        bot.sendMessage(msg.chat.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
+    }
 });
