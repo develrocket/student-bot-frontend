@@ -23,7 +23,7 @@ const db = require('./config/db');
 const debug = require('debug')('myapp:app');
 const cronService = require('./cronService')();
 const TelegramBot = require('node-telegram-bot-api');
-const token = '5356303521:AAFu494SZVr82jDE8mA65z_-w8s_EJFw8Pw';
+const token = '5326855662:AAF1R4AaVYq4w5G3aiw4vix9XferGNFYaJ8';
 const bot = new TelegramBot(token, {polling: true});
 
 app.use(session({
