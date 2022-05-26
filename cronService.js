@@ -12,7 +12,7 @@ const serverUrl = 'https://vmi586933.contaboserver.net/';
 const fetchSession = async function() {
     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
     let lastId = sessions.length > 0 ? sessions[0].session_no : 8696;
-    console.log('fetch-session-lastId:', lastId);
+    // console.log('fetch-session-lastId:', lastId);
     try {
         let config = {
             method: 'get',
@@ -149,11 +149,11 @@ const fetchResult = async function(sessId) {
             }
         }
 
-        console.log('---->sessionId: ', sessId, ', ---->get Results:', rItems.length);
+        // console.log('---->sessionId: ', sessId, ', ---->get Results:', rItems.length);
 
 
     } catch (err) {
-        console.log(err);
+        // console.log(err);
     }
 }
 
@@ -169,11 +169,11 @@ module.exports = function(){
                 let lastIds = sessions.map(item => item.session_no);
 
                 for (let i = 0; i < lastIds.length; i ++) {
-                    console.log('======> fetch result session:', lastIds[i]);
+                    // console.log('======> fetch result session:', lastIds[i]);
                     await fetchResult(lastIds[i]);
                 }
 
-                console.log('-----> finished get result');
+                // console.log('-----> finished get result');
             }, 30000);
         },
     };
