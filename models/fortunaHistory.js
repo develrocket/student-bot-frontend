@@ -13,6 +13,7 @@ const FortunaHistorySchema = new Schema({
     senderName: String,     // sender name
     receiverId: String,     // receiver telegramId,
     receiverName: String,   // receiver name
+    walletAddr: String,
     total_point: Number
 });
 
