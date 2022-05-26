@@ -133,8 +133,13 @@ async function transferFortuan(senderId, senderName, receiverId, receiverName, v
 }
 
 bot.on('message', async (msg) => {
-    console.log('telegram-bot-new-msg:', msg);
+    console.log('!!!!!!!!!! detect new message !!!!!!!!!!!!!!!!!');
+    console.log(msg);
+    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     if (msg.reply_to_message && Object.keys(msg.reply_to_message).length > 0) {
+        console.log('==========================================================');
+        console.log('telegram-bot-new-msg:', msg);
+        console.log('==========================================================');
         if (msg.text.indexOf('/tip') >= 0) {
             let value = 0;
             let parts = msg.text.split(' ');
@@ -144,7 +149,6 @@ bot.on('message', async (msg) => {
                     break;
                 }
             }
-            console.log('======*****>', value)
             if (value >= 0.05 && value <= 5) {
                 let senderId = msg.from.id;
                 let senderName = msg.from.username;
@@ -154,11 +158,14 @@ bot.on('message', async (msg) => {
                 let result = await transferFortuan(senderId, senderName, receiverId, receiverName, value);
 
                 if (result == 0) {
+                    console.log('~~~~~~~~~~~~~~~~~~~~~ send *success* message to', msg.chat.id, msg.from.username);
                     bot.sendMessage(msg.chat.id, "🤑 @" + senderName + " tipped @" + receiverName + " with " + value + " Fortuna!");
                 } else if (result == 1) {
+                    console.log('~~~~~~~~~~~~~~~~~~~~~ send ^balance^ message to', msg.chat.id, msg.from.username);
                     bot.sendMessage(msg.chat.id, "🤑 You have insufficient Fortuna into your account. Get smarter! Get Fortuna by answering to quizzes.");
                 }
             } else {
+                console.log('~~~~~~~~~~~~~~~~~~~~~ send $value$ message to', msg.chat.id, msg.from.username);
                 bot.sendMessage(msg.chat.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
             }
         }
@@ -166,8 +173,11 @@ bot.on('message', async (msg) => {
 });
 
 bot.onText(/\/tip/, async (msg) => {
-    console.log('tele-tip-msg:', msg);
     if (msg.text.split(' ').length < 3) return;
+
+    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+    console.log('tele-tip-msg:', msg);
+    console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
 
     let parts = msg.text.split(' ');
     let receiverName = '';
@@ -183,8 +193,6 @@ bot.onText(/\/tip/, async (msg) => {
             }
         }
     }
-
-    console.log('----->', receiverName, value);
 
     if (receiverName.indexOf('@') >= 0) {
         receiverName = receiverName.substr(1);
@@ -211,13 +219,17 @@ bot.onText(/\/tip/, async (msg) => {
         let result = await transferFortuan(senderId, senderName, receiverId, receiverName, value);
 
         if (result == 0) {
+            console.log('~~~~~~~~~~~~~~~~~~~~~ send *success* message to', msg.chat.id, msg.from.username);
             bot.sendMessage(msg.chat.id, "🤑 @" + senderName + " tipped @" + receiverName + " with " + value + " Fortuna!");
         } else if (result == 1) {
+            console.log('~~~~~~~~~~~~~~~~~~~~~ send ^balance^ message to', msg.chat.id, msg.from.username);
             bot.sendMessage(msg.chat.id, "🤑 You have insufficient Fortuna into your account. Get smarter! Get Fortuna by answering to quizzes.");
         }
     } else if (!receiverId) {
+        console.log('~~~~~~~~~~~~~~~~~~~~~ send @user@ message to', msg.chat.id, msg.from.username);
         bot.sendMessage(msg.chat.id, "🤑 Receiver is not user of Myafrica.link .");
     } else {
+        console.log('~~~~~~~~~~~~~~~~~~~~~ send $value$ message to', msg.chat.id, msg.from.username);
         bot.sendMessage(msg.chat.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
     }
 });
