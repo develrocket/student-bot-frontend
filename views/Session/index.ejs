@@ -127,13 +127,13 @@
                                     <td><%= player.telegramId %></td>
                                     <td><%= player.session_points %></td>
                                     <td style="display: flex;">
-                                      <% if (index === 0) { %>
+                                      <% if (player.session_rank == 1) { %>
                                           <img src="public/assets/images/gold-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>
                                       <% } %>
-                                      <% if (index === 1) { %>
+                                      <% if (player.session_rank === 2) { %>
                                           <img src="public/assets/images/silver-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>
                                       <% } %>
-                                      <% if (index === 2) { %>
+                                      <% if (player.session_rank === 3) { %>
                                           <img src="public/assets/images/third-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>
                                       <% } %>
                                       <%= player.session_rank %>
