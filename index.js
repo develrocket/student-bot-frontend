@@ -144,7 +144,7 @@ bot.on('message', async (msg) => {
                     break;
                 }
             }
-            console.log('======*****>', value);
+            console.log('======*****>', value)
             if (value >= 0.05 && value <= 5) {
                 let senderId = msg.from.id;
                 let senderName = msg.from.username;
@@ -154,12 +154,12 @@ bot.on('message', async (msg) => {
                 let result = await transferFortuan(senderId, senderName, receiverId, receiverName, value);
 
                 if (result == 0) {
-                    bot.sendMessage(msg.from.id, "🤑 @" + senderName + " tipped @" + receiverName + " with " + value + " Fortuna!");
+                    bot.sendMessage(msg.chat.id, "🤑 @" + senderName + " tipped @" + receiverName + " with " + value + " Fortuna!");
                 } else if (result == 1) {
-                    bot.sendMessage(msg.from.id, "🤑 You have insufficient Fortuna into your account. Get smarter! Get Fortuna by answering to quizzes.");
+                    bot.sendMessage(msg.chat.id, "🤑 You have insufficient Fortuna into your account. Get smarter! Get Fortuna by answering to quizzes.");
                 }
             } else {
-                bot.sendMessage(msg.from.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
+                bot.sendMessage(msg.chat.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
             }
         }
     }
@@ -211,13 +211,13 @@ bot.onText(/\/tip/, async (msg) => {
         let result = await transferFortuan(senderId, senderName, receiverId, receiverName, value);
 
         if (result == 0) {
-            bot.sendMessage(msg.from.id, "🤑 @" + senderName + " tipped @" + receiverName + " with " + value + " Fortuna!");
+            bot.sendMessage(msg.chat.id, "🤑 @" + senderName + " tipped @" + receiverName + " with " + value + " Fortuna!");
         } else if (result == 1) {
-            bot.sendMessage(msg.from.id, "🤑 You have insufficient Fortuna into your account. Get smarter! Get Fortuna by answering to quizzes.");
+            bot.sendMessage(msg.chat.id, "🤑 You have insufficient Fortuna into your account. Get smarter! Get Fortuna by answering to quizzes.");
         }
     } else if (!receiverId) {
-        bot.sendMessage(msg.from.id, "🤑 Receiver is not user of Myafrica.link .");
+        bot.sendMessage(msg.chat.id, "🤑 Receiver is not user of Myafrica.link .");
     } else {
-        bot.sendMessage(msg.from.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
+        bot.sendMessage(msg.chat.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
     }
 });
