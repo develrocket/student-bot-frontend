@@ -136,8 +136,15 @@ bot.on('message', async (msg) => {
     console.log('telegram-bot-new-msg:', msg);
     if (msg.reply_to_message && Object.keys(msg.reply_to_message).length > 0) {
         if (msg.text.indexOf('/tip') >= 0) {
-            let value = msg.text.split(' ')[1];
-            value = value * 1;
+            let value = 0;
+            let parts = msg.text.split(' ');
+            for (let i = 1; i < parts.length; i++) {
+                if (parts[i].trim())  {
+                    value = parts[i].trim();
+                    break;
+                }
+            }
+            console.log('======*****>', value);
             if (value >= 0.05 && value <= 5) {
                 let senderId = msg.from.id;
                 let senderName = msg.from.username;
@@ -161,8 +168,23 @@ bot.on('message', async (msg) => {
 bot.onText(/\/tip/, async (msg) => {
     console.log('tele-tip-msg:', msg);
     if (msg.text.split(' ').length < 3) return;
-    let receiverName = msg.text.split(' ')[1].trim();
-    let value = msg.text.split(' ')[2].trim();
+
+    let parts = msg.text.split(' ');
+    let receiverName = '';
+    let value = '';
+    for (let i = 1; i < parts.length; i ++) {
+        if (parts[i].trim())  {
+            if (!receiverName) {
+                receiverName = parts[i].trim();
+            } else {
+                if (!value) {
+                    value = parts[i].trim();
+                }
+            }
+        }
+    }
+
+    console.log('----->', receiverName, value);
 
     if (receiverName.indexOf('@') >= 0) {
         receiverName = receiverName.substr(1);
