@@ -62,6 +62,7 @@
                         <th>Session Name</th>
                         <th>Points</th>
                         <th>Rank</th>
+                        <th></th>
                     </tr>
                     </thead>
 
@@ -72,6 +73,11 @@
                             <td><%= ritem.session ? ritem.session.session_name : '' %></td>
                             <td><%= ritem.session_points %></td>
                             <td><%= ritem.session_rank %></td>
+                            <td>
+                                <button type="button" class="btn btn-outline-primary waves-effect waves-light btn-sm" data-sessNo="<%= ritem.session_no %>" onclick="viewRank(this)">
+                                    <i class="fas fa-eye"></i> View
+                                </button>
+                            </td>
                         </tr>
                     <% }); %>
                     </tbody>
@@ -112,8 +118,80 @@
 <!-- apexcharts -->
 <script src="public/assets/libs/apexcharts/apexcharts.min.js"></script>
 
+<div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title mt-0" id="myModalLabel">Session Players</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Username</th>
+                            <th>Telegram ID</th>
+                            <th>Points</th>
+                            <th>Rank</th>
+                            <th>Title</th>
+                        </tr>
+                        </thead>
+                        <tbody id="rankTbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <%- contentFor('BottomJs') %>
 <script type="text/javascript">
+    function viewRank(elem) {
+        var sessNo = $(elem).data('sessno');
+        $.ajax({
+            type: 'GET',
+            url: "/api/get-session-rank?sessNo=" + sessNo,
+            dataType: "json",
+            success: function(res) {
+                console.log(res);
+                let html = '';
+                for (let i = 0; i < res.result.length; i ++) {
+                    let item = res.result[i];
+                    html += '<tr>';
+                    html += '<th scope="row">' + (i + 1) +'</th>';
+                    html += '<td>' + item.username + '</td>';
+                    html += '<td>' + item.telegramId + '</td>';
+                    html += '<td>' + item.session_points + '</td>'
+                    html += '<td style="display: flex;">';
+
+                    if (item.session_rank == 1) {
+                        html += '<img src="public/assets/images/gold-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>';
+                    } else if (item.session_rank == 2) {
+                        html += '<img src="public/assets/images/silver-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>';
+                    } else if (item.session_rank == 3) {
+                        html += '<img src="public/assets/images/third-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>';
+                    }
+
+                    html += item.session_rank + '</td>';
+                    html += '<td>' + item.title + '</td>'
+                    html += '</tr>';
+                    console.log(item);
+                }
+
+                $('#rankTbody').html(html);
+
+                $('#myModal').modal('show');
+            }
+        });
+    }
+
     $(document).ready(function() {
         $('#datatable').DataTable();
 

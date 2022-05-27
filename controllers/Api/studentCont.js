@@ -55,6 +55,16 @@ module.exports = function(){
             return res.json({result: "success"});
         },
 
+        getSessionRank: async function(req, res) {
+            let sessNo = req.query.sessNo;
+            console.log('sessNo:', req.query);
+            let results = await StudentResultModel.find({session_no: sessNo}).lean().exec();
+
+            results.sort((a, b) => a.session_rank - b.session_rank);
+
+            return res.json({result: results});
+        },
+
         setFortunaHistory: async function(req, res) {
             let results = await StudentResultModel.find({}).sort({session_no: 1}).lean().exec();
             let sessions = await SessionModel.find({}).lean().exec();
