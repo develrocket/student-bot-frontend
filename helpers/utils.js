@@ -1,6 +1,7 @@
 const TitleModel = require('../models/studentTitle');
 const SessionModel = require('../models/sessionResult');
 const ResultModel = require('../models/studentResult');
+const StudentModel = require('../models/student');
 
 module.exports = {
     randomString(length) {
@@ -109,6 +110,9 @@ module.exports = {
             }
         }
 
-        return {joinDate, result, sessionCount, rank, teleUser, rResult};
+        let user = await StudentModel.find({telegramId: telegramId}).lean().exec();
+        let motto = user.length > 0 ? user[0].motto : '';
+
+        return {joinDate, result, sessionCount, rank, teleUser, rResult, motto};
     }
 };

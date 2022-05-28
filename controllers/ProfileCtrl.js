@@ -13,16 +13,14 @@ module.exports = function(){
         index: async function(req, res) {
             let profileData = await Utils.getProfileData(res.locals.user.telegramId);
             res.locals = {...res.locals, title: 'Profile', moment };
-            let user = await StudentModel.find({_id: res.locals.user._id}).lean().exec();
-            let motto = user[0].motto;
-            res.render('Profile/index', {...profileData, motto});
+            res.render('Profile/index', profileData);
         },
 
         updateMotto: async function(req, res) {
             await StudentModel.update({
-                _id: res.locals.user._id
+                telegramId: res.locals.user.telegramId
             }, {
-                $set: {motto: req.body.motto}
+                $set: {motto: req.body.value}
             });
             res.redirect('/');
         }
