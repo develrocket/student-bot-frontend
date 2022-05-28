@@ -101,7 +101,11 @@
                                                 <% } %>
                                                 <%= index + 1 %>
                                             </th>
-                                            <td><%= result.username %></td>
+                                            <td>
+                                                <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= result.telegramId %>">
+                                                    <%= result.username %>
+                                                </a>
+                                            </td>
                                             <td><%= result.telegramId %></td>
                                             <td><%= result.sum_point %></td>
                                             <td><%= result.title %></td>

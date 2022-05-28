@@ -1,0 +1,81 @@
+.profile-right-bar {
+    background-color: #fff;
+    -webkit-box-shadow: 0 0 24px 0 rgb(0 0 0 / 6%), 0 1px 0 0 rgb(0 0 0 / 2%);
+    box-shadow: 0 0 24px 0 rgb(0 0 0 / 6%), 0 1px 0 0 rgb(0 0 0 / 2%);
+    display: block;
+    position: fixed;
+    -webkit-transition: all .2s ease-out;
+    transition: all .2s ease-out;
+    width: 420px;
+    z-index: 9999;
+    float: right!important;
+    right: -420px;
+    top: 0;
+    bottom: 0;
+}
+
+@media only screen and (max-width: 420px) {
+    .profile-right-bar {
+        width: 100vw;
+        right: -calc(100vw + 10px);
+    }
+}
+
+
+.profile-right-bar-enabled .profile-right-bar {
+    right: 0;
+}
+
+.profile-rightbar-overlay {
+    background-color: rgba(52,58,64,.55);
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: none;
+    z-index: 9998;
+    -webkit-transition: all .2s ease-out;
+    transition: all .2s ease-out;
+}
+
+.profile-right-bar-enabled .profile-rightbar-overlay {
+    display: block;
+}
+
+.profile-right-bar .profile-right-bar-toggle {
+    background-color: #444c54;
+    height: 24px;
+    width: 24px;
+    line-height: 24px;
+    color: #f5f6f8;
+    text-align: center;
+    border-radius: 50%;
+}
+
+#profileSideTable_wrapper .row:first-child div {
+    width: 100%;
+    text-align: center;
+}
+
+#profileSideTable_wrapper .row:last-child div {
+    width: 100%;
+    text-align: center;
+}
+
+div#profileSideTable_wrapper div.dataTables_paginate ul.pagination {
+    justify-content: center;
+}
+
+.loading-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100000;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgb(255 255 255 / 50%);
+}

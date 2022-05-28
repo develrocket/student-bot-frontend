@@ -1,5 +1,6 @@
 const TitleModel = require('../models/studentTitle');
-const StudentResultModel = require('../models/studentResult');
+const SessionModel = require('../models/sessionResult');
+const ResultModel = require('../models/studentResult');
 
 module.exports = {
     randomString(length) {
@@ -28,7 +29,7 @@ module.exports = {
     },
 
     async getPupilsInfo() {
-        const res = await StudentResultModel.find().sort({session_no: - 1});
+        const res = await ResultModel.find().sort({session_no: - 1});
         let pupilsInfo = [];
 
         for (const stuRes of res) {
@@ -39,5 +40,57 @@ module.exports = {
         }
 
         return pupilsInfo;
+    },
+
+    async getProfileData(telegramId) {
+        let result = await ResultModel.find({telegramId: telegramId * 1}).populate('session').sort({session_no: -1}).lean().exec();
+        let joinDate = result.length > 0 ? result[result.length - 1].session.session_start : '';
+        let sessionCount = await SessionModel.countDocuments({});
+        let teleUser = result.length > 0 ? result[0] : {};
+
+        let students = await ResultModel.aggregate([
+            {
+                $group:
+                    {
+                        _id: "$telegramId",
+                        maxPoint: { $max: "$sum_point" }
+                    }
+            }
+        ]);
+
+        let results = [];
+        for (let i = 0; i < students.length; i ++) {
+            let item = students[i];
+            let rlt = await ResultModel.find({telegramId: item._id}).sort({session_no: -1}).lean().exec();
+            rlt = rlt[0];
+            let ritem = {
+                username: rlt.username,
+                telegramId: rlt.telegramId,
+                sum_point: rlt.sum_point,
+                title: rlt.title,
+            };
+            if (results.length === 0) {
+                results.push(ritem);
+                continue;
+            }
+            let insert = false;
+            for (let j = 0; j < results.length; j ++) {
+                if (results[j].sum_point < ritem.sum_point) {
+                    results.splice(j, 0, ritem);
+                    insert = true;
+                    break;
+                }
+            }
+            if (!insert) {
+                results.push(ritem);
+            }
+        }
+
+        let rank = 0;
+        for (let i = 0; i < results.length; i++) {
+            if (telegramId + '' === results[i].telegramId + '') rank = i + 1;
+        }
+
+        return {joinDate, result, sessionCount, rank, teleUser};
     }
 };

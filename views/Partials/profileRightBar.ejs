@@ -1,0 +1,58 @@
+<!-- Right Sidebar -->
+<div class="profile-right-bar">
+    <div data-simplebar class="h-100">
+
+        <div class="rightbar-title d-flex align-items-center px-3 py-4">
+
+            <h5 class="m-0 me-2">Profile</h5>
+
+            <a href="javascript:void(0);" class="profile-right-bar-toggle ms-auto">
+                <i class="mdi mdi-close noti-icon"></i>
+            </a>
+        </div>
+
+
+        <!-- Settings -->
+        <div style="padding-left: 1em; padding-right: 1em;">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Simple card -->
+                    <div class="card">
+                        <img class="card-img-top img-fluid" id="profile-side-title-img" src="public/assets/images/title/<%= user.title %>.jpg" alt="<%= user.username %>">
+                        <div class="card-body">
+                            <p class="card-text" id="profile-side-username"></p>
+                            <p class="card-text" id="profile-side-telegramId"></p>
+                            <p class="card-text hidden" id="profile-side-joindate"></p>
+                            <p class="card-text hidden" id="profile-side-overall"></p>
+                            <p class="card-text" id="profile-side-rank"></p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title mt-0">Play History</h4>
+                        </div>
+                        <div class="card-body" id="profile-side-history">
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title mb-4">Attendance Chart</h4>
+
+                            <div id="profile_side_pie_chart" class="apex-charts" dir="ltr"></div>
+
+                            <p class="text-center" style="margin-top: 10px; margin-bottom: 0;" id="profile-side-attend"></p>
+                            <p class="text-center" id="profile-side-unattend"></p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div> <!-- end slimscroll-menu-->
+</div>
+<!-- /Right-bar -->
+
+<!-- Right bar overlay-->
+<div class="profile-rightbar-overlay"></div>

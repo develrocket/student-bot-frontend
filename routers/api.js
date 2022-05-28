@@ -25,4 +25,5 @@ module.exports = function (app) {
     app.get('/api/reset-fortuna-points', studentCont.resetFortunaPoint);
     app.get('/api/set-fortuna-history', studentCont.setFortunaHistory);
     app.get('/api/get-session-rank', studentCont.getSessionRank);
+    app.get('/api/get-profile', studentCont.getProfile);
 };
