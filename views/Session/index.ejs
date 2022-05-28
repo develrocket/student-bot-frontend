@@ -123,7 +123,11 @@
                             <% session.players.forEach(function(player, index) { %>
                                 <tr>
                                     <th scope="row"><%= index + 1 %></th>
-                                    <td><%= player.username %></td>
+                                    <td>
+                                        <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= player.telegramId %>">
+                                            <%= player.username %>
+                                        </a>
+                                    </td>
                                     <td><%= player.telegramId %></td>
                                     <td><%= player.session_points %></td>
                                     <td style="display: flex;">

@@ -5,6 +5,7 @@ const StudentResultModel = require('../../models/studentResult');
 const SessionModel = require('../../models/sessionResult');
 const FortunaHistoryModel = require('../../models/fortunaHistory');
 const axios = require('axios').default;
+const Utils = require('../../helpers/utils');
 
 const fetchSession = async function() {
     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
@@ -63,6 +64,13 @@ module.exports = function(){
             results.sort((a, b) => a.session_rank - b.session_rank);
 
             return res.json({result: results});
+        },
+
+        getProfile: async function(req, res) {
+            let teleId = req.query.id;
+            let profileData = await Utils.getProfileData(teleId);
+
+            res.json(profileData);
         },
 
         setFortunaHistory: async function(req, res) {
