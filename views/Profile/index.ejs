@@ -94,7 +94,7 @@
 </div>
 
 <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title mt-0" id="myModalLabel">Session Players</h5>
@@ -102,21 +102,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="table-responsive">
-                    <table class="table mb-0">
-                        <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Username</th>
-                            <th>Telegram ID</th>
-                            <th>Points</th>
-                            <th>Rank</th>
-                            <th>Title</th>
-                        </tr>
-                        </thead>
-                        <tbody id="rankTbody">
-                        </tbody>
-                    </table>
+                <div class="table-responsive" id="profilePlayer">
                 </div>
             </div>
             <div class="modal-footer">
@@ -139,7 +125,7 @@
             dataType: "json",
             success: function(res) {
                 console.log(res);
-                let html = '';
+                let html = '<table class="table mb-0" id="profilePlayerTable"><thead><tr><th>No</th><th>Username</th><th>Telegram ID</th><th>Points</th><th>Rank</th><th>Title</th></tr></thead><tbody>';
                 for (let i = 0; i < res.result.length; i ++) {
                     let item = res.result[i];
                     html += '<tr>';
@@ -160,10 +146,11 @@
                     html += item.session_rank + '</td>';
                     html += '<td>' + item.title + '</td>'
                     html += '</tr>';
-                    console.log(item);
                 }
+                html += '</tbody></table>'
 
-                $('#rankTbody').html(html);
+                $('#profilePlayer').html(html);
+                $('#profilePlayerTable').DataTable();
 
                 $('#myModal').modal('show');
 
