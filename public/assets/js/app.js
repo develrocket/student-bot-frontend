@@ -26,10 +26,12 @@ function initProfileRightbar() {
                     let rank = res.rank;
                     let sessionCount = res.sessionCount;
                     let rResult = res.rResult;
+                    let motto = res.motto;
 
                     $('#profile-side-title-img').attr('src', 'public/assets/images/title/' +  (user.title.toLowerCase()) + '.jpg');
                     $('#profile-side-title-img').attr('alt', user.username);
                     $('#profile-side-username').html(user.username);
+                    $('#profile-side-motto').html(motto);
                     $('#profile-side-telegramId').html('Telegram ID: ' + user.telegramId);
 
                     if (joinDate) {

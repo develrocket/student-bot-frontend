@@ -1,4 +1,5 @@
 <%- contentFor('HeaderCss') %>
+<link href="public/assets/libs/bootstrap-editable/css/bootstrap-editable.css" rel="stylesheet" type="text/css" />
 
 <%- contentFor('breadcrumb') %>
 
@@ -71,19 +72,14 @@
     <div class="col-md-6 col-xl-9">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title mt-0">Motto</h4>
-
-                <form action="/profile/update-motto" method="POST">
-                    <div class="mb-3 row">
-                        <label for="example-text-input" class="col-md-2 col-form-label">My Motto</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="text" value="<%= motto %>" name="motto" maxlength="50">
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn btn-primary waves-effect waves-light btn-block">Save</button>
-                        </div>
+                <div class="mb-3 row">
+                    <label for="example-text-input" class="col-md-2 col-form-label">My Motto</label>
+                    <div class="col-md-10">
+                        <td>
+                            <a href="#" id="inline-motto" data-type="text" data-pk="1" data-title="Enter motto" style="line-height: 37px;"><%= motto %></a>
+                        </td>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
 
@@ -155,7 +151,7 @@
 </div>
 
 <%- contentFor('FooterJs') %>
-
+<script src="public/assets/libs/bootstrap-editable/js/index.js"></script>
 
 <%- contentFor('BottomJs') %>
 <script type="text/javascript">
@@ -201,8 +197,26 @@
         });
     }
 
+
+    $.fn.editableform.buttons =
+        '<button type="submit" class="btn btn-success editable-submit btn-sm waves-effect waves-light"><i class="mdi mdi-check"></i></button>' +
+        '<button type="button" class="btn btn-danger editable-cancel btn-sm waves-effect waves-light"><i class="mdi mdi-close"></i></button>';
+
     $(document).ready(function() {
         $('#datatable').DataTable();
+
+        $('#inline-motto').editable({
+            type: 'text',
+            pk: 1,
+            name: 'motto',
+            url: '/profile/update-motto',
+            title: 'Enter motto',
+            mode: 'inline',
+            inputclass: 'form-control-sm',
+            validate: function (value) {
+                if ($.trim(value).length > 50) return 'Max length is 50';
+            },
+        });
 
         let allCount = '<%= sessionCount %>' * 1;
         let attendCount = '<%= result.length %>' * 1;
