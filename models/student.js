@@ -7,7 +7,8 @@ const TitleSchema = new Schema({
     telegramId: String,
     firstName: String,
     lastName: String,
-    username: String
+    username: String,
+    motto: String
 });
 
 // create the model
