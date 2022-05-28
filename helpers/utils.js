@@ -91,6 +91,24 @@ module.exports = {
             if (telegramId + '' === results[i].telegramId + '') rank = i + 1;
         }
 
-        return {joinDate, result, sessionCount, rank, teleUser};
+        let rankResult = await ResultModel.aggregate([
+            {
+                $match: { telegramId: telegramId + '' }
+            },
+            {
+                $group: { _id: "$session_rank", count: { $sum: 1 } }
+            }
+        ]);
+
+        let rResult = [0, 0, 0];
+        for (let i = 0; i < 3; i ++) {
+            for (let j = 0; j < rankResult.length; j ++) {
+                if (rankResult[j]._id + '' == i + 1 + '') {
+                    rResult[i] = rankResult[j].count;
+                }
+            }
+        }
+
+        return {joinDate, result, sessionCount, rank, teleUser, rResult};
     }
 };

@@ -1,4 +1,6 @@
 <%- contentFor('HeaderCss') %>
+<link href="public/assets/libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet">
+<link href="public/assets/libs/@chenfengyuan/datepicker/datepicker.min.css" rel="stylesheet" >
 
 <%- contentFor('breadcrumb') %>
 
@@ -78,8 +80,8 @@
 
                 <form id="searchForm">
                     <div class="mb-3 row" style="background: #dcdfff; padding: 10px;">
-                        <label class="col-md-4 col-form-label text-end">Total Point: <b><%= availableAmount.toFixed(1) %></b></label>
-                        <label class="col-md-2 col-form-label text-end">Filter By</label>
+                        <label class="col-md-2 col-form-label text-end">Total Point: <b><%= availableAmount.toFixed(1) %></b></label>
+                        <label class="col-md-1 col-form-label text-end">Filter By</label>
                         <div class="col-md-2">
                             <select class="form-control" name="filter" onchange="submitSearchForm()">
                                 <option value="-1" <%= filter == -1 ? 'selected' : '' %>>All</option>
@@ -89,7 +91,14 @@
                                 <option value="3" <%= filter == 3 ? 'selected' : '' %>>Withdraw to FRT Token</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
+                        <label class="col-md-1 col-form-label text-end">Delivered On</label>
+                        <div class="col-md-3">
+                            <div class="input-daterange input-group" id="datepicker6" data-date-format="yyyy-mm-dd" data-date-autoclose="true" data-provide="datepicker" data-date-container='#datepicker6'>
+                                <input type="text" class="form-control" name="start" placeholder="Start Date" value="<%= start %>"/>
+                                <input type="text" class="form-control" name="end" placeholder="End Date" value="<%= end %>"/>
+                            </div>
+                        </div>
+                        <div class="col-md-1">
                             <button type="submit" class="btn btn-primary waves-effect waves-light">Search</button>
                         </div>
                     </div>
@@ -145,6 +154,9 @@
 
 <%- contentFor('FooterJs') %>
 <script src="public/assets/libs/metamask-onboarding.bundle.js"></script>
+<script src="public/assets/libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+<script src="public/assets/libs/@chenfengyuan/datepicker/datepicker.min.js"></script>
+
 
 <%- contentFor('BottomJs') %>
 <script type="text/javascript">

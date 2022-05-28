@@ -42,6 +42,30 @@
             </div>
         </div>
 
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mt-0 mb-2">Podium</h4>
+                <p><img src="public/assets/images/gold-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> <%= rResult[0] %> time<%= rResult[0] > 1 ? 's' : '' %></p>
+                <p><img src="public/assets/images/silver-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> <%= rResult[1] %> time<%= rResult[1] > 1 ? 's' : '' %></p>
+                <p><img src="public/assets/images/third-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> <%= rResult[2] %> time<%= rResult[2] > 1 ? 's' : '' %></p>
+            </div>
+        </div>
+
+        <% if (rResult[0] >= 50) { %>
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title mt-0 mb-2">Trophies</h4>
+                    <% if (rResult[0] >= 200) {%>
+                        <img src="public/assets/images/trophies/legend.jpg" style="width: 100%"/>
+                    <% } else if (rResult[0] < 200 && rResult[0] >= 100) {%>
+                        <img src="public/assets/images/trophies/lion.jpg" style="width: 100%"/>
+                    <% } else if (rResult[0] < 100 && rResult[0] >= 50) {%>
+                        <img src="public/assets/images/trophies/love.jpg" style="width: 100%"/>
+                    <% } %>
+                </div>
+            </div>
+        <% } %>
+
     </div>
 
     <div class="col-md-6 col-xl-9">
