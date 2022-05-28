@@ -12,6 +12,7 @@ module.exports = function (app) {
         sess = req.session;
         if (config.isDev) {
             res.locals = {...res.locals, user: {
+                    _id: "62811745edc9450e0b407e96",
                     username: 'developer',
                     title: 'student',
                     telegramId: 865996339
@@ -32,6 +33,7 @@ module.exports = function (app) {
     app.get('/rank', isUserAllowed, RankCtrl.index);
     app.get('/wallet', isUserAllowed, WalletCtrl.index);
     app.post('/withdraw/frt', urlencodeParser, isUserAllowed, WalletCtrl.withdraw);
+    app.post('/profile/update-motto', urlencodeParser, isUserAllowed, ProfileCtrl.updateMotto);
 
 
 }

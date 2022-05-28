@@ -135,6 +135,8 @@ module.exports = function(){
                         }
                 }
             ]);
+            const start = req.query.start || '';
+            const end = req.query.end || '';
 
             console.log('wallet-result:', result);
 
@@ -148,6 +150,11 @@ module.exports = function(){
             let searchQuery = {telegramId: myTelegramId, fortuna_point: {$ne: 0}};
             if (filter >= 0) {
                 searchQuery = {...searchQuery, state: filter};
+            }
+
+            if (start) {
+                let newEnd = moment(end).add(1, 'days').format('YYYY-MM-DD');
+                searchQuery = {...searchQuery, created_at: {$gte: start, $lt: newEnd}}
             }
 
             const [ histories, itemCount ] = await Promise.all([
@@ -167,6 +174,8 @@ module.exports = function(){
                 itemCount,
                 filter,
                 types,
+                start,
+                end,
                 pages: paginate.getArrayPages(req)(3, pageCount, req.query.page)
             });
         },

@@ -25,6 +25,7 @@ function initProfileRightbar() {
                     let joinDate = res.joinDate;
                     let rank = res.rank;
                     let sessionCount = res.sessionCount;
+                    let rResult = res.rResult;
 
                     $('#profile-side-title-img').attr('src', 'public/assets/images/title/' +  (user.title.toLowerCase()) + '.jpg');
                     $('#profile-side-title-img').attr('alt', user.username);
@@ -43,6 +44,20 @@ function initProfileRightbar() {
 
                     $('#profile-side-rank').html('Overall Rank: ' + rank);
 
+                    $('#profile-right-1st-rank').html('<img src="public/assets/images/gold-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> ' + rResult[0]  + ' time' + (rResult[0] > 1 ? 's' : ''))
+                    $('#profile-right-2nd-rank').html('<img src="public/assets/images/silver-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> ' + rResult[1]  + ' time' + (rResult[1] > 1 ? 's' : ''))
+                    $('#profile-right-3rd-rank').html('<img src="public/assets/images/third-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> ' + rResult[2]  + ' time' + (rResult[2] > 1 ? 's' : ''))
+
+                    if (rResult[0] >= 50) {
+                        $('#profile-right-trophy').removeClass('hidden');
+                        if (rResult[0] >= 200) {
+                            $('#profile-right-trophy-img').html('<img src="public/assets/images/trophies/legend.jpg" style="width: 100%"/>');
+                        } else if (rResult[0] < 200 && rResult[0] >= 100) {
+                            $('#profile-right-trophy-img').html('<img src="public/assets/images/trophies/lion.jpg" style="width: 100%"/>');
+                        } else if (rResult[0] < 100 && rResult[0] >= 50) {
+                            $('#profile-right-trophy-img').html('<img src="public/assets/images/trophies/love.jpg" style="width: 100%"/>');
+                        }
+                    }
 
                     let tbody = '<table id="profileSideTable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">'
                     tbody +='<thead><tr><th>Session No</th><th>Session Name</th><th>Points</th><th>Rank</th></tr></thead><tbody>';

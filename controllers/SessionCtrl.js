@@ -44,8 +44,8 @@ module.exports = function(){
             // await fetchSession();
 
             const searchKey = req.query.search || '';
-            const start = req.query.start || '';
-            const end = req.query.end || '';
+            let start = req.query.start || '';
+            let end = req.query.end || '';
             const sort = req.query.sort || 0;
 
             let searchQuery = {};
@@ -59,7 +59,8 @@ module.exports = function(){
             }
 
             if (start) {
-                searchQuery = {...searchQuery, session_start: {$gte: start + ' 00:00', $lte: end + ' 23:59'}}
+                let newEnd = moment(end).add(1, 'days').format('YYYY-MM-DD');
+                searchQuery = {...searchQuery, session_start: {$gte: start, $lt: newEnd}}
             }
 
             let sortOption = {session_no: -1};
