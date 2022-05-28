@@ -128,9 +128,9 @@ module.exports = function(){
                 let fResults = [];
 
                 for (let i = 0; i < 3; i ++) {
-                    let end = moment().format('YYYY-MM-DD') + ' 23:59:59';
-                    let start = moment().subtract(subdays[i],'d').format('YYYY-MM-DD') + ' 00:00:00';
-                    let sessions = await SessionModel.find({session_start: {$gte: start, $lte: end}}).sort({session_no: 1}).lean().exec();
+                    // let end = moment().add('days', 5).format('YYYY-MM-DD') + ' 23:59:59';
+                    let start = moment().subtract(subdays[i],'d').format('YYYY-MM-DD');
+                    let sessions = await SessionModel.find({session_start: {$gte: start}}).sort({session_no: 1}).lean().exec();
                     let sessionNos = sessions.map(item => item.session_no);
 
                     let results = await ResultModel.aggregate([

@@ -99,7 +99,7 @@
 
 <% sessions.forEach(function(session) { %>
     <div id="myModal<%= session.session_no %>" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title mt-0" id="myModalLabel">Session Players</h5>
@@ -108,7 +108,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
-                        <table class="table mb-0">
+                        <table class="table mb-0" id="sessionRankTable<%= session.session_no %>">
                             <thead>
                             <tr>
                                 <th>No</th>
@@ -163,7 +163,17 @@
 
 <%- contentFor('BottomJs') %>
 <script>
+    var sessionNos = [];
+    <% sessions.forEach(function(session) { %>
+        sessionNos.push('<%= session.session_no %>')
+    <% }); %>
     function submitSearchForm() {
         $('#searchForm').submit();
     }
+
+    $(document).ready(function() {
+        for (let i = 0; i < sessionNos.length; i ++) {
+            $('#sessionRankTable' + sessionNos[i]).DataTable();
+        }
+    })
 </script>
