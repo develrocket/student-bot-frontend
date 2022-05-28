@@ -144,7 +144,7 @@
                     let item = res.result[i];
                     html += '<tr>';
                     html += '<th scope="row">' + (i + 1) +'</th>';
-                    html += '<td>' + item.username + '</td>';
+                    html += '<td><a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="' + item.telegramId + '">' + item.username + '</a></td>';
                     html += '<td>' + item.telegramId + '</td>';
                     html += '<td>' + item.session_points + '</td>'
                     html += '<td style="display: flex;">';
@@ -166,6 +166,8 @@
                 $('#rankTbody').html(html);
 
                 $('#myModal').modal('show');
+
+                initProfileRightbar();
             }
         });
     }

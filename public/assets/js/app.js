@@ -8,6 +8,123 @@ File: Main Js File
 */
 
 
+function initProfileRightbar() {
+    // right side-bar toggle
+    $('.profile-right-bar-toggle').on('click', function (e) {
+        var teleId = $(this).data('id');
+        if (!$('body').hasClass('profile-right-bar-enabled') && teleId) {
+            $('#loadingContainer').removeClass('hidden');
+            $.ajax({
+                type: 'GET',
+                url: "/api/get-profile?id=" + teleId,
+                dataType: "json",
+                success: function(res) {
+
+                    let user = res.teleUser;
+                    let result = res.result;
+                    let joinDate = res.joinDate;
+                    let rank = res.rank;
+                    let sessionCount = res.sessionCount;
+
+                    $('#profile-side-title-img').attr('src', 'public/assets/images/title/' +  (user.title.toLowerCase()) + '.jpg');
+                    $('#profile-side-title-img').attr('alt', user.username);
+                    $('#profile-side-username').html(user.username);
+                    $('#profile-side-telegramId').html('Telegram ID: ' + user.telegramId);
+
+                    if (joinDate) {
+                        $('#profile-side-joindate').removeClass('hidden');
+                        $('#profile-side-joindate').html('Joined At: ' + joinDate);
+                    }
+
+                    if (result.length > 0) {
+                        $('#profile-side-overall').removeClass('hidden');
+                        $('#profile-side-overall').html('Overall Points: ' + result[0].sum_point);
+                    }
+
+                    $('#profile-side-rank').html('Overall Rank: ' + rank);
+
+
+                    let tbody = '<table id="profileSideTable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">'
+                    tbody +='<thead><tr><th>Session No</th><th>Session Name</th><th>Points</th><th>Rank</th></tr></thead><tbody>';
+                    for (let i = 0; i < result.length; i ++) {
+                        let ritem = result[i];
+                        tbody += '<tr>';
+                        tbody += '<th scope="row">' + ritem.session_no + '</th>'
+                        tbody += '<td>' + (ritem.session ? ritem.session.session_name : '') + '</td>'
+                        tbody += '<td>' + ritem.session_points + '</td>';
+                        tbody += '<td>' + ritem.session_rank + '</td>'
+                        tbody += '</tr>';
+                    }
+                    tbody += '</tbody>';
+
+                    $('#profile-side-history').html(tbody);
+                    $('#profileSideTable').DataTable();
+
+                    let allCount = sessionCount * 1;
+                    let attendCount = result.length;
+
+                    console.log(allCount, attendCount);
+
+                    let options = {
+                        chart: {
+                            height: 320,
+                            type: 'pie',
+                        },
+                        series: [attendCount, allCount - attendCount],
+                        labels: ["Attended", "Not Attended"],
+                        colors: ["#34c38f", "#5b73e8"],
+                        legend: {
+                            show: true,
+                            position: 'bottom',
+                            horizontalAlign: 'center',
+                            verticalAlign: 'middle',
+                            floating: false,
+                            fontSize: '14px',
+                            offsetX: 0
+                        },
+                        responsive: [{
+                            breakpoint: 600,
+                            options: {
+                                chart: {
+                                    height: 240
+                                },
+                                legend: {
+                                    show: false
+                                },
+                            }
+                        }]
+
+                    }
+
+                    var chart = new ApexCharts(
+                        document.querySelector("#profile_side_pie_chart"),
+                        options
+                    );
+
+                    chart.render();
+
+                    $('#profile-side-attend').html('Attended: ' + (result.length / sessionCount * 100).toFixed(1) + '%')
+                    $('#profile-side-unattend').html('Not Attended: ' + (100 - result.length / sessionCount * 100).toFixed(1) + '%')
+
+                    $('#loadingContainer').addClass('hidden');
+                    $('body').addClass('profile-right-bar-enabled');
+                }
+            });
+        } else {
+            $('body').removeClass('profile-right-bar-enabled');
+        }
+    });
+
+    $(document).on('click', 'body', function (e) {
+        if ($(e.target).closest('.profile-right-bar-toggle, .profile-right-bar').length > 0) {
+            return;
+        }
+
+        $('body').removeClass('profile-right-bar-enabled');
+        return;
+    });
+}
+
 (function ($) {
 
     'use strict';
@@ -117,123 +234,6 @@ File: Main Js File
             }
 
             $('body').removeClass('right-bar-enabled');
-            return;
-        });
-    }
-
-    function initProfileRightbar() {
-        // right side-bar toggle
-        $('.profile-right-bar-toggle').on('click', function (e) {
-            if (!$('body').hasClass('profile-right-bar-enabled')) {
-                var teleId = $(this).data('id');
-                $('#loadingContainer').removeClass('hidden');
-                $.ajax({
-                    type: 'GET',
-                    url: "/api/get-profile?id=" + teleId,
-                    dataType: "json",
-                    success: function(res) {
-
-                        let user = res.teleUser;
-                        let result = res.result;
-                        let joinDate = res.joinDate;
-                        let rank = res.rank;
-                        let sessionCount = res.sessionCount;
-
-                        $('#profile-side-title-img').attr('src', 'public/assets/images/title/' +  (user.title.toLowerCase()) + '.jpg');
-                        $('#profile-side-title-img').attr('alt', user.username);
-                        $('#profile-side-username').html(user.username);
-                        $('#profile-side-telegramId').html('Telegram ID: ' + user.telegramId);
-
-                        if (joinDate) {
-                            $('#profile-side-joindate').removeClass('hidden');
-                            $('#profile-side-joindate').html('Joined At: ' + joinDate);
-                        }
-
-                        if (result.length > 0) {
-                            $('#profile-side-overall').removeClass('hidden');
-                            $('#profile-side-overall').html('Overall Points: ' + result[0].sum_point);
-                        }
-
-                        $('#profile-side-rank').html('Overall Rank: ' + rank);
-
-
-                        let tbody = '<table id="profileSideTable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">'
-                        tbody +='<thead><tr><th>Session No</th><th>Session Name</th><th>Points</th><th>Rank</th></tr></thead><tbody>';
-                        for (let i = 0; i < result.length; i ++) {
-                            let ritem = result[i];
-                            tbody += '<tr>';
-                            tbody += '<th scope="row">' + ritem.session_no + '</th>'
-                            tbody += '<td>' + (ritem.session ? ritem.session.session_name : '') + '</td>'
-                            tbody += '<td>' + ritem.session_points + '</td>';
-                            tbody += '<td>' + ritem.session_rank + '</td>'
-                            tbody += '</tr>';
-                        }
-                        tbody += '</tbody>';
-
-                        $('#profile-side-history').html(tbody);
-                        $('#profileSideTable').DataTable();
-
-                        let allCount = sessionCount * 1;
-                        let attendCount = result.length;
-
-                        console.log(allCount, attendCount);
-
-                        let options = {
-                            chart: {
-                                height: 320,
-                                type: 'pie',
-                            },
-                            series: [attendCount, allCount - attendCount],
-                            labels: ["Attended", "Not Attended"],
-                            colors: ["#34c38f", "#5b73e8"],
-                            legend: {
-                                show: true,
-                                position: 'bottom',
-                                horizontalAlign: 'center',
-                                verticalAlign: 'middle',
-                                floating: false,
-                                fontSize: '14px',
-                                offsetX: 0
-                            },
-                            responsive: [{
-                                breakpoint: 600,
-                                options: {
-                                    chart: {
-                                        height: 240
-                                    },
-                                    legend: {
-                                        show: false
-                                    },
-                                }
-                            }]
-
-                        }
-
-                        var chart = new ApexCharts(
-                            document.querySelector("#profile_side_pie_chart"),
-                            options
-                        );
-
-                        chart.render();
-
-                        $('#profile-side-attend').html('Attended: ' + (result.length / sessionCount * 100).toFixed(1) + '%')
-                        $('#profile-side-unattend').html('Not Attended: ' + (100 - result.length / sessionCount * 100).toFixed(1) + '%')
-
-                        $('#loadingContainer').addClass('hidden');
-                        $('body').toggleClass('profile-right-bar-enabled');
-                    }
-                });
-            } else {
-                $('body').toggleClass('profile-right-bar-enabled');
-            }
-        });
-
-        $(document).on('click', 'body', function (e) {
-            if ($(e.target).closest('.profile-right-bar-toggle, .profile-right-bar').length > 0) {
-                return;
-            }
-
-            $('body').removeClass('profile-right-bar-enabled');
             return;
         });
     }
