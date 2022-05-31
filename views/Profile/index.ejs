@@ -39,28 +39,31 @@
                 <% if (result.length) { %>
                     <p class="card-text">Overall Points: <%= result[0].sum_point %></p>
                 <% } %>
-                <p class="card-text">Overall Rank: <%= rank %></p>
+                <p class="card-text">
+                    Overall Rank: <a href="javascript:void(0);"  data-bs-toggle="modal" data-bs-target="#partModal"><%= rank %></a>
+                </p>
+                <p class="card-text">Overall Fortuna: <%= totalFortuna.toFixed(1) %></p>
             </div>
         </div>
 
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title mt-0 mb-2">Podium</h4>
-                <p><img src="public/assets/images/gold-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> <%= rResult[0] %> time<%= rResult[0] > 1 ? 's' : '' %></p>
-                <p><img src="public/assets/images/silver-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> <%= rResult[1] %> time<%= rResult[1] > 1 ? 's' : '' %></p>
-                <p><img src="public/assets/images/third-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> <%= rResult[2] %> time<%= rResult[2] > 1 ? 's' : '' %></p>
+                <p><img src="public/assets/images/gold-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> <% if (rResult[0].count > 0) {%> <a href="javascript:void(0);"  data-bs-toggle="modal" data-bs-target="#rankModal0"> <%= rResult[0].count %></a> <% } else { %> 0 <% } %> time<%= rResult[0].count > 1 ? 's' : '' %></p>
+                <p><img src="public/assets/images/silver-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> <% if (rResult[1].count > 0) {%> <a href="javascript:void(0);"  data-bs-toggle="modal" data-bs-target="#rankModal1"> <%= rResult[1].count %></a> <% } else { %> 0 <% } %> time<%= rResult[1].count > 1 ? 's' : '' %></p>
+                <p><img src="public/assets/images/third-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> <% if (rResult[2].count > 0) {%> <a href="javascript:void(0);"  data-bs-toggle="modal" data-bs-target="#rankModal2"> <%= rResult[2].count %></a> <% } else { %> 0 <% } %> time<%= rResult[2].count > 1 ? 's' : '' %></p>
             </div>
         </div>
 
-        <% if (rResult[0] >= 50) { %>
+        <% if (rResult[0].count >= 50) { %>
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title mt-0 mb-2">Trophies</h4>
-                    <% if (rResult[0] >= 200) {%>
+                    <% if (rResult[0].count >= 200) {%>
                         <img src="public/assets/images/trophies/legend.jpg" style="width: 100%"/>
-                    <% } else if (rResult[0] < 200 && rResult[0] >= 100) {%>
+                    <% } else if (rResult[0].count < 200 && rResult[0].count >= 100) {%>
                         <img src="public/assets/images/trophies/lion.jpg" style="width: 100%"/>
-                    <% } else if (rResult[0] < 100 && rResult[0] >= 50) {%>
+                    <% } else if (rResult[0].count < 100 && rResult[0].count >= 50) {%>
                         <img src="public/assets/images/trophies/love.jpg" style="width: 100%"/>
                     <% } %>
                 </div>
@@ -131,6 +134,56 @@
     </div>
 </div>
 
+
+<% rResult.forEach(function(rkItem, index) { %>
+    <% if (rkItem.count == 0) return %>
+    <div id="rankModal<%= index %>" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="rankModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0" id="myModalLabel">Rank <%= index + 1 %> Sessions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table id="rankDatatable<%= index %>" class="table mb-0">
+                            <thead>
+                            <tr>
+                                <th>Session No</th>
+                                <th>Session Name</th>
+                                <th>Points</th>
+                                <th>Rank</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <% rkItem.sessions.forEach(function(ritem) { %>
+                                    <tr>
+                                        <th scope="row"><%= ritem.session_no %></th>
+                                        <td><%= ritem.session ? ritem.session.session_name : '' %></td>
+                                        <td><%= ritem.session_points %></td>
+                                        <td><%= ritem.session_rank %></td>
+                                        <td>
+                                            <button type="button" class="btn btn-outline-primary waves-effect waves-light btn-sm" data-sessNo="<%= ritem.session_no %>" onclick="viewRank(this)">
+                                                <i class="fas fa-eye"></i> View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            <tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<% }); %>
+
+
 <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -141,6 +194,45 @@
             </div>
             <div class="modal-body">
                 <div class="table-responsive" id="profilePlayer">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="partModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="partModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title mt-0" id="myModalLabel">My Rank Parts</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table mb-0">
+                        <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Username</th>
+                            <th>Telegram ID</th>
+                            <th>Points</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <% myParts.forEach(function(partner) { %>
+                                <tr>
+                                    <th scope="row"><%= partner.rank%></th>
+                                    <td><%= partner.username %></td>
+                                    <td><%= partner.telegramId %></td>
+                                    <td><%= partner.sum_point %></td>
+                                </tr>
+                            <% }); %>
+                        <tbody>
+                    </table>
                 </div>
             </div>
             <div class="modal-footer">
@@ -204,6 +296,9 @@
 
     $(document).ready(function() {
         $('#datatable').DataTable();
+        if ($('#rankDataTable0').length) $('#rankDataTable0').DataTable();
+        if ($('#rankDataTable1').length) $('#rankDataTable1').DataTable();
+        if ($('#rankDataTable2').length) $('#rankDataTable2').DataTable();
 
         $('#inline-motto').editable({
             type: 'text',

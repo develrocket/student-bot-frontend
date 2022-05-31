@@ -27,11 +27,13 @@ function initProfileRightbar() {
                     let sessionCount = res.sessionCount;
                     let rResult = res.rResult;
                     let motto = res.motto;
+                    let totalFortuna = res.totalFortuna;
 
                     $('#profile-side-title-img').attr('src', 'public/assets/images/title/' +  (user.title.toLowerCase()) + '.jpg');
                     $('#profile-side-title-img').attr('alt', user.username);
                     $('#profile-side-username').html(user.username);
                     $('#profile-side-motto').html(motto);
+                    $('#profile-side-fortuna').html('Overall Fortuna: ' + totalFortuna.toFixed(1));
                     $('#profile-side-telegramId').html('Telegram ID: ' + user.telegramId);
 
                     if (joinDate) {
@@ -46,17 +48,17 @@ function initProfileRightbar() {
 
                     $('#profile-side-rank').html('Overall Rank: ' + rank);
 
-                    $('#profile-right-1st-rank').html('<img src="public/assets/images/gold-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> ' + rResult[0]  + ' time' + (rResult[0] > 1 ? 's' : ''))
-                    $('#profile-right-2nd-rank').html('<img src="public/assets/images/silver-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> ' + rResult[1]  + ' time' + (rResult[1] > 1 ? 's' : ''))
-                    $('#profile-right-3rd-rank').html('<img src="public/assets/images/third-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> ' + rResult[2]  + ' time' + (rResult[2] > 1 ? 's' : ''))
+                    $('#profile-right-1st-rank').html('<img src="public/assets/images/gold-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> ' + rResult[0].count  + ' time' + (rResult[0] > 1 ? 's' : ''))
+                    $('#profile-right-2nd-rank').html('<img src="public/assets/images/silver-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> ' + rResult[1].count  + ' time' + (rResult[1] > 1 ? 's' : ''))
+                    $('#profile-right-3rd-rank').html('<img src="public/assets/images/third-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> ' + rResult[2].count  + ' time' + (rResult[2] > 1 ? 's' : ''))
 
-                    if (rResult[0] >= 50) {
+                    if (rResult[0].count >= 50) {
                         $('#profile-right-trophy').removeClass('hidden');
-                        if (rResult[0] >= 200) {
+                        if (rResult[0].count >= 200) {
                             $('#profile-right-trophy-img').html('<img src="public/assets/images/trophies/legend.jpg" style="width: 100%"/>');
-                        } else if (rResult[0] < 200 && rResult[0] >= 100) {
+                        } else if (rResult[0].count < 200 && rResult[0].count >= 100) {
                             $('#profile-right-trophy-img').html('<img src="public/assets/images/trophies/lion.jpg" style="width: 100%"/>');
-                        } else if (rResult[0] < 100 && rResult[0] >= 50) {
+                        } else if (rResult[0].count < 100 && rResult[0].count >= 50) {
                             $('#profile-right-trophy-img').html('<img src="public/assets/images/trophies/love.jpg" style="width: 100%"/>');
                         }
                     }

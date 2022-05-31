@@ -2,6 +2,7 @@ const TitleModel = require('../models/studentTitle');
 const SessionModel = require('../models/sessionResult');
 const ResultModel = require('../models/studentResult');
 const StudentModel = require('../models/student');
+const FortunaHistoryModel = require('../models/fortunaHistory');
 
 module.exports = {
     randomString(length) {
@@ -92,6 +93,19 @@ module.exports = {
             if (telegramId + '' === results[i].telegramId + '') rank = i + 1;
         }
 
+        let startIndex = rank - 6;
+        let endIndex = rank + 4;
+
+        startIndex = startIndex < 0 ? 0 : startIndex;
+        endIndex = endIndex >= results.length ? results.length - 1: endIndex;
+
+        let myParts = [];
+        for (let i = startIndex; i <= endIndex; i ++) {
+            let item = results[i];
+            item.rank = i + 1;
+            myParts.push(item);
+        }
+
         let rankResult = await ResultModel.aggregate([
             {
                 $match: { telegramId: telegramId + '' }
@@ -101,11 +115,22 @@ module.exports = {
             }
         ]);
 
-        let rResult = [0, 0, 0];
+        let rResult = [
+            {count: 0, sessions: []},
+            {count: 0, sessions: []},
+            {count: 0, sessions: []}
+        ];
         for (let i = 0; i < 3; i ++) {
             for (let j = 0; j < rankResult.length; j ++) {
                 if (rankResult[j]._id + '' == i + 1 + '') {
-                    rResult[i] = rankResult[j].count;
+                    let item = {
+                        count: rankResult[j].count,
+                        sessions: []
+                    };
+
+                    let sessions = await ResultModel.find({telegramId: telegramId, session_rank: i + 1}).populate('session').sort({session_no: -1}).lean().exec();
+                    item.sessions = sessions;
+                    rResult[i] = item;
                 }
             }
         }
@@ -113,6 +138,21 @@ module.exports = {
         let user = await StudentModel.find({telegramId: telegramId}).lean().exec();
         let motto = user.length > 0 ? user[0].motto : '';
 
-        return {joinDate, result, sessionCount, rank, teleUser, rResult, motto};
+        let fResults = await FortunaHistoryModel.aggregate([
+            {
+                $match: { telegramId: telegramId + '' }
+            },
+            {
+                $group:
+                    {
+                        _id: "$telegramId",
+                        totalPoints: { $sum: "$fortuna_point" }
+                    }
+            }
+        ]);
+
+        let totalFortuna = fResults.length > 0 ? fResults[0].totalPoints : 0;
+
+        return {joinDate, result, sessionCount, rank, teleUser, rResult, motto, totalFortuna, myParts};
     }
 };
