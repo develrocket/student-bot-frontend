@@ -42,7 +42,7 @@
                 <p class="card-text">
                     Overall Rank: <a href="javascript:void(0);"  data-bs-toggle="modal" data-bs-target="#partModal"><%= rank %></a>
                 </p>
-                <p class="card-text">Overall Fortuna: <%= totalFortuna.toFixed(1) %></p>
+                <p class="card-text"><img src="public/assets/images/fortuna-icon.jpg" alt="Overall Fortuna" style="width: 20px; height: 20px;" title="Overall Fortuna"/> <%= totalFortuna.toFixed(1) %></p>
             </div>
         </div>
 
@@ -55,21 +55,6 @@
             </div>
         </div>
 
-        <% if (rResult[0].count >= 50) { %>
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title mt-0 mb-2">Trophies</h4>
-                    <% if (rResult[0].count >= 200) {%>
-                        <img src="public/assets/images/trophies/legend.jpg" style="width: 100%"/>
-                    <% } else if (rResult[0].count < 200 && rResult[0].count >= 100) {%>
-                        <img src="public/assets/images/trophies/lion.jpg" style="width: 100%"/>
-                    <% } else if (rResult[0].count < 100 && rResult[0].count >= 50) {%>
-                        <img src="public/assets/images/trophies/love.jpg" style="width: 100%"/>
-                    <% } %>
-                </div>
-            </div>
-        <% } %>
-
     </div>
 
     <div class="col-md-6 col-xl-9">
@@ -81,6 +66,49 @@
                         <td>
                             <a href="#" id="inline-motto" data-type="text" data-pk="1" data-title="Enter motto" style="line-height: 37px;"><%= motto %></a>
                         </td>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title mt-0"><i class="uil-award"></i> Trophies</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3 row">
+                    <div class="col-4">
+                        <img src="public/assets/images/trophies/legend.jpg" style="width: 100%; border-radius: 15px;"/>
+                        <% if (rResult[0].count < 150) {%>
+                            <div class="locked-trophy">
+                                <div>
+                                    <b><i class="uil-lock-alt"></i> Locked</b><br/>
+                                    150 times 1<sup>st</sup> ranked
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                    <div class="col-4">
+                        <img src="public/assets/images/trophies/lion.jpg" style="width: 100%; border-radius: 15px;"/>
+                        <% if (rResult[0].count < 100) {%>
+                            <div class="locked-trophy">
+                                <div>
+                                    <b><i class="uil-lock-alt"></i> Locked</b><br/>
+                                    100 times 1<sup>st</sup> ranked
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                    <div class="col-4">
+                        <img src="public/assets/images/trophies/love.jpg" style="width: 100%; border-radius: 15px;"/>
+                        <% if (rResult[0].count < 50) {%>
+                            <div class="locked-trophy">
+                                <div>
+                                    <b><i class="uil-lock-alt"></i> Locked</b><br/>
+                                    50 times 1<sup>st</sup> ranked
+                                </div>
+                            </div>
+                        <% } %>
                     </div>
                 </div>
             </div>
@@ -141,7 +169,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title mt-0" id="myModalLabel">Rank <%= index + 1 %> Sessions</h5>
+                    <h5 class="modal-title mt-0" id="myModalLabel">Podium sessions</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
@@ -207,7 +235,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title mt-0" id="myModalLabel">My Rank Parts</h5>
+                <h5 class="modal-title mt-0" id="myModalLabel">Sectoral ranking</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
             </div>
@@ -224,12 +252,21 @@
                         </thead>
                         <tbody>
                             <% myParts.forEach(function(partner) { %>
-                                <tr>
-                                    <th scope="row"><%= partner.rank%></th>
-                                    <td><%= partner.username %></td>
-                                    <td><%= partner.telegramId %></td>
-                                    <td><%= partner.sum_point %></td>
-                                </tr>
+                                <% if (partner.telegramId == user.telegramId) { %>
+                                    <tr>
+                                        <th scope="row"><b style="color: black;"><%= partner.rank%></b></th>
+                                        <td><b style="color: black;"><%= partner.username %></b></td>
+                                        <td><b style="color: black;"><%= partner.telegramId %></b></td>
+                                        <td><b style="color: black;"><%= partner.sum_point %></b></td>
+                                    </tr>
+                                <% } else { %>
+                                    <tr>
+                                        <th scope="row"><%= partner.rank%></th>
+                                        <td><%= partner.username %></td>
+                                        <td><%= partner.telegramId %></td>
+                                        <td><%= partner.sum_point %></td>
+                                    </tr>
+                                <% } %>
                             <% }); %>
                         <tbody>
                     </table>

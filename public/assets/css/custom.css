@@ -79,3 +79,17 @@ div#profileSideTable_wrapper div.dataTables_paginate ul.pagination {
     align-items: center;
     background: rgb(255 255 255 / 50%);
 }
+
+.locked-trophy {
+    position: absolute;
+    top: 0;
+    width: calc(100% - 20px);
+    height: 100%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: 1px solid;
+    border-radius: 15px;
+}
