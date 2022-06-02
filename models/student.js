@@ -8,7 +8,8 @@ const TitleSchema = new Schema({
     firstName: String,
     lastName: String,
     username: String,
-    motto: String
+    motto: String,
+    countryCode: String
 });
 
 // create the model

@@ -23,6 +23,16 @@ module.exports = function(){
                 $set: {motto: req.body.value}
             });
             res.redirect('/');
+        },
+
+        updateCountryCode: async function(req, res) {
+            console.log(req.body);
+            await StudentModel.update({
+                telegramId: res.locals.user.telegramId
+            }, {
+                $set: {countryCode: req.body.country_selector_code}
+            });
+            res.json({result: "success"});
         }
     };
 

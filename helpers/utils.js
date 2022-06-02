@@ -137,6 +137,7 @@ module.exports = {
 
         let user = await StudentModel.find({telegramId: telegramId}).lean().exec();
         let motto = user.length > 0 ? user[0].motto : '';
+        let countryCode = user.length > 0 ? user[0].countryCode : '';
 
         let fResults = await FortunaHistoryModel.aggregate([
             {
@@ -153,6 +154,6 @@ module.exports = {
 
         let totalFortuna = fResults.length > 0 ? fResults[0].totalPoints : 0;
 
-        return {joinDate, result, sessionCount, rank, teleUser, rResult, motto, totalFortuna, myParts};
+        return {joinDate, result, sessionCount, rank, teleUser, rResult, motto, totalFortuna, myParts, countryCode};
     }
 };

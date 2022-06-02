@@ -28,6 +28,22 @@ function initProfileRightbar() {
                     let rResult = res.rResult;
                     let motto = res.motto;
                     let totalFortuna = res.totalFortuna;
+                    let countryCode = res.countryCode;
+
+                    let coptions = {
+                        // defaultCountry: "jp",
+                        // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
+                        // responsiveDropdown: true,
+                        preferredCountries: ['ca', 'gb', 'us']
+                    };
+                    if (countryCode) {
+                        coptions.defaultCountry = countryCode;
+                        $("#country_selector").countrySelect(coptions);
+                        $('#profileRightCountry').removeClass('hidden');
+                    } else {
+                        $('#profileRightCountry').addClass('hidden');
+                    }
+                    
 
                     $('#profile-side-title-img').attr('src', 'public/assets/images/title/' +  (user.title.toLowerCase()) + '.jpg');
                     $('#profile-side-title-img').attr('alt', user.username);

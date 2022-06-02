@@ -93,3 +93,16 @@ div#profileSideTable_wrapper div.dataTables_paginate ul.pagination {
     border: 1px solid;
     border-radius: 15px;
 }
+
+
+.dropup>.dropdown-menu {
+    display: block;
+}
+
+.profile-right-bar .country-select .country-list {
+    display: none;
+}
+
+.profile-right-bar .country-select .selected-flag .arrow {
+    display: none;
+} 
