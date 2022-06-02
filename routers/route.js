@@ -34,6 +34,7 @@ module.exports = function (app) {
     app.get('/wallet', isUserAllowed, WalletCtrl.index);
     app.post('/withdraw/frt', urlencodeParser, isUserAllowed, WalletCtrl.withdraw);
     app.post('/profile/update-motto', urlencodeParser, isUserAllowed, ProfileCtrl.updateMotto);
+    app.post('/profile/update-country', urlencodeParser, isUserAllowed, ProfileCtrl.updateCountryCode);
 
 
 }

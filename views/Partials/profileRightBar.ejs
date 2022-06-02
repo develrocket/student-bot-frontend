@@ -20,7 +20,21 @@
                     <div class="card">
                         <img class="card-img-top img-fluid" id="profile-side-title-img" src="public/assets/images/title/<%= user.title %>.jpg" alt="<%= user.username %>">
                         <div class="card-body">
-                            <p class="card-text" id="profile-side-username"></p>
+                            <div style="display: flex; justify-content: space-between">
+                                <p class="card-text" id="profile-side-username"></p>
+                                <div class="example" style="margin-right: 50px;" id="profileRightCountry">
+                                    <form>
+                                        <div class="form-item">
+                                            <input id="country_selector" type="text" style="display: none;">
+                                            <label for="country_selector" style="display:none;">Select a country here...</label>
+                                        </div>
+                                        <div class="form-item" style="display:none;">
+                                            <input type="text" id="country_selector_code" name="country_selector_code" data-countrycodeinput="1" readonly="readonly" placeholder="Selected country code will appear here" />
+                                            <label for="country_selector_code">...and the selected country code will be updated here</label>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                             <p class="card-text" id="profile-side-motto"></p>
                             <p class="card-text" id="profile-side-telegramId"></p>
                             <p class="card-text hidden" id="profile-side-joindate"></p>
