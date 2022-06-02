@@ -106,3 +106,9 @@ div#profileSideTable_wrapper div.dataTables_paginate ul.pagination {
 .profile-right-bar .country-select .selected-flag .arrow {
     display: none;
 } 
+
+.country-select .country-list  {
+    width: 300px !important;
+    right:  0;
+    overflow-x: hidden;
+}
