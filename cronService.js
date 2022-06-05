@@ -185,13 +185,9 @@ module.exports = function(){
                 let nIds = await fetchSession(io);
                 newSessionIds = newSessionIds.concat(nIds);
 
-                let end = moment().subtract(1,'d').format('YYYY-MM-DD') + ' 00:00:00';
-                let sessions = await SessionModel.find({session_start: {$gte: end}});
-                let lastIds = sessions.map(item => item.session_no);
-
-                for (let i = 0; i < lastIds.length; i ++) {
+                for (let i = 0; i < newSessionIds.length; i ++) {
                     // console.log('======> fetch result session:', lastIds[i]);
-                    await fetchResult(lastIds[i]);
+                    await fetchResult(newSessionIds[i]);
                 }
 
                 // console.log('-----> finished get result');
@@ -251,6 +247,10 @@ module.exports = function(){
                         }
                     } else {
                         deleteSessionIds.push(sessId);
+                    }
+
+                    if (newSessionIds.length == 0) {
+                        io.emit('session_ended', {});
                     }
                 }
 

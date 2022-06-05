@@ -9,6 +9,8 @@ File: Main Js File
 
 var socket = io();
 
+let newsContent = '';
+
 socket.on('news_updated', function(msg) {
     console.log('session_created:', msg);
 
@@ -32,9 +34,20 @@ socket.on('news_updated', function(msg) {
     //
     // toastr["info"](msg.content, "Live");
 
+    if (!$('#tickerWrap').hasClass('show')) $('#tickerWrap').addClass('show');
+    if (newsContent != msg.content) {
+        $('#tickerContent').html('');
+        setTimeout(function() {
+            $('#tickerContent').html('<div class="ticker__item">' + msg.content + '</div>');
+        }, 1000);
+        newsContent = msg.content;
+    }
+});
 
-    // $('#tickerContent').html('');
-    // if (!$('#tickerWrap').hasClass('show')) $('#tickerWrap').addClass('show');
+socket.on('session_ended', function(msg) {
+    if ($('#tickerWrap').hasClass('show')) $('#tickerWrap').removeClass('show');
+    $('#tickerContent').html('');
+    newsContent = '';
 });
 
 function initProfileRightbar() {
