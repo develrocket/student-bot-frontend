@@ -36,7 +36,6 @@ socket.on('news_updated', function(msg) {
 
     if (!$('#tickerWrap').hasClass('show')) $('#tickerWrap').addClass('show');
     if (newsContent != msg.content) {
-        $('#tickerContent').html('');
         setTimeout(function() {
             $('#tickerContent').html('<div class="ticker__item">' + msg.content + '</div>');
         }, 1000);
