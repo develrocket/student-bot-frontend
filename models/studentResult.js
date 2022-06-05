@@ -10,6 +10,7 @@ const ResultSchema = new Schema({
     session: {type: mongoose.Schema.Types.ObjectId,ref:'sessions'},
     session_no: Number,
     session_points: Number,
+    session_wrong_poings: Number,
     session_rank: Number,
     fortuna_points: Number,
     title: String,

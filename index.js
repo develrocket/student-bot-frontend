@@ -28,6 +28,11 @@ const bot = new TelegramBot(token, {polling: true});
 const FortunaHistoryModel = require('./models/fortunaHistory');
 const StudentModel = require('./models/student');
 const StudentResultModel = require('./models/studentResult');
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
+
 
 app.use(session({
     key: 'user_sid',
@@ -72,13 +77,21 @@ require('./routers/api')(app);
 //     console.log('listening on *:8000');
 // });
 
+io.on('connection', (socket) => {
+    console.log('a user connected');
+});
+
+// setInterval(function() {
+//     io.emit('news_updated', { content: 'This is test' });
+// }, 10000);
+
 db.on('connected', () => {
-    app.listen(config.server.port, () => {
+    server.listen(config.server.port, () => {
         console.log(`www.${config.server.hostname  }:${  config.server.port}`);
         debug(`App listening on ${config.server.hostname} port: ${config.server.port}`);
         app.emit('appStarted');
 
-        cronService.start();
+        cronService.start(io);
     });
 });
 

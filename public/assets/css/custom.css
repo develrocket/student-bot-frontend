@@ -105,10 +105,97 @@ div#profileSideTable_wrapper div.dataTables_paginate ul.pagination {
 
 .profile-right-bar .country-select .selected-flag .arrow {
     display: none;
-} 
+}
 
 .country-select .country-list  {
     width: 300px !important;
     right:  0;
     overflow-x: hidden;
+}
+
+@-webkit-keyframes ticker {
+  0% {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    visibility: visible;
+  }
+
+  100% {
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+@keyframes ticker {
+  0% {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    visibility: visible;
+  }
+
+  100% {
+    -webkit-transform: translate3d(-100%, 0, 0);
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+.ticker-wrap {
+
+    position: fixed;
+    bottom: -64px;
+    width: 100%;
+    overflow: hidden;
+    height: 64px;
+    background-color: rgba(0, 0, 0, 0.9);
+    padding-left: 100%;
+    box-sizing: content-box;
+
+    transition: all 0.5s;
+    visibility: hidden;
+
+}
+
+.ticker-wrap.show {
+  bottom: 0;
+  visibility: visible;
+}
+
+.ticker-wrap .ticker {
+
+  display: inline-block;
+  height: 4rem;
+  line-height: 4rem;
+  white-space: nowrap;
+  padding-right: 100%;
+  box-sizing: content-box;
+
+  -webkit-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear;
+ -webkit-animation-name: ticker;
+         animation-name: ticker;
+  -webkit-animation-duration: 30s;
+          animation-duration: 30s;
+
+}
+
+.ticker-wrap .ticker__item {
+
+  display: inline-block;
+
+  padding: 0 2rem;
+  font-size: 2rem;
+  color: white;
+
+}
+
+
+#toast-container>div {
+  opacity: 1 !important;
+}
+
+.toast-info {
+    background-color: #2F96B4 !important;
+    border: 1px solid rgba(0,0,0,.1) !important;
 }
