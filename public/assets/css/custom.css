@@ -185,7 +185,7 @@ div#profileSideTable_wrapper div.dataTables_paginate ul.pagination {
   display: inline-block;
 
   padding: 0 2rem;
-  font-size: 2rem;
+  font-size: 24px;
   color: white;
 
 }
