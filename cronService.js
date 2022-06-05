@@ -257,7 +257,7 @@ module.exports = function(){
                 if (newSessionIds.length == 0) {
                     setTimeout(function() {
                         io.emit('session_ended', {});
-                    }, 5000);
+                    }, 10000);
                 }
             }, 10000);
         },
