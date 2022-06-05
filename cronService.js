@@ -257,7 +257,7 @@ module.exports = function(){
                 for (let i = 0; i < deleteSessionIds.length;i ++) {
                     newSessionIds.splice(newSessionIds.indexOf(deleteSessionIds[i]), 1);
                 }
-            }, 3000);
+            }, 10000);
         },
     };
 };
