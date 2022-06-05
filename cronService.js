@@ -5,13 +5,15 @@ const TitleModel = require('./models/studentTitle');
 const FortunaHistoryModel = require('./models/fortunaHistory');
 const Utils = require('./helpers/utils');
 const moment = require('moment');
+const NewsModel = require('./models/news');
 
 // const serverUrl = 'http://my.loc/test/';
 const serverUrl = 'https://vmi586933.contaboserver.net/';
 
-const fetchSession = async function() {
+const fetchSession = async function(io) {
     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
     let lastId = sessions.length > 0 ? sessions[0].session_no : 8696;
+    let newSessionIds = [];
     // console.log('fetch-session-lastId:', lastId);
     try {
         let config = {
@@ -32,11 +34,26 @@ const fetchSession = async function() {
             newSessionItem.session_start = sessionItem.start_time;
             newSessionItem.questions_no = sessionItem.questions;
             newSessionItem.level = sessionItem.level;
+            newSessionItem.delivered = sessionItem.delivered;
             await newSessionItem.save();
+
+            if (newSessionItem.delivered * 1 === 0) {
+                let content = 'Tournament ' + newSessionItem.session_name + ' started! Level:' + newSessionItem.level + ' Questions:' + newSessionItem.questions_no;
+                io.emit('news_updated', { content: content });
+                newSessionIds.push(sessionItem.sess_id);
+
+                let news = new NewsModel({
+                    content: content,
+                    status: 0
+                });
+                await news.save();
+            }
         }
     } catch (err) {
         console.log(err);
     }
+
+    return newSessionIds;
 }
 
 const fetchResult = async function(sessId) {
@@ -63,6 +80,7 @@ const fetchResult = async function(sessId) {
                 username: username,
                 session_no: rItem.session_id,
                 session_points: point,
+                session_wrong_points: rItem.incorrect,
                 date: rItem.date
             });
 
@@ -159,10 +177,13 @@ const fetchResult = async function(sessId) {
 
 module.exports = function(){
     return {
-        start: function() {
+        start: function(io) {
             let lastIds = [];
+            let newSessionIds = [];
+            let deleteSessionIds = [];
             setInterval(async function() {
-                await fetchSession();
+                let nIds = await fetchSession(io);
+                newSessionIds = newSessionIds.concat(nIds);
 
                 let end = moment().subtract(1,'d').format('YYYY-MM-DD') + ' 00:00:00';
                 let sessions = await SessionModel.find({session_start: {$gte: end}});
@@ -174,7 +195,69 @@ module.exports = function(){
                 }
 
                 // console.log('-----> finished get result');
-            }, 30000);
+
+                let deleteSessionIds = [];
+                for (let i = 0; i < newSessionIds.length; i ++) {
+                    let sessId = newSessionIds[i];
+                    let config = {
+                        method: 'get',
+                        url: serverUrl + '/fetch-session-detail.php?session_no=' + sessId,
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
+                    };
+
+                    let res = await axios(config);
+
+                    if (res.data.length > 0) {
+                        let session = res.data[0];
+                        if (session.delivered * 1 > 0) {
+                            await SessionModel.update({
+                                session_no: sessId
+                            }, {
+                                $set: {
+                                    delivered: session.delivered
+                                }
+                            });
+                            let results = await ResultModel.find({session_no: sessId}).sort({session_rank: 1}).lean().exec();
+
+                            let content = 'Tournament ' + session.name + ' over. 🥇Winner ' + results[0].username + ' with' + results[0].session_points + '! Congratulations! Stay tuned for the next broadcast!';
+                            io.emit('news_updated', { content: content });
+                            let news = new NewsModel({
+                                content: content,
+                                status: 2
+                            });
+                            await news.save();
+                            deleteSessionIds.push(sessId);
+                        } else {
+                            let results = await ResultModel.find({session_no: sessId}).sort({session_rank: 1}).lean().exec();
+                            let content = 'Tournament ' + session.name + ' ongoing! Level: ' + session.level + ' Questions: ' + session.questions + ' Players: ' + results.length + '.';
+                            if (results.length > 0) {
+                                content += ' 🥇' + results[0].username + ' ' + results[0].session_points + 'points.'
+                            }
+                            if (results.length > 1) {
+                                content += ' 🥈' + results[1].username + ' ' + results[1].session_points + 'points.'
+                            }
+                            if (results.length > 2) {
+                                content += ' 🥉' + results[2].username + ' ' + results[2].session_points + 'points.'
+                            }
+                            content += ' Questions remaining ' + (session.questions * 1 - (results.length > 0 ? results[0].session_points + results[0].session_wrong_points : 0));
+                            io.emit('news_updated', { content: content });
+                            let news = new NewsModel({
+                                content: content,
+                                status: 1
+                            });
+                            await news.save();
+                        }
+                    } else {
+                        deleteSessionIds.push(sessId);
+                    }
+                }
+
+                for (let i = 0; i < deleteSessionIds.length;i ++) {
+                    newSessionIds.splice(newSessionIds.indexOf(deleteSessionIds[i]), 1);
+                }
+            }, 3000);
         },
     };
 };

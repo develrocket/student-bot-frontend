@@ -13,7 +13,8 @@ const SessionSchema = new Schema({
     questions_no: Number,
     students_no: Number,
     level: String,
-    playerCount: Number
+    playerCount: Number,
+    delivered: Number
 });
 
 // create the model
