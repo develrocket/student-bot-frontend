@@ -248,14 +248,14 @@ module.exports = function(){
                     } else {
                         deleteSessionIds.push(sessId);
                     }
-
-                    if (newSessionIds.length == 0) {
-                        io.emit('session_ended', {});
-                    }
                 }
 
                 for (let i = 0; i < deleteSessionIds.length;i ++) {
                     newSessionIds.splice(newSessionIds.indexOf(deleteSessionIds[i]), 1);
+                }
+
+                if (newSessionIds.length == 0) {
+                    io.emit('session_ended', {});
                 }
             }, 10000);
         },
