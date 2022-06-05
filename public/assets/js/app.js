@@ -32,9 +32,16 @@ socket.on('news_updated', function(msg) {
     //
     // toastr["info"](msg.content, "Live");
 
+    if (!$('#tickerWrap').hasClass('show')) $('#tickerWrap').addClass('show');
+    $('#tickerContent').html('');
+    setTimeout(function() {
+        $('#tickerContent').html('<div class="ticker__item">' + msg.content + '</div>');
+    }, 1000);
+});
 
-    // $('#tickerContent').html('');
-    // if (!$('#tickerWrap').hasClass('show')) $('#tickerWrap').addClass('show');
+socket.on('session_ended', function(msg) {
+    if ($('#tickerWrap').hasClass('show')) $('#tickerWrap').removeClass('show');
+    $('#tickerContent').html('');
 });
 
 function initProfileRightbar() {
