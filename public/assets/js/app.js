@@ -44,9 +44,11 @@ socket.on('news_updated', function(msg) {
 });
 
 socket.on('session_ended', function(msg) {
-    if ($('#tickerWrap').hasClass('show')) $('#tickerWrap').removeClass('show');
-    $('#tickerContent').html('');
-    newsContent = '';
+    setTimeout(function() {
+        if ($('#tickerWrap').hasClass('show')) $('#tickerWrap').removeClass('show');
+        $('#tickerContent').html('');
+        newsContent = '';
+    }, 20000)
 });
 
 function initProfileRightbar() {
