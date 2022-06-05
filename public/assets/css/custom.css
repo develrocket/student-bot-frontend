@@ -139,23 +139,53 @@ div#profileSideTable_wrapper div.dataTables_paginate ul.pagination {
   }
 }
 
-.ticker-wrap {
 
+.ticker-container {
     position: fixed;
     bottom: -64px;
     width: 100%;
     overflow: hidden;
     height: 64px;
-    background-color: rgba(0, 0, 0, 0.9);
+    background-color: white;
     padding-left: 100%;
     box-sizing: content-box;
-
+    padding: 0px;
     transition: all 0.5s;
     visibility: hidden;
-
 }
 
-.ticker-wrap.show {
+.ticker-background {
+    overflow: hidden;
+    width: calc(100% - 10px);
+    background-color: rgba(0, 0, 0, 0.9);
+    position: relative;
+}
+
+.ticker-logo {
+    background: #191919;
+    position: absolute;
+    width: 100px;
+    z-index: 1000;
+    padding-left: 10px;
+    padding-right: 10px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+}
+
+.ticker-logo img {
+    width: 100%;
+}
+
+.ticker-wrap {
+    width: 100%;
+    overflow: hidden;
+    height: 64px;
+    padding-left: 100%;
+    box-sizing: content-box;
+}
+
+.ticker-container.show {
   bottom: 0;
   visibility: visible;
 }
@@ -185,7 +215,7 @@ div#profileSideTable_wrapper div.dataTables_paginate ul.pagination {
   display: inline-block;
 
   padding: 0 2rem;
-  font-size: 2rem;
+  font-size: 20px;
   color: white;
 
 }

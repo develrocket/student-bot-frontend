@@ -229,13 +229,13 @@ module.exports = function(){
                             let results = await ResultModel.find({session_no: sessId}).sort({session_rank: 1}).lean().exec();
                             let content = 'Tournament ' + session.name + ' ongoing! Level: ' + session.level + ' Questions: ' + session.questions + ' Players: ' + results.length + '.';
                             if (results.length > 0) {
-                                content += ' 🥇' + results[0].username + ' ' + results[0].session_points + 'points.'
+                                content += ' 🥇' + results[0].username + ' ' + results[0].session_points + ' points.'
                             }
                             if (results.length > 1) {
-                                content += ' 🥈' + results[1].username + ' ' + results[1].session_points + 'points.'
+                                content += ' 🥈' + results[1].username + ' ' + results[1].session_points + ' points.'
                             }
                             if (results.length > 2) {
-                                content += ' 🥉' + results[2].username + ' ' + results[2].session_points + 'points.'
+                                content += ' 🥉' + results[2].username + ' ' + results[2].session_points + ' points.'
                             }
                             content += ' Questions remaining ' + (session.questions * 1 - (results.length > 0 ? results[0].session_points + results[0].session_wrong_points : 0));
                             io.emit('news_updated', { content: content });
