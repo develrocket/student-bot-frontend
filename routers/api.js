@@ -27,4 +27,5 @@ module.exports = function (app) {
     app.get('/api/get-session-rank', studentCont.getSessionRank);
     app.get('/api/get-profile', studentCont.getProfile);
     app.get('/api/fetch-result', studentCont.getResultBySessNo);
+    app.get('/api/reset-result', studentCont.resetRank);
 };

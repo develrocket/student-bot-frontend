@@ -258,6 +258,27 @@ module.exports = function(){
             return res.json({result: "success"});
         },
 
+        resetRank: async function(req, res) {
+            let results = await StudentResultModel.find({session_no: req.query.sessNo}).lean().exec();
+            let points = [];
+            for (let i = 0; i < results.length; i ++) {
+                if (points.indexOf(results[i].session_points) < 0) {
+                    points.push(results[i].session_points * 1);
+                }
+            }
+
+            points.sort((a, b) => b - a);
+
+            for (let i = 0; i < results.length; i ++) {
+                await StudentResultModel.update({
+                    _id: results[i]._id
+                }, {
+                    $set: {session_rank: points.indexOf(results[i].session_points * 1) + 1}
+                });
+            }
+            return res.json({result: "success"});
+        },
+
         fetchSession: async function(req, res) {
             await fetchSession();
             return res.json({result: "success"});
