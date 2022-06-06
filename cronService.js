@@ -9,6 +9,7 @@ const NewsModel = require('./models/news');
 
 // const serverUrl = 'http://my.loc/test/';
 const serverUrl = 'https://vmi586933.contaboserver.net/';
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 const fetchSession = async function(io) {
     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
@@ -177,11 +178,11 @@ const fetchResult = async function(sessId) {
 
 module.exports = function(){
     return {
-        start: function(io) {
+        start: async function(io) {
             let lastIds = [];
             let newSessionIds = [];
             let deleteSessionIds = [];
-            setInterval(async function() {
+            while(1) {
                 let nIds = await fetchSession(io);
                 newSessionIds = newSessionIds.concat(nIds);
 
@@ -257,7 +258,9 @@ module.exports = function(){
                 if (newSessionIds.length == 0) {
                     io.emit('session_ended', {});
                 }
-            }, 10000);
+
+                await sleep(3000);
+            }
         },
     };
 };
