@@ -7,6 +7,8 @@ const FortunaHistoryModel = require('../../models/fortunaHistory');
 const axios = require('axios').default;
 const Utils = require('../../helpers/utils');
 
+const serverUrl = 'https://vmi586933.contaboserver.net/';
+
 const fetchSession = async function() {
     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
     let lastId = sessions.length > 0 ? sessions[0].session_no : 0;
@@ -38,9 +40,135 @@ const fetchSession = async function() {
     }
 }
 
+
+const fetchResult = async function(sessId) {
+    try {
+        let config = {
+            method: 'get',
+            url: serverUrl + '/student-result.php?session_no=' + sessId,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        };
+
+        let res = await axios(config);
+
+        let rItems = [];
+        let points = [];
+
+        for (const rItem of res.data) {
+            let a = rItem.username;
+            let username = ((a.split('">')[1]).split('</')[0]).trim();
+            let point = rItem.correct * 1;
+            rItems.push({
+                telegramId: rItem.user_id,
+                username: username,
+                session_no: rItem.session_id,
+                session_points: point,
+                session_wrong_points: rItem.incorrect,
+                date: rItem.date
+            });
+
+            if (points.indexOf(point) < 0) {
+                points.push(point);
+            }
+        }
+        points.sort((a, b) => b - a);
+        const session = await SessionModel.findOne({session_no: sessId});
+
+        let oldResults = await StudentResultModel.aggregate([
+            {
+                $match: { session_no: {$lt: sessId} }
+            },
+            {
+                $group:
+                    {
+                        _id: "$telegramId",
+                        totalPoints: { $sum: "$session_points" },
+                        totalFortuna: { $sum: "$fortuna_points" }
+                    }
+            }
+        ]);
+
+        for (let i = 0; i < rItems.length; i ++) {
+            let rItem = rItems[i];
+            rItem.session_rank = points.indexOf(rItem.session_points) + 1;
+            rItem.fortuna_points = rItem.session_points * 0.1;
+
+            let totalPoint = rItem.session_points;
+            let totalFortuna = rItem.fortuna_points;
+            for (let j = 0; j < oldResults.length; j ++) {
+                if (oldResults[j]._id + '' === rItem.telegramId + '') {
+                    totalPoint += oldResults[j].totalPoints
+                    totalFortuna += oldResults[j].totalFortuna;
+                }
+            }
+            const title = await Utils.getTitle(totalPoint);
+
+            rItem.title = title;
+            rItem.sum_point = totalPoint;
+            rItem.total_fortuna_user = totalFortuna;
+            rItem.session = session._id;
+
+            let results = await StudentResultModel.find({session_no: sessId, telegramId: rItem.telegramId});
+            if (results.length > 0) {
+                await StudentResultModel.update({_id: results[0]._id}, {
+                    $set: rItem
+                })
+            } else {
+                let item = new StudentResultModel(rItem);
+                await item.save();
+
+                await SessionModel.update({
+                    session_no: sessId
+                }, {
+                    $inc: {
+                        playerCount: 1
+                    }
+                })
+            }
+
+            let lastHistory = await FortunaHistoryModel.find({session_no: sessId, telegramId: rItem.telegramId}).lean().exec();
+            if (lastHistory.length > 0) {
+                lastHistory = lastHistory[0];
+                let newData = {
+                    created_at: rItem.date,
+                    fortuna_point: rItem.fortuna_points,
+                };
+                await FortunaHistoryModel.update({
+                    _id: lastHistory._id
+                }, {
+                    $set: newData
+                });
+            } else {
+                let hItem = new FortunaHistoryModel({
+                    telegramId: rItem.telegramId,
+                    created_at: rItem.date,
+                    fortuna_point: rItem.fortuna_points,
+                    state: 0,
+                    session_no: sessId
+                });
+                await hItem.save();
+            }
+        }
+
+        console.log('---->sessionId: ', sessId, ', ---->get Results:', rItems.length);
+
+
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+
 module.exports = function(){
 
     return {
+        getResultBySessNo: async function(req, res) {
+            await fetchResult(req.query.sessNo);
+            return res.json({result: 'success'});
+        },
+
         setPlayerCount: async function(req, res) {
             let sessions = await SessionModel.find({});
             for (let i = 0; i < sessions.length; i ++) {

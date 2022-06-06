@@ -37,7 +37,7 @@ const fetchSession = async function(io) {
             newSessionItem.delivered = sessionItem.delivered;
             await newSessionItem.save();
 
-            if (newSessionItem.delivered * 1 === 0 || sessionItem.sess_id == 9064) {
+            if (newSessionItem.delivered * 1 === 0) {
                 let content = 'Tournament ' + newSessionItem.session_name + ' started! Level:' + newSessionItem.level + ' Questions:' + newSessionItem.questions_no;
                 io.emit('news_updated', { content: content });
                 newSessionIds.push(sessionItem.sess_id);
