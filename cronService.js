@@ -97,7 +97,7 @@ const fetchResult = async function(sessId) {
 
         let oldResults = await ResultModel.aggregate([
             {
-                $match: { session_no: {$lt: sessId} }
+                $match: { session_no: {$lt: sessId * 1} }
             },
             {
                 $group:
