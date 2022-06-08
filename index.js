@@ -24,7 +24,7 @@ const debug = require('debug')('myapp:app');
 const cronService = require('./cronService')();
 const StudentApiController = require('./controllers/Api/studentCont')();
 const TelegramBot = require('node-telegram-bot-api');
-const token = '5348149050:AAEjr0XWpzz3_P9bZCs7lf9J6zLg8q4h1mg';
+const token = '5326855662:AAF1R4AaVYq4w5G3aiw4vix9XferGNFYaJ8';
 const bot = new TelegramBot(token, {polling: true});
 const FortunaHistoryModel = require('./models/fortunaHistory');
 const StudentModel = require('./models/student');
@@ -149,13 +149,7 @@ async function transferFortuan(senderId, senderName, receiverId, receiverName, v
 }
 
 bot.on('message', async (msg) => {
-    console.log('!!!!!!!!!! detect new message !!!!!!!!!!!!!!!!!');
-    console.log(msg);
-    console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     if (msg.reply_to_message && Object.keys(msg.reply_to_message).length > 0) {
-        console.log('==========================================================');
-        console.log('telegram-bot-new-msg:', msg);
-        console.log('==========================================================');
         try {
             if (msg.text.indexOf('/give') >= 0) {
                 let value = 0;
@@ -175,14 +169,11 @@ bot.on('message', async (msg) => {
                     let result = await transferFortuan(senderId, senderName, receiverId, receiverName, value);
 
                     if (result == 0) {
-                        console.log('~~~~~~~~~~~~~~~~~~~~~ send *success* message to', msg.chat.id, msg.from.username);
                         bot.sendMessage(msg.chat.id, "🤑 @" + senderName + " tipped @" + receiverName + " with " + value + " Fortuna!");
                     } else if (result == 1) {
-                        console.log('~~~~~~~~~~~~~~~~~~~~~ send ^balance^ message to', msg.chat.id, msg.from.username);
                         bot.sendMessage(msg.chat.id, "🤑 You have insufficient Fortuna into your account. Get smarter! Get Fortuna by answering to quizzes.");
                     }
                 } else {
-                    console.log('~~~~~~~~~~~~~~~~~~~~~ send $value$ message to', msg.chat.id, msg.from.username);
                     bot.sendMessage(msg.chat.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
                 }
             } else {
@@ -196,10 +187,6 @@ bot.on('message', async (msg) => {
 
 bot.onText(/\/give/, async (msg) => {
     if (msg.text.split(' ').length < 3) return;
-
-    console.log('+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
-    console.log('tele-tip-msg:', msg);
-    console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
 
     let parts = msg.text.split(' ');
     let receiverName = '';
@@ -241,17 +228,17 @@ bot.onText(/\/give/, async (msg) => {
         let result = await transferFortuan(senderId, senderName, receiverId, receiverName, value);
 
         if (result == 0) {
-            console.log('~~~~~~~~~~~~~~~~~~~~~ send *success* message to', msg.chat.id, msg.from.username);
+            // console.log('~~~~~~~~~~~~~~~~~~~~~ send *success* message to', msg.chat.id, msg.from.username);
             bot.sendMessage(msg.chat.id, "🤑 @" + senderName + " tipped @" + receiverName + " with " + value + " Fortuna!");
         } else if (result == 1) {
-            console.log('~~~~~~~~~~~~~~~~~~~~~ send ^balance^ message to', msg.chat.id, msg.from.username);
+            // console.log('~~~~~~~~~~~~~~~~~~~~~ send ^balance^ message to', msg.chat.id, msg.from.username);
             bot.sendMessage(msg.chat.id, "🤑 You have insufficient Fortuna into your account. Get smarter! Get Fortuna by answering to quizzes.");
         }
     } else if (!receiverId) {
-        console.log('~~~~~~~~~~~~~~~~~~~~~ send @user@ message to', msg.chat.id, msg.from.username);
+        // console.log('~~~~~~~~~~~~~~~~~~~~~ send @user@ message to', msg.chat.id, msg.from.username);
         bot.sendMessage(msg.chat.id, "🤑 Receiver is not user of Myafrica.link .");
     } else {
-        console.log('~~~~~~~~~~~~~~~~~~~~~ send $value$ message to', msg.chat.id, msg.from.username);
+        // console.log('~~~~~~~~~~~~~~~~~~~~~ send $value$ message to', msg.chat.id, msg.from.username);
         bot.sendMessage(msg.chat.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
     }
 });
