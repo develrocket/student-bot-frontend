@@ -45,7 +45,7 @@ module.exports = {
     },
 
     async getProfileData(telegramId) {
-        let result = await ResultModel.find({telegramId: telegramId * 1}).populate('session').sort({session_no: -1}).lean().exec();
+        let result = await ResultModel.find({telegramId: telegramId + ''}).populate('session').sort({session_no: -1}).lean().exec();
         let joinDate = result.length > 0 ? result[result.length - 1].session.session_start : '';
         let sessionCount = await SessionModel.countDocuments({});
         let teleUser = result.length > 0 ? result[0] : {};
