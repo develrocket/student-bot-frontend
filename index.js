@@ -22,6 +22,7 @@ const config = require('./config/config');
 const db = require('./config/db');
 const debug = require('debug')('myapp:app');
 const cronService = require('./cronService')();
+const StudentApiController = require('./controllers/Api/studentCont')();
 const TelegramBot = require('node-telegram-bot-api');
 const token = '5348149050:AAEjr0XWpzz3_P9bZCs7lf9J6zLg8q4h1mg';
 const bot = new TelegramBot(token, {polling: true});
@@ -92,6 +93,7 @@ db.on('connected', () => {
         app.emit('appStarted');
 
         // cronService.start(io);
+        StudentApiController.getResultAll();
     });
 });
 
