@@ -9,32 +9,62 @@ const Utils = require('../../helpers/utils');
 
 const serverUrl = 'https://vmi586933.contaboserver.net/';
 
-const fetchSession = async function() {
-    let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
-    let lastId = sessions.length > 0 ? sessions[0].session_no : 0;
+// const fetchSession = async function() {
+//     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
+//     let lastId = sessions.length > 0 ? sessions[0].session_no : 0;
+//     try {
+//         let config = {
+//             method: 'get',
+//             url: 'https://fortunaenglish.com/api/fetch/livesession?lastId=' + lastId,
+//             headers: {
+//                 'Content-Type': 'application/x-www-form-urlencoded'
+//             }
+//         };
+//
+//         let res = await axios(config);
+//
+//         for (const sessionItem of res.data) {
+//             const newSessionItem = new SessionModel();
+//             newSessionItem.language = sessionItem.language;
+//             newSessionItem.session_type = sessionItem.type;
+//             newSessionItem.session_name = sessionItem.session_name;
+//             newSessionItem.session_no = sessionItem.id;
+//             newSessionItem.session_start = sessionItem.start_time.replaceAll('/', '-');
+//             newSessionItem.questions_no = sessionItem.questions;
+//             newSessionItem.level = sessionItem.level;
+//             await newSessionItem.save();
+//         }
+//         console.log('insert-new-session:', res.data.length);
+//     } catch (err) {
+//         console.log(err);
+//     }
+// }
+
+const fetchSession = async function(sessId) {
+
+    // console.log('fetch-session-lastId:', lastId);
     try {
         let config = {
             method: 'get',
-            url: 'https://fortunaenglish.com/api/fetch/livesession?lastId=' + lastId,
+            url: serverUrl + '/fetch-session-detail.php?session_no=' + sessId,
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         };
 
         let res = await axios(config);
+        // console.log(res);
 
         for (const sessionItem of res.data) {
             const newSessionItem = new SessionModel();
-            newSessionItem.language = sessionItem.language;
-            newSessionItem.session_type = sessionItem.type;
-            newSessionItem.session_name = sessionItem.session_name;
-            newSessionItem.session_no = sessionItem.id;
-            newSessionItem.session_start = sessionItem.start_time.replaceAll('/', '-');
+            newSessionItem.session_name = sessionItem.name;
+            newSessionItem.session_no = sessionItem.sess_id;
+            newSessionItem.session_start = sessionItem.start_time;
             newSessionItem.questions_no = sessionItem.questions;
             newSessionItem.level = sessionItem.level;
+            newSessionItem.delivered = sessionItem.delivered;
             await newSessionItem.save();
         }
-        console.log('insert-new-session:', res.data.length);
     } catch (err) {
         console.log(err);
     }
@@ -51,17 +81,24 @@ const fetchResult = async function(sessId) {
             }
         };
 
+        const session = await SessionModel.findOne({session_no: sessId});
+
+        if (!session) return;
+
         let res = await axios(config);
 
         let rItems = [];
         let points = [];
+        let telegramIds = [];
 
         for (const rItem of res.data) {
             let a = rItem.username;
             let username = ((a.split('">')[1]).split('</')[0]).trim();
             let point = rItem.correct * 1;
+            if (telegramIds.indexOf(rItem.user_id + '') >= 0) continue;
+            telegramIds.push(rItem.user_id + '');
             rItems.push({
-                telegramId: rItem.user_id,
+                telegramId: rItem.user_id + '',
                 username: username,
                 session_no: rItem.session_id,
                 session_points: point,
@@ -74,7 +111,7 @@ const fetchResult = async function(sessId) {
             }
         }
         points.sort((a, b) => b - a);
-        const session = await SessionModel.findOne({session_no: sessId});
+
 
         let oldResults = await StudentResultModel.aggregate([
             {
@@ -89,6 +126,8 @@ const fetchResult = async function(sessId) {
                     }
             }
         ]);
+
+        console.log('fetch-result-points:', points);
 
         for (let i = 0; i < rItems.length; i ++) {
             let rItem = rItems[i];
@@ -110,8 +149,11 @@ const fetchResult = async function(sessId) {
             rItem.total_fortuna_user = totalFortuna;
             rItem.session = session._id;
 
-            let results = await StudentResultModel.find({session_no: sessId, telegramId: rItem.telegramId});
+            let results = await StudentResultModel.find({session_no: sessId, telegramId: rItem.telegramId}).lean().exec();
             if (results.length > 0) {
+                if (rItem.session_points == 47) {
+                    console.log(rItem);
+                }
                 await StudentResultModel.update({_id: results[0]._id}, {
                     $set: rItem
                 })
@@ -166,6 +208,15 @@ module.exports = function(){
     return {
         getResultBySessNo: async function(req, res) {
             await fetchResult(req.query.sessNo);
+            return res.json({result: 'success'});
+        },
+
+        getResultAll: async function(req, res) {
+            for (let i = 8097; i <= 9081; i ++) {
+                console.log('fetch-session-no:', i);
+                await fetchSession(i);
+                await fetchResult(i);
+            }
             return res.json({result: 'success'});
         },
 

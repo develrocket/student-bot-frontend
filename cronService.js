@@ -71,13 +71,16 @@ const fetchResult = async function(sessId) {
 
         let rItems = [];
         let points = [];
+        let telegramIds = [];
 
         for (const rItem of res.data) {
             let a = rItem.username;
             let username = ((a.split('">')[1]).split('</')[0]).trim();
             let point = rItem.correct * 1;
+            if (telegramIds.indexOf(rItem.user_id + '') >= 0) continue;
+            telegramIds.push(rItem.user_id + '');
             rItems.push({
-                telegramId: rItem.user_id,
+                telegramId: rItem.user_id + '',
                 username: username,
                 session_no: rItem.session_id,
                 session_points: point,

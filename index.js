@@ -91,7 +91,7 @@ db.on('connected', () => {
         debug(`App listening on ${config.server.hostname} port: ${config.server.port}`);
         app.emit('appStarted');
 
-        cronService.start(io);
+        // cronService.start(io);
     });
 });
 
