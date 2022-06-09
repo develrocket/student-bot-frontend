@@ -30,11 +30,12 @@ const fetchSession = async function(io) {
         // console.log(res);
 
         for (const sessionItem of res.data) {
-            if (sessionItem.sess_id + '' == lastId + '') {
-                let newSessionItem = await SessionModel.find({session_no: sessItem.sess_id}).lean().exec();
+            let newSessionItem = await SessionModel.find({session_no: sessItem.sess_id}).lean().exec();
+
+            if (newSessionItem.length > 0) {
                 newSessionItem = newSessionItem[0];
             } else {
-                const newSessionItem = new SessionModel();
+                newSessionItem = new SessionModel();
                 newSessionItem.session_name = sessionItem.name;
                 newSessionItem.session_no = sessionItem.sess_id;
                 newSessionItem.session_start = sessionItem.start_time;
