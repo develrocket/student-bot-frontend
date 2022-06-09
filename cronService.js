@@ -52,15 +52,17 @@ const fetchSession = async function(io) {
 
 
             if (newSessionItem.delivered * 1 === 0 || !newSessionItem.delivered) {
-                let content = 'Tournament ' + newSessionItem.session_name + ' started! Level:' + newSessionItem.level + ' Questions:' + newSessionItem.questions_no;
-                io.emit('news_updated', { content: content });
-                newSessionIds.push(sessionItem.sess_id);
+                if (!newSessionItem._id) {
+                    let content = 'Tournament ' + newSessionItem.session_name + ' started! Level:' + newSessionItem.level + ' Questions:' + newSessionItem.questions_no;
+                    io.emit('news_updated', { content: content });
 
-                let news = new NewsModel({
-                    content: content,
-                    status: 0
-                });
-                await news.save();
+                    let news = new NewsModel({
+                        content: content,
+                        status: 0
+                    });
+                    await news.save();
+                }
+                newSessionIds.push(sessionItem.sess_id);
             }
         }
     } catch (err) {
