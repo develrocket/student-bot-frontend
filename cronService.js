@@ -14,6 +14,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const fetchSession = async function(io) {
     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
     let lastId = sessions.length > 0 ? sessions[0].session_no : 8696;
+    lastId --;
     let newSessionIds = [];
     // console.log('fetch-session-lastId:', lastId);
     try {
@@ -199,38 +200,10 @@ module.exports = function(){
                 let deleteSessionIds = [];
                 for (let i = 0; i < newSessionIds.length; i ++) {
                     let sessId = newSessionIds[i];
-                    let config = {
-                        method: 'get',
-                        url: serverUrl + '/fetch-session-detail.php?session_no=' + sessId,
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        }
-                    };
-
-                    let res = await axios(config);
-
-                    if (res.data.length > 0) {
-                        let session = res.data[0];
-                        if (session.delivered * 1 > 0) {
-                            await SessionModel.update({
-                                session_no: sessId
-                            }, {
-                                $set: {
-                                    delivered: session.delivered
-                                }
-                            });
-                            let results = await ResultModel.find({session_no: sessId}).sort({session_rank: 1}).lean().exec();
-
-                            let content = 'Tournament ' + session.name + ' over. 🥇Winner ' + results[0].username + ' with' + results[0].session_points + '! Congratulations! Stay tuned for the next broadcast!';
-                            io.emit('news_updated', { content: content });
-                            let news = new NewsModel({
-                                content: content,
-                                status: 2
-                            });
-                            await news.save();
-                            deleteSessionIds.push(sessId);
-                        } else {
-                            let results = await ResultModel.find({session_no: sessId}).sort({session_rank: 1}).lean().exec();
+                    let results = await ResultModel.find({session_no: sessId}).sort({session_rank: 1}).lean().exec();
+                    if (results.length > 0) {
+                        let remaining = session.questions * 1 - (results.length > 0 ? results[0].session_points + results[0].session_wrong_points : 0);
+                        if (remaining > 0) {
                             let content = 'Tournament ' + session.name + ' ongoing! Level: ' + session.level + ' Questions: ' + session.questions + ' Players: ' + results.length + '.';
                             if (results.length > 0) {
                                 content += ' 🥇' + results[0].username + ' ' + results[0].session_points + ' points.'
@@ -248,9 +221,29 @@ module.exports = function(){
                                 status: 1
                             });
                             await news.save();
+                        } else {
+                            await SessionModel.update({
+                                session_no: sessId
+                            }, {
+                                $set: {
+                                    delivered: session.delivered
+                                }
+                            });
+
+                            let content = 'Tournament ' + session.name + ' over. 🥇Winner ' + results[0].username + ' with' + results[0].session_points + '! Congratulations! Stay tuned for the next broadcast!';
+                            io.emit('news_updated', { content: content });
+                            let news = new NewsModel({
+                                content: content,
+                                status: 2
+                            });
+                            await news.save();
+                            deleteSessionIds.push(sessId);
                         }
+
                     } else {
-                        deleteSessionIds.push(sessId);
+                        if (i < newSessionIds.length -1 ) {
+                            deleteSessionIds.push(sessId);
+                        }
                     }
                 }
 
