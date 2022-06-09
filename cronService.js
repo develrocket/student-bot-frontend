@@ -30,7 +30,7 @@ const fetchSession = async function(io) {
         // console.log(res);
 
         for (const sessionItem of res.data) {
-            let newSessionItem = await SessionModel.find({session_no: sessItem.sess_id}).lean().exec();
+            let newSessionItem = await SessionModel.find({session_no: sessionItem.sess_id}).lean().exec();
 
             if (newSessionItem.length > 0) {
                 newSessionItem = newSessionItem[0];
