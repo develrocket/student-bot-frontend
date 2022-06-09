@@ -32,6 +32,8 @@ const fetchSession = async function(io) {
         for (const sessionItem of res.data) {
             let newSessionItem = await SessionModel.find({session_no: sessionItem.sess_id}).lean().exec();
 
+            // console.log('===>', sessionItem.sess_id, newSessionItem);
+
             if (newSessionItem.length > 0) {
                 newSessionItem = newSessionItem[0];
             } else {
@@ -200,10 +202,10 @@ module.exports = function(){
                 let nIds = await fetchSession(io);
                 newSessionIds = newSessionIds.concat(nIds);
 
-                console.log('new-session-ids:', newSessionIds);
+                // console.log('new-session-ids:', newSessionIds);
 
                 for (let i = 0; i < newSessionIds.length; i ++) {
-                    console.log('======> fetch result session:', newSessionIds[i]);
+                    // console.log('======> fetch result session:', newSessionIds[i]);
                     await fetchResult(newSessionIds[i]);
                 }
 
@@ -212,11 +214,13 @@ module.exports = function(){
                 let deleteSessionIds = [];
                 for (let i = 0; i < newSessionIds.length; i ++) {
                     let sessId = newSessionIds[i];
+                    let session = await SessionModel.findOne({session_no: sessId});
                     let results = await ResultModel.find({session_no: sessId}).sort({session_rank: 1}).lean().exec();
                     if (results.length > 0) {
-                        let remaining = session.questions * 1 - (results.length > 0 ? results[0].session_points + results[0].session_wrong_points : 0);
+                        let remaining = session.questions_no * 1 - (results.length > 0 ? results[0].session_points + results[0].session_wrong_points : 0);
+                        // console.log('session_remaining:', sessId, remaining);
                         if (remaining > 0) {
-                            let content = 'Tournament ' + session.name + ' ongoing! Level: ' + session.level + ' Questions: ' + session.questions + ' Players: ' + results.length + '.';
+                            let content = 'Tournament ' + session.sesion_name + ' ongoing! Level: ' + session.level + ' Questions: ' + session.questions_no + ' Players: ' + results.length + '.';
                             if (results.length > 0) {
                                 content += ' 🥇' + results[0].username + ' ' + results[0].session_points + ' points.'
                             }
@@ -226,7 +230,7 @@ module.exports = function(){
                             if (results.length > 2) {
                                 content += ' 🥉' + results[2].username + ' ' + results[2].session_points + ' points.'
                             }
-                            content += ' Questions remaining ' + (session.questions * 1 - (results.length > 0 ? results[0].session_points + results[0].session_wrong_points : 0));
+                            content += ' Questions remaining ' + (session.questions_no * 1 - (results.length > 0 ? results[0].session_points + results[0].session_wrong_points : 0));
                             io.emit('news_updated', { content: content });
                             let news = new NewsModel({
                                 content: content,
@@ -234,15 +238,16 @@ module.exports = function(){
                             });
                             await news.save();
                         } else {
+                            // console.log('here-session-end:', sessId);
                             await SessionModel.update({
                                 session_no: sessId
                             }, {
                                 $set: {
-                                    delivered: session.delivered
+                                    delivered: 1
                                 }
                             });
 
-                            let content = 'Tournament ' + session.name + ' over. 🥇Winner ' + results[0].username + ' with' + results[0].session_points + '! Congratulations! Stay tuned for the next broadcast!';
+                            let content = 'Tournament ' + session.session_name + ' over. 🥇Winner ' + results[0].username + ' with' + results[0].session_points + '! Congratulations! Stay tuned for the next broadcast!';
                             io.emit('news_updated', { content: content });
                             let news = new NewsModel({
                                 content: content,
@@ -266,6 +271,8 @@ module.exports = function(){
                 if (newSessionIds.length == 0) {
                     io.emit('session_ended', {});
                 }
+
+                // console.log('new-session-id-length:', newSessionIds.length);
 
                 await sleep(3000);
             }
