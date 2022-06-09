@@ -42,11 +42,14 @@ const fetchSession = async function(io) {
                 newSessionItem.questions_no = sessionItem.questions;
                 newSessionItem.level = sessionItem.level;
                 // newSessionItem.delivered = sessionItem.delivered;
+                newSessionItem.delivered = 0;
                 await newSessionItem.save();
             }
 
+            // console.log(newSessionItem);
 
-            if (newSessionItem.delivered * 1 === 0) {
+
+            if (newSessionItem.delivered * 1 === 0 || !newSessionItem.delivered) {
                 let content = 'Tournament ' + newSessionItem.session_name + ' started! Level:' + newSessionItem.level + ' Questions:' + newSessionItem.questions_no;
                 io.emit('news_updated', { content: content });
                 newSessionIds.push(sessionItem.sess_id);
@@ -196,6 +199,8 @@ module.exports = function(){
             while(1) {
                 let nIds = await fetchSession(io);
                 newSessionIds = newSessionIds.concat(nIds);
+
+                console.log('new-session-ids:', newSessionIds);
 
                 for (let i = 0; i < newSessionIds.length; i ++) {
                     console.log('======> fetch result session:', newSessionIds[i]);
