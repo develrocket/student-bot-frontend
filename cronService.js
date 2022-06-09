@@ -222,7 +222,7 @@ module.exports = function(){
                         let remaining = session.questions_no * 1 - (results.length > 0 ? results[0].session_points + results[0].session_wrong_points : 0);
                         // console.log('session_remaining:', sessId, remaining);
                         if (remaining > 0) {
-                            let content = 'Tournament ' + session.sesion_name + ' ongoing! Level: ' + session.level + ' Questions: ' + session.questions_no + ' Players: ' + results.length + '.';
+                            let content = 'Tournament ' + session.session_name + ' ongoing! Level: ' + session.level + ' Questions: ' + session.questions_no + ' Players: ' + results.length + '.';
                             if (results.length > 0) {
                                 content += ' 🥇' + results[0].username + ' ' + results[0].session_points + ' points.'
                             }
