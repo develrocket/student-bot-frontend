@@ -13,6 +13,9 @@ const SkillHistoryModel = require('./models/skillHistory');
 const serverUrl = 'https://vmi586933.contaboserver.net/';
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+// const groupId = -1001495582810;
+const groupId = -518755245;
+
 const fetchSession = async function(io) {
     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
     let lastId = sessions.length > 0 ? sessions[0].session_no : 8696;
@@ -74,7 +77,7 @@ const fetchSession = async function(io) {
     return newSessionIds;
 }
 
-const fetchResult = async function(sessId, skills) {
+const fetchResult = async function(sessId, skills, bot) {
     try {
         let config = {
             method: 'get',
@@ -156,12 +159,20 @@ const fetchResult = async function(sessId, skills) {
 
             let results = await ResultModel.find({session_no: sessId, telegramId: rItem.telegramId});
             if (results.length > 0) {
+                if (results[0].title != title) {
+                   bot.sendMessage(groupId, '🔥Congratulations fellow African ' + rItem.username + '! 🦇 You have just been promoted to ' + title +'!');
+                }
                 await ResultModel.update({_id: results[0]._id}, {
                     $set: rItem
                 })
             } else {
                 let item = new ResultModel(rItem);
                 await item.save();
+
+                let prevResults = await ResultModel.find({session_no: {$lt: sessId}, telegramId: rItem.telegramId}).sort({session_no: -1}).lean().exec();
+                if (prevResults[0].title != title) {
+                    bot.sendMessage(groupId, '🔥Congratulations fellow African ' + rItem.username + '! 🦇 You have just been promoted to ' + title +'!');
+                }
 
                 await SessionModel.update({
                     session_no: sessId
@@ -171,6 +182,8 @@ const fetchResult = async function(sessId, skills) {
                     }
                 })
             }
+
+
 
             if (skill) {
                 let skillHistory = await SkillHistoryModel.find({session_no: sessId, telegramId: rItem.telegramId, skill: skill}).lean().exec();
@@ -226,7 +239,7 @@ const fetchResult = async function(sessId, skills) {
 
 module.exports = function(){
     return {
-        start: async function(io) {
+        start: async function(io, bot) {
             let lastIds = [];
             let newSessionIds = [];
             let deleteSessionIds = [];
@@ -241,7 +254,7 @@ module.exports = function(){
 
                 for (let i = 0; i < newSessionIds.length; i ++) {
                     // console.log('======> fetch result session:', newSessionIds[i]);
-                    await fetchResult(newSessionIds[i], skills);
+                    await fetchResult(newSessionIds[i], skills, bot);
                 }
 
                 // console.log('-----> finished get result');
