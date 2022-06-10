@@ -425,7 +425,9 @@
             });
         });
 
-        $('#datatable').DataTable();
+        $('#datatable').DataTable({
+            order: [[0, 'desc']],
+        });
         if ($('#rankDataTable0').length) $('#rankDataTable0').DataTable();
         if ($('#rankDataTable1').length) $('#rankDataTable1').DataTable();
         if ($('#rankDataTable2').length) $('#rankDataTable2').DataTable();
