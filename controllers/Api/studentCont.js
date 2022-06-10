@@ -7,6 +7,7 @@ const FortunaHistoryModel = require('../../models/fortunaHistory');
 const axios = require('axios').default;
 const Utils = require('../../helpers/utils');
 const SkillModel = require('../../models/skill');
+const StudentModel = require('../../models/student');
 
 const serverUrl = 'https://vmi586933.contaboserver.net/';
 
@@ -219,7 +220,7 @@ module.exports = function(){
                 let skill = new SkillModel({name: skills[i]});
                 await skill.save();
             }
-            
+
             return res.json({result: 'success'});
         },
         getResultBySessNo: async function(req, res) {
@@ -257,6 +258,11 @@ module.exports = function(){
             let results = await StudentResultModel.find({session_no: sessNo}).lean().exec();
 
             results.sort((a, b) => a.session_rank - b.session_rank);
+
+            for (let j = 0; j < results.length; j ++) {
+                let user = await StudentModel.findOne({telegramId: results[j].telegramId});
+                results[j].country =  user ? (user.countryCode ? user.countryCode : 'af') : 'af';
+            }
 
             return res.json({result: results});
         },

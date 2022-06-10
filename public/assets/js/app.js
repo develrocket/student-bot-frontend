@@ -108,7 +108,7 @@ function initProfileRightbar() {
                     $('#profile-side-username').html(user.username);
                     $('#profile-side-motto').html(motto);
                     $('#profile-side-fortuna').html('<img src="public/assets/images/fortuna-icon.jpg" alt="Overall Fortuna" style="width: 20px; height: 20px;" title="Overall Fortuna"/> ' + totalFortuna.toFixed(1));
-                    $('#profile-side-telegramId').html('Telegram ID: ' + user.telegramId);
+                    // $('#profile-side-telegramId').html('Telegram ID: ' + user.telegramId);
 
                     if (joinDate) {
                         $('#profile-side-joindate').removeClass('hidden');

@@ -113,7 +113,7 @@
                             <tr>
                                 <th>No</th>
                                 <th>Username</th>
-                                <th>Telegram ID</th>
+                                <th>Country</th>
                                 <th>Points</th>
                                 <th>Rank</th>
                                 <th>Title</th>
@@ -128,7 +128,7 @@
                                             <%= player.username %>
                                         </a>
                                     </td>
-                                    <td><%= player.telegramId %></td>
+                                    <td><img src="public/assets/images/flags/<%= player.country %>.svg" style="height: 20px;"/></td>
                                     <td><%= player.session_points %></td>
                                     <td style="display: flex;">
                                       <% if (player.session_rank == 1) { %>

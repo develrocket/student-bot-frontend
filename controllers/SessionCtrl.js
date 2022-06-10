@@ -4,6 +4,7 @@ const paginate = require('express-paginate');
 
 const SessionModel = require('../models/sessionResult');
 const ResultModel = require('../models/studentResult');
+const StudentModel = require('../models/student');
 const axios = require('axios').default;
 
 const fetchSession = async function() {
@@ -81,6 +82,10 @@ module.exports = function(){
             for (let i = 0; i < sessions.length; i ++) {
                 let results = await ResultModel.find({session_no: sessions[i].session_no}).lean().exec();
                 results.sort((a, b) => a.session_rank - b.session_rank);
+                for (let j = 0; j < results.length; j ++) {
+                    let user = await StudentModel.findOne({telegramId: results[j].telegramId});
+                    results[j].country =  user ? (user.countryCode ? user.countryCode : 'af') : 'af';
+                }
                 sessions[i].players = results;
             }
 
