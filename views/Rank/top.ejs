@@ -80,7 +80,7 @@
                                 <tr>
                                     <th>Rank</th>
                                     <th>Username</th>
-                                    <th>Telegram Id</th>
+                                    <th>Country</th>
                                     <th>Total Points</th>
                                     <th>Title</th>
                                 </tr>
@@ -106,7 +106,9 @@
                                                     <%= result.username %>
                                                 </a>
                                             </td>
-                                            <td><%= result.telegramId %></td>
+                                            <td>
+                                                <img src="public/assets/images/flags/<%= result.country %>.svg" style="height: 20px;"/>
+                                            </td>
                                             <td><%= result.sum_point %></td>
                                             <td><%= result.title %></td>
                                         </tr>

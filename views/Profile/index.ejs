@@ -46,7 +46,7 @@
                     </div>
                 </div>
                 <p class="card-text">@<%= user.username %></p>
-                <p class="card-text">Telegram ID: <%= user.telegramId %></p>
+                <!--p class="card-text">Telegram ID: <%= user.telegramId %></p-->
                 <% if (joinDate) { %>
                 <p class="card-text">Joined At: <%= moment(joinDate).format('YYYY-MM-DD') %></p>
                 <% } %>
@@ -365,7 +365,7 @@
                     html += '<tr>';
                     html += '<th scope="row">' + (i + 1) +'</th>';
                     html += '<td><a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="' + item.telegramId + '">' + item.username + '</a></td>';
-                    html += '<td>' + item.telegramId + '</td>';
+                    html += '<td><img src="public/assets/images/flags/' + item.country + '.svg" style="height: 20px;"/></td>';
                     html += '<td>' + item.session_points + '</td>'
                     html += '<td style="display: flex;">';
 

@@ -3,6 +3,7 @@ const moment = require('moment');
 
 const SessionModel = require('../models/sessionResult');
 const ResultModel = require('../models/studentResult');
+const StudentModel = require('../models/student');
 const axios = require('axios').default;
 
 module.exports = function(){
@@ -58,6 +59,10 @@ module.exports = function(){
                             sum_point: item.totalPoints,
                             title: result.title,
                         };
+
+                        let user = await StudentModel.findOne({telegramId: result.telegramId});
+                        ritem.country =  user ? (user.countryCode ? user.countryCode : 'af') : 'af';
+
                         if (results.length === 0) {
                             results.push(ritem);
                             continue;
@@ -99,6 +104,9 @@ module.exports = function(){
                             sum_point: result.sum_point,
                             title: result.title,
                         };
+                        let user = await StudentModel.findOne({telegramId: result.telegramId});
+                        ritem.country =  user ? (user.countryCode ? user.countryCode : 'af') : 'af';
+
                         if (results.length === 0) {
                             results.push(ritem);
                             continue;
