@@ -72,6 +72,7 @@ function initProfileRightbar() {
                     let motto = res.motto;
                     let totalFortuna = res.totalFortuna;
                     let countryCode = res.countryCode;
+                    let mySkills = res.mySkills;
 
                     let coptions = {
                         // defaultCountry: "jp",
@@ -87,6 +88,20 @@ function initProfileRightbar() {
                         $('#profileRightCountry').addClass('hidden');
                     }
 
+                    let skillHtml = '';
+                    let skills = Object.keys(mySkills);
+                    let isExist = false;
+                    for (let i = 0; i < skills.length; i ++) {
+                        if (mySkills[skills[i]] > 0) {
+                            isExist = true;
+                            skillHtml += '<div class="skill-item"><img src="public/assets/images/skills/' + skills[i] + '.png" title="' + skills[i] + '"/><span>' + mySkills[skills[i]] + '</span></div>'
+                        }
+                    }
+                    if (isExist) {
+                        $('#profileRightSkills').html(skillHtml);
+                    } else {
+                        $('#profileRightSkills').html('No Skills');
+                    }
 
                     $('#profile-side-title-img').attr('src', 'public/assets/images/title/' +  (user.title.toLowerCase()) + '.jpg');
                     $('#profile-side-title-img').attr('alt', user.username);
