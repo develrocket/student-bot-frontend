@@ -6,6 +6,8 @@ const FortunaHistoryModel = require('./models/fortunaHistory');
 const Utils = require('./helpers/utils');
 const moment = require('moment');
 const NewsModel = require('./models/news');
+const SkillModel = require('./models/skill');
+const SkillHistoryModel = require('./models/skillHistory');
 
 // const serverUrl = 'http://my.loc/test/';
 const serverUrl = 'https://vmi586933.contaboserver.net/';
@@ -72,7 +74,7 @@ const fetchSession = async function(io) {
     return newSessionIds;
 }
 
-const fetchResult = async function(sessId) {
+const fetchResult = async function(sessId, skills) {
     try {
         let config = {
             method: 'get',
@@ -109,6 +111,14 @@ const fetchResult = async function(sessId) {
         }
         points.sort((a, b) => b - a);
         const session = await SessionModel.findOne({session_no: sessId});
+
+        let skill = '';
+        for (let i =  0; i < skills.length; i ++) {
+            if (session.session_name.toLowerCase().indexOf(skills[i]) >= 0) {
+                skill = skills[i];
+                break;
+            }
+        }
 
         let oldResults = await ResultModel.aggregate([
             {
@@ -162,6 +172,26 @@ const fetchResult = async function(sessId) {
                 })
             }
 
+            if (skill) {
+                let skillHistory = await SkillHistoryModel.find({session_no: sessId, telegramId: rItem.telegramId, skill: skill}).lean().exec();
+                if (skillHistory.length > 0) {
+                    skillHistory = skillHistory[0];
+                    await SkillHistoryModel.update({
+                        _id: skillHistory._id
+                    }, {
+                        $set: {score: rItem.fortuna_points}
+                    });
+                } else {
+                    skillHistory = new SkillHistoryModel({
+                        skill: skill,
+                        session_no: sessId,
+                        telegramId: rItem.telegramId,
+                        score: rItem.fortuna_points
+                    });
+                    await skillHistory.save();
+                }
+            }
+
             let lastHistory = await FortunaHistoryModel.find({session_no: sessId, telegramId: rItem.telegramId}).lean().exec();
             if (lastHistory.length > 0) {
                 lastHistory = lastHistory[0];
@@ -200,6 +230,9 @@ module.exports = function(){
             let lastIds = [];
             let newSessionIds = [];
             let deleteSessionIds = [];
+            let skills = await SkillModel.find({}).lean().exec();
+            skills = skills.map(item => item.name);
+
             while(1) {
                 let nIds = await fetchSession(io);
                 newSessionIds = newSessionIds.concat(nIds);
@@ -208,7 +241,7 @@ module.exports = function(){
 
                 for (let i = 0; i < newSessionIds.length; i ++) {
                     // console.log('======> fetch result session:', newSessionIds[i]);
-                    await fetchResult(newSessionIds[i]);
+                    await fetchResult(newSessionIds[i], skills);
                 }
 
                 // console.log('-----> finished get result');
@@ -217,6 +250,7 @@ module.exports = function(){
                 for (let i = 0; i < newSessionIds.length; i ++) {
                     let sessId = newSessionIds[i];
                     let session = await SessionModel.findOne({session_no: sessId});
+
                     let results = await ResultModel.find({session_no: sessId}).sort({session_rank: 1}).lean().exec();
                     if (results.length > 0) {
                         let remaining = session.questions_no * 1 - (results.length > 0 ? results[0].session_points + results[0].session_wrong_points : 0);

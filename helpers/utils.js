@@ -3,6 +3,8 @@ const SessionModel = require('../models/sessionResult');
 const ResultModel = require('../models/studentResult');
 const StudentModel = require('../models/student');
 const FortunaHistoryModel = require('../models/fortunaHistory');
+const SkillModel = require('../models/skill');
+const SkillHistoryModel = require('../models/skillHistory');
 
 module.exports = {
     randomString(length) {
@@ -154,6 +156,30 @@ module.exports = {
 
         let totalFortuna = fResults.length > 0 ? fResults[0].totalPoints : 0;
 
-        return {joinDate, result, sessionCount, rank, teleUser, rResult, motto, totalFortuna, myParts, countryCode};
+        let skills = await SkillModel.find({}).lean().exec();
+
+        let skillHistories = await SkillHistoryModel.aggregate([
+            {
+                $match: { telegramId: telegramId + '' }
+            },
+            {
+                $group:
+                    {
+                        _id: "$skill",
+                        totalPoints: { $sum: "$score" }
+                    }
+            }
+        ]);
+        let mySkills = {};
+        for (let i = 0; i < skills.length; i ++) {
+            mySkills[skills[i].name] = 0;
+            for (let j = 0; j < skillHistories.length; j ++) {
+                if (skillHistories[j]._id == skills[i].name) {
+                    mySkills[skills[i].name] = (skillHistories[j].totalPoints * 1).toFixed(1)
+                }
+            }
+        }
+
+        return {joinDate, result, sessionCount, rank, teleUser, rResult, motto, totalFortuna, myParts, countryCode, skills, mySkills};
     }
 };
