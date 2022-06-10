@@ -144,7 +144,9 @@ function initProfileRightbar() {
                     tbody += '</tbody>';
 
                     $('#profile-side-history').html(tbody);
-                    $('#profileSideTable').DataTable();
+                    $('#profileSideTable').DataTable({
+                        order: [[0, 'desc']],
+                    });
 
                     let allCount = sessionCount * 1;
                     let attendCount = result.length;
