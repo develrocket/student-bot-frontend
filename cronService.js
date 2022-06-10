@@ -160,7 +160,7 @@ const fetchResult = async function(sessId, skills, bot) {
             let results = await ResultModel.find({session_no: sessId, telegramId: rItem.telegramId});
             if (results.length > 0) {
                 if (results[0].title != title) {
-                   bot.sendMessage(groupId, '🔥Congratulations fellow African ' + rItem.username + '! 🦇 You have just been promoted to ' + title +'!');
+                   bot.sendMessage(groupId, '🔥Congratulations fellow African **' + rItem.username + '**! 🦇 You have just been promoted to **' + title +'**!');
                 }
                 await ResultModel.update({_id: results[0]._id}, {
                     $set: rItem
@@ -171,7 +171,7 @@ const fetchResult = async function(sessId, skills, bot) {
 
                 let prevResults = await ResultModel.find({session_no: {$lt: sessId}, telegramId: rItem.telegramId}).sort({session_no: -1}).lean().exec();
                 if (prevResults[0].title != title) {
-                    bot.sendMessage(groupId, '🔥Congratulations fellow African ' + rItem.username + '! 🦇 You have just been promoted to ' + title +'!');
+                    bot.sendMessage(groupId, '🔥Congratulations fellow African **' + rItem.username + '**! 🦇 You have just been promoted to **' + title +'**!');
                 }
 
                 await SessionModel.update({
