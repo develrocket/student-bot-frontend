@@ -92,7 +92,7 @@ db.on('connected', () => {
         debug(`App listening on ${config.server.hostname} port: ${config.server.port}`);
         app.emit('appStarted');
 
-        cronService.start(io);
+        cronService.start(io, bot);
         // StudentApiController.getResultAll();
     });
 });
@@ -149,6 +149,8 @@ async function transferFortuan(senderId, senderName, receiverId, receiverName, v
 }
 
 bot.on('message', async (msg) => {
+    console.log('tele-new-message:', msg);
+    
     if (msg.reply_to_message && Object.keys(msg.reply_to_message).length > 0) {
         try {
             if (msg.text.indexOf('/give') >= 0) {
