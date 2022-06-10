@@ -229,3 +229,34 @@ div#profileSideTable_wrapper div.dataTables_paginate ul.pagination {
     background-color: #2F96B4 !important;
     border: 1px solid rgba(0,0,0,.1) !important;
 }
+
+.skill-item {
+    display: flex;
+    align-items: center;
+    float: left;
+    margin-right: 10px;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    border: 1px solid #dfe2e6;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.skill-item .disabled {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.skill-item img {
+    margin-right: 10px;
+    height: 40px;
+}
+
+.skill-item span {
+    /* background: #077e2c; */
+    color: black;
+    padding: 1px 10px;
+}

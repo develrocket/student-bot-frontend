@@ -74,103 +74,153 @@
     <div class="col-md-6 col-xl-9">
         <div class="card">
             <div class="card-body">
-                <div class="mb-3 row">
-                    <label for="example-text-input" class="col-md-2 col-form-label">My Motto</label>
-                    <div class="col-md-10">
-                        <td>
-                            <a href="#" id="inline-motto" data-type="text" data-pk="1" data-title="Enter motto" style="line-height: 37px;"><%= motto %></a>
-                        </td>
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#navpills2-home"
+                            role="tab">
+                            <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                            <span class="d-none d-sm-block">Profile Info</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#navpills2-profile" role="tab">
+                            <span class="d-block d-sm-none"><i class="far fa-list-alt"></i></span>
+                            <span class="d-none d-sm-block">Play History</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#navpills2-messages" role="tab">
+                            <span class="d-block d-sm-none"><i class="fas fa-chart-pie"></i></span>
+                            <span class="d-none d-sm-block">Attendance Chart</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content p-3 text-muted" style="padding-left: 0px; padding-right: 0px;">
+                    <div class="tab-pane active" id="navpills2-home" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="mb-3 row">
+                                    <label for="example-text-input" class="col-md-2 col-form-label">My Motto</label>
+                                    <div class="col-md-10">
+                                        <td>
+                                            <a href="#" id="inline-motto" data-type="text" data-pk="1" data-title="Enter motto" style="line-height: 37px;"><%= motto %></a>
+                                        </td>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title mt-0"><i class="uil-award-alt"></i> Skills</h4>
+                            </div>
+                            <div class="card-body">
+                                <% skills.forEach(function(item) { %>
+                                    <div class="skill-item">
+                                        <img src="public/assets/images/skills/<%= item.name %>.png" title="<%= item.name %>"/>
+                                        <span><%= mySkills[item.name] %></span>
+                                        <div class="disabled <%= mySkills[item.name] * 1 > 0 ? 'hidden' : '' %>"></div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title mt-0"><i class="uil-award"></i> Trophies</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3 row">
+                                    <div class="col-4">
+                                        <img src="public/assets/images/trophies/legend.jpg" style="width: 100%; border-radius: 15px;"/>
+                                        <% if (rResult[0].count < 150) {%>
+                                            <div class="locked-trophy">
+                                                <div>
+                                                    <b><i class="uil-lock-alt"></i> Locked</b><br/>
+                                                    150 times 1<sup>st</sup> ranked
+                                                </div>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                    <div class="col-4">
+                                        <img src="public/assets/images/trophies/lion.jpg" style="width: 100%; border-radius: 15px;"/>
+                                        <% if (rResult[0].count < 100) {%>
+                                            <div class="locked-trophy">
+                                                <div>
+                                                    <b><i class="uil-lock-alt"></i> Locked</b><br/>
+                                                    100 times 1<sup>st</sup> ranked
+                                                </div>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                    <div class="col-4">
+                                        <img src="public/assets/images/trophies/love.jpg" style="width: 100%; border-radius: 15px;"/>
+                                        <% if (rResult[0].count < 50) {%>
+                                            <div class="locked-trophy">
+                                                <div>
+                                                    <b><i class="uil-lock-alt"></i> Locked</b><br/>
+                                                    50 times 1<sup>st</sup> ranked
+                                                </div>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="navpills2-profile" role="tabpanel">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title mt-0">Play History</h4>
+                            </div>
+                            <div class="card-body">
+                                <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                    <thead>
+                                    <tr>
+                                        <th>Session No</th>
+                                        <th>Session Name</th>
+                                        <th>Points</th>
+                                        <th>Rank</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    <% result.forEach(function(ritem) { %>
+                                        <tr>
+                                            <th scope="row"><%= ritem.session_no %></th>
+                                            <td><%= ritem.session ? ritem.session.session_name : '' %></td>
+                                            <td><%= ritem.session_points %></td>
+                                            <td><%= ritem.session_rank %></td>
+                                            <td>
+                                                <button type="button" class="btn btn-outline-primary waves-effect waves-light btn-sm" data-sessNo="<%= ritem.session_no %>" onclick="viewRank(this)">
+                                                    <i class="fas fa-eye"></i> View
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="navpills2-messages" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title mb-4">Attendance Chart</h4>
+
+                                <div id="pie_chart" class="apex-charts" dir="ltr"></div>
+
+                                <p class="text-center" style="margin-top: 10px; margin-bottom: 0;">Attended: <%= (result.length / sessionCount * 100).toFixed(1) %>%</p>
+                                <p class="text-center">Not Attended: <%= (100 - result.length / sessionCount * 100).toFixed(1) %>%</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title mt-0"><i class="uil-award"></i> Trophies</h4>
-            </div>
-            <div class="card-body">
-                <div class="mb-3 row">
-                    <div class="col-4">
-                        <img src="public/assets/images/trophies/legend.jpg" style="width: 100%; border-radius: 15px;"/>
-                        <% if (rResult[0].count < 150) {%>
-                            <div class="locked-trophy">
-                                <div>
-                                    <b><i class="uil-lock-alt"></i> Locked</b><br/>
-                                    150 times 1<sup>st</sup> ranked
-                                </div>
-                            </div>
-                        <% } %>
-                    </div>
-                    <div class="col-4">
-                        <img src="public/assets/images/trophies/lion.jpg" style="width: 100%; border-radius: 15px;"/>
-                        <% if (rResult[0].count < 100) {%>
-                            <div class="locked-trophy">
-                                <div>
-                                    <b><i class="uil-lock-alt"></i> Locked</b><br/>
-                                    100 times 1<sup>st</sup> ranked
-                                </div>
-                            </div>
-                        <% } %>
-                    </div>
-                    <div class="col-4">
-                        <img src="public/assets/images/trophies/love.jpg" style="width: 100%; border-radius: 15px;"/>
-                        <% if (rResult[0].count < 50) {%>
-                            <div class="locked-trophy">
-                                <div>
-                                    <b><i class="uil-lock-alt"></i> Locked</b><br/>
-                                    50 times 1<sup>st</sup> ranked
-                                </div>
-                            </div>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title mt-0">Play History</h4>
-            </div>
-            <div class="card-body">
-                <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                    <thead>
-                    <tr>
-                        <th>Session No</th>
-                        <th>Session Name</th>
-                        <th>Points</th>
-                        <th>Rank</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-                    <% result.forEach(function(ritem) { %>
-                        <tr>
-                            <th scope="row"><%= ritem.session_no %></th>
-                            <td><%= ritem.session ? ritem.session.session_name : '' %></td>
-                            <td><%= ritem.session_points %></td>
-                            <td><%= ritem.session_rank %></td>
-                            <td>
-                                <button type="button" class="btn btn-outline-primary waves-effect waves-light btn-sm" data-sessNo="<%= ritem.session_no %>" onclick="viewRank(this)">
-                                    <i class="fas fa-eye"></i> View
-                                </button>
-                            </td>
-                        </tr>
-                    <% }); %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title mb-4">Attendance Chart</h4>
-
-                <div id="pie_chart" class="apex-charts" dir="ltr"></div>
-
-                <p class="text-center" style="margin-top: 10px; margin-bottom: 0;">Attended: <%= (result.length / sessionCount * 100).toFixed(1) %>%</p>
-                <p class="text-center">Not Attended: <%= (100 - result.length / sessionCount * 100).toFixed(1) %>%</p>
             </div>
         </div>
     </div>

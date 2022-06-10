@@ -29,4 +29,5 @@ module.exports = function (app) {
     app.get('/api/fetch-result', studentCont.getResultBySessNo);
     app.get('/api/reset-result', studentCont.resetRank);
     // app.get('/api/fetch-result-all', studentCont.getResultAll);
+    app.get('/api/insert-skill', studentCont.insertSkills);
 };

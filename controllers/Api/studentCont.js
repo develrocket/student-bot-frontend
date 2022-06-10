@@ -6,6 +6,7 @@ const SessionModel = require('../../models/sessionResult');
 const FortunaHistoryModel = require('../../models/fortunaHistory');
 const axios = require('axios').default;
 const Utils = require('../../helpers/utils');
+const SkillModel = require('../../models/skill');
 
 const serverUrl = 'https://vmi586933.contaboserver.net/';
 
@@ -206,6 +207,21 @@ const fetchResult = async function(sessId) {
 module.exports = function(){
 
     return {
+        insertSkills: async function(req, res) {
+            let skills = [
+                'religion', 'culture', 'geography', 'mathematics', 'history', 'logic',
+                'languages', 'computers', 'zoology', 'literature', 'art', 'biology', 'chemistry',
+                'astronomy', 'philosophy', 'science', 'forensic', 'medicine', 'blockchain',
+                'ecology', 'geology', 'genetics', 'english'
+            ];
+
+            for (let i = 0; i < skills.length; i ++) {
+                let skill = new SkillModel({name: skills[i]});
+                await skill.save();
+            }
+            
+            return res.json({result: 'success'});
+        },
         getResultBySessNo: async function(req, res) {
             await fetchResult(req.query.sessNo);
             return res.json({result: 'success'});
