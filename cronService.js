@@ -13,8 +13,8 @@ const SkillHistoryModel = require('./models/skillHistory');
 const serverUrl = 'https://vmi586933.contaboserver.net/';
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// const groupId = -1001495582810;
-const groupId = -518755245;
+const groupId = -1001495582810;
+// const groupId = -518755245;
 
 const fetchSession = async function(io) {
     let sessions = await SessionModel.find().sort({session_no: -1}).limit(1);
