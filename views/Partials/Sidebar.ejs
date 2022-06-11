@@ -5,19 +5,19 @@
     <div class="navbar-brand-box">
         <a href="/" class="logo logo-dark">
             <span class="logo-sm">
-                <img src="public/assets/images/logo-sm.png" alt="" height="30">
+                <img src="/public/assets/images/logo-sm.png" alt="" height="30">
             </span>
             <span class="logo-lg">
-                <img src="public/assets/images/logo-light-own-trimmy.png" alt="" height="30">
+                <img src="/public/assets/images/logo-light-own-trimmy.png" alt="" height="30">
             </span>
         </a>
 
         <a href="/" class="logo logo-light">
             <span class="logo-sm">
-                <img src="public/assets/images/logo-sm-own.png" alt="" height="30">
+                <img src="/public/assets/images/logo-sm-own.png" alt="" height="30">
             </span>
             <span class="logo-lg">
-                <img src="public/assets/images/logo-light-own-trimmy.png" alt="" height="30">
+                <img src="/public/assets/images/logo-light-own-trimmy.png" alt="" height="30">
             </span>
         </a>
     </div>
@@ -58,6 +58,17 @@
                         <i class="uil-wallet"></i>
                         <span><%=translation.Wallet%></span>
                     </a>
+                </li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="uil-user-check"></i>
+                        <span><%=translation.Admin%></span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href="/gp"><%=translation.Great_Persons%></a></li>
+                        <li><a href="ecommerce-product-detail"><%=translation.Missions%></a></li>
+                    </ul>
                 </li>
             </ul>
         </div>

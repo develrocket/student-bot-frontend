@@ -1,0 +1,109 @@
+<%- contentFor('HeaderCss') %>
+
+<%- contentFor('breadcrumb') %>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Add Great Person</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Africa</a></li>
+                    <li class="breadcrumb-item"><a href="/gp">Great Persons</a></li>
+                    <li class="breadcrumb-item active">Add</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<%- contentFor('body') %>
+
+<div class="row">
+    <div class="col-12">
+        <div class="mt-5 mt-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col-6">
+                            <form enctype="multipart/form-data" class="custom-validation" action="/gp/add" method="POST" novalidate>
+                                <div class="row mb-4">
+                                    <label for="horizontal-firstname-input" class="col-sm-3 col-form-label">Name</label>
+                                    <div class="col-sm-9">
+                                      <input type="text" class="form-control" id="horizontal-firstname-input" name="name" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label for="horizontal-email-input" class="col-sm-3 col-form-label">Icon</label>
+                                    <div class="col-sm-9">
+                                        <div class="avatar-upload">
+                                            <div class="avatar-edit">
+                                                <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" name="icon" required/>
+                                                <label for="imageUpload">
+                                                    <i class="fas fa-edit"></i>
+                                                </label>
+                                            </div>
+                                            <div class="avatar-preview">
+                                                <div id="imagePreview" style="background-image: url(/public/assets/images/fortuna-icon.jpg);">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label for="horizontal-email-input" class="col-sm-3 col-form-label">Field</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="horizontal-email-input" name="field" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label for="horizontal-password-input" class="col-sm-3 col-form-label">Price</label>
+                                    <div class="col-sm-9">
+                                        <input type="number" class="form-control" id="horizontal-password-input" name="price" step="0.1" required>
+                                    </div>
+                                </div>
+
+                                <div class="row justify-content-end">
+                                    <div class="col-sm-9">
+                                        <div>
+                                            <button type="submit" class="btn btn-primary w-md">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- contentFor('FooterJs') %>
+<script src="/public/assets/libs/parsleyjs/parsley.min.js"></script>
+
+<%- contentFor('BottomJs') %>
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+                $('#imagePreview').hide();
+                $('#imagePreview').fadeIn(650);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    $("#imageUpload").change(function() {
+        readURL(this);
+    });
+
+    $(document).ready(function() {
+    	  $('.custom-validation').parsley();
+    });
+</script>
