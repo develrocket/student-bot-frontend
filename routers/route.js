@@ -54,4 +54,7 @@ module.exports = function (app) {
 
     app.get('/mission', isUserAllowed, MissionCtrl.index);
     app.get('/mission/add', isUserAllowed, MissionCtrl.create);
+    app.get('/mission/edit', isUserAllowed, MissionCtrl.edit);
+    app.post('/mission/add', isUserAllowed, urlencodeParser, upload.fields([{name: 'banner', maxCount: 1}, {name: 'badge', maxCount: 1}]), MissionCtrl.doCreate);
+    app.post('/mission/edit', isUserAllowed, urlencodeParser, upload.fields([{name: 'banner', maxCount: 1}, {name: 'badge', maxCount: 1}]), MissionCtrl.doUpdate);
 }

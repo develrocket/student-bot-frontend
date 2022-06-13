@@ -9,10 +9,11 @@ const MissionSchema = new Schema({
     description: String,
     badge: String,
     person: {type: mongoose.Schema.Types.ObjectId,ref:'great_person'},
-    skill: [{
+    skills: [{
         skill: String,
         amount: Number
     }],
+    price: Number,
     start_at: String,
     end_at: String,
     status: Number

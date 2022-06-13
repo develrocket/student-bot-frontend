@@ -8,13 +8,13 @@
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-flex align-items-center justify-content-between">
-            <h4 class="mb-0">Add New Mission</h4>
+            <h4 class="mb-0">Reschedule Mission</h4>
 
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item"><a href="javascript: void(0);">Africa</a></li>
                     <li class="breadcrumb-item"><a href="/mission">Mission Status</a></li>
-                    <li class="breadcrumb-item active">Add</li>
+                    <li class="breadcrumb-item active">Edit</li>
                 </ol>
             </div>
 
@@ -32,12 +32,12 @@
                 <div class="card-body">
                     <div class="row justify-content-center">
                         <div class="col-6">
-                            <form enctype="multipart/form-data" class="custom-validation" action="/mission/add"
+                            <form enctype="multipart/form-data" class="custom-validation" action="/mission/edit?id=<%= mission._id %>"
                                   method="POST" novalidate>
                                 <div class="row mb-4">
                                     <label class="col-sm-3 col-form-label">Name</label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" name="name" required>
+                                        <input type="text" class="form-control" name="name" required value="<%= mission.name %>">
                                     </div>
                                 </div>
                                 <div class="row mb-4">
@@ -46,13 +46,13 @@
                                         <div class="avatar-upload banner">
                                             <div class="avatar-edit">
                                                 <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg"
-                                                       name="banner" required/>
+                                                       name="banner"/>
                                                 <label for="imageUpload">
                                                     <i class="fas fa-edit"></i>
                                                 </label>
                                             </div>
                                             <div class="avatar-preview">
-                                                <div id="imagePreview" style="">
+                                                <div id="imagePreview" style="background-image: url(/uploads/<%= mission.banner %>)">
                                                 </div>
                                             </div>
                                         </div>
@@ -61,7 +61,7 @@
                                 <div class="row mb-4">
                                     <label class="col-sm-3 col-form-label">Description</label>
                                     <div class="col-sm-9">
-                                        <textarea class="form-control" rows="5" name="description"></textarea>
+                                        <textarea class="form-control" rows="5" name="description"><%= mission.description %></textarea>
                                     </div>
                                 </div>
                                 <div class="row mb-4">
@@ -70,13 +70,13 @@
                                         <div class="avatar-upload">
                                             <div class="avatar-edit">
                                                 <input type='file' id="imageUpload1" accept=".png, .jpg, .jpeg"
-                                                       name="badge" required/>
+                                                       name="badge"/>
                                                 <label for="imageUpload1">
                                                     <i class="fas fa-edit"></i>
                                                 </label>
                                             </div>
                                             <div class="avatar-preview">
-                                                <div id="imagePreview1" style="">
+                                                <div id="imagePreview1" style="background-image: url(/uploads/<%= mission.badge %>)">
                                                 </div>
                                             </div>
                                         </div>
@@ -87,7 +87,7 @@
                                     <div class="col-sm-9">
                                         <select class="form-control" name="person">
                                             <% persons.forEach(function(person, index) { %>
-                                                <option value="<%= person._id %>"><%= person.name %></option>
+                                                <option value="<%= person._id %>" <%= mission.person == person._id ? 'selected' : '' %>><%= person.name %></option>
                                             <% }) %>
                                         </select>
                                     </div>
@@ -101,7 +101,7 @@
                                 <div class="row mb-4">
                                     <label class="col-sm-3 col-form-label">Price</label>
                                     <div class="col-sm-9">
-                                        <input type="number" class="form-control" name="price" step="0.1" required>
+                                        <input type="number" class="form-control" name="price" step="0.1" required value="<%= mission.price %>">
                                     </div>
                                 </div>
                                 <div class="row mb-4">
@@ -111,7 +111,7 @@
                                             <input type="text" class="form-control" placeholder="yyyy-mm-dd"
                                                    name="start" data-date-autoclose="true"
                                                    data-date-format="yyyy-mm-dd" data-date-container='#datepicker1'
-                                                   data-provide="datepicker" value="<%= today %>">
+                                                   data-provide="datepicker" value="<%= mission.start_at %>">
 
                                             <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                         </div><!-- input-group -->
@@ -125,7 +125,7 @@
                                             <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="end"
                                                    data-date-autoclose="true"
                                                    data-date-format="yyyy-mm-dd" data-date-container='#datepicker2'
-                                                   data-provide="datepicker" value="<%= today %>">
+                                                   data-provide="datepicker" value="<%= mission.end_at %>">
 
                                             <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                         </div><!-- input-group -->
@@ -175,6 +175,13 @@
 
 <%- contentFor('BottomJs') %>
 <script>
+    let skills = [];
+    <% mission.skills.forEach(function(skill, index) { %>
+        skills.push({
+            skill: '<%= skill.skill %>',
+            amount: '<%= skill.amount %>'
+        });
+    <% }) %>
     function readURL(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
@@ -217,6 +224,18 @@
         $('#skillContainer').append(dev);
     }
 
+    function addExistSkills(skill, amount) {
+        let dev = $('#skill-template').clone()
+        $(dev).removeClass('hidden');
+        $(dev).attr('id', '');
+        $(dev).find('.skill-add').on('click', function () {
+            addSkill();
+        })
+        $(dev).find('select').val(skill);
+        $(dev).find('input').val(amount);
+        $('#skillContainer').append(dev);
+    }
+
     function initAddSkill() {
         $('.skill-add').on('click', function () {
             addSkill();
@@ -227,6 +246,13 @@
         $('.custom-validation').parsley();
 
         initAddSkill();
-        addSkill();
+        if (skills.length == 0) {
+            addSkill();
+        } else {
+            for (let i = 0; i < skills.length; i ++) {
+                addExistSkills(skills[i].skill, skills[i].amount);
+            }
+        }
+
     });
 </script>
