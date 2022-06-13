@@ -1,0 +1,206 @@
+<%- contentFor('HeaderCss') %>
+<link href="/public/assets/libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet">
+<link href="/public/assets/libs/@chenfengyuan/datepicker/datepicker.min.css" rel="stylesheet" >
+
+<%- contentFor('breadcrumb') %>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Add New Mission</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Africa</a></li>
+                    <li class="breadcrumb-item"><a href="/mission">Mission Status</a></li>
+                    <li class="breadcrumb-item active">Add</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<%- contentFor('body') %>
+
+<div class="row">
+    <div class="col-12">
+        <div class="mt-5 mt-lg-4">
+            <div class="card" style="margin-bottom: 200px;">
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col-6">
+                            <form enctype="multipart/form-data" class="custom-validation" action="/mission/add" method="POST" novalidate>
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">Name</label>
+                                    <div class="col-sm-9">
+                                      <input type="text" class="form-control" name="name" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">Banner</label>
+                                    <div class="col-sm-9">
+                                        <div class="avatar-upload banner">
+                                            <div class="avatar-edit">
+                                                <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" name="banner" required/>
+                                                <label for="imageUpload">
+                                                    <i class="fas fa-edit"></i>
+                                                </label>
+                                            </div>
+                                            <div class="avatar-preview">
+                                                <div id="imagePreview" style="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">Description</label>
+                                    <div class="col-sm-9">
+                                        <textarea class="form-control" rows="5" name="description"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">Badge</label>
+                                    <div class="col-sm-9">
+                                        <div class="avatar-upload">
+                                            <div class="avatar-edit">
+                                                <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" name="badge" required/>
+                                                <label for="imageUpload">
+                                                    <i class="fas fa-edit"></i>
+                                                </label>
+                                            </div>
+                                            <div class="avatar-preview">
+                                                <div id="imagePreview" style="">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">Great Person</label>
+                                    <div class="col-sm-9">
+                                        <select class="form-control" name="person">
+                                            <% persons.forEach(function(person, index) { %>
+                                                <option value="<%= person._id %>"><%= person.name %></option>
+                                            <% }) %>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">Skills</label>
+                                    <div class="col-sm-9" id="skillContainer">
+
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">Price</label>
+                                    <div class="col-sm-9">
+                                        <input type="number" class="form-control" name="price" step="0.1" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">Start</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group" id="datepicker1">
+                                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="start" data-date-autoclose="true"
+                                                data-date-format="yyyy-mm-dd" data-date-container='#datepicker1' data-provide="datepicker" value="<%= today %>">
+
+                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                        </div><!-- input-group -->
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">End</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group" id="datepicker2">
+                                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="end" data-date-autoclose="true"
+                                                data-date-format="yyyy-mm-dd" data-date-container='#datepicker2' data-provide="datepicker" value="<%= today %>">
+
+                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                        </div><!-- input-group -->
+                                    </div>
+                                </div>
+
+
+
+                                <div class="row justify-content-end">
+                                    <div class="col-sm-9">
+                                        <div>
+                                            <button type="submit" class="btn btn-primary w-md">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row hidden" id="skill-template" style="margin-bottom: 15px;">
+    <div class="col-5">
+        <select class="form-control" name="skill[]">
+            <option value="" disabled selected>Select skill</option>
+            <% skills.forEach(function(skill, index) { %>
+                <option value="<%= skill.name %>"><%= skill.name %></option>
+            <% }) %>
+        </select>
+    </div>
+    <div class="col-5">
+        <input type="number" name="amount[]" class="form-control" placeholder="amount"/>
+    </div>
+    <div class="col-2">
+        <button type="button" class="btn btn-outline-primary skill-add">Add</button>
+    </div>
+</div>
+
+<%- contentFor('FooterJs') %>
+<script src="/public/assets/libs/parsleyjs/parsley.min.js"></script>
+<!-- plugins -->
+<script src="/public/assets/libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+<script src="/public/assets/libs/@chenfengyuan/datepicker/datepicker.min.js"></script>
+
+
+<%- contentFor('BottomJs') %>
+<script>
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#imagePreview').css('background-image', 'url('+e.target.result +')');
+                $('#imagePreview').hide();
+                $('#imagePreview').fadeIn(650);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    $("#imageUpload").change(function() {
+        readURL(this);
+    });
+
+    function addSkill() {
+        let dev = $('#skill-template').clone()
+        $(dev).removeClass('hidden');
+        $(dev).find('.skill-add').on('click', function() {addSkill();})
+        $('#skillContainer').append(dev);
+    }
+
+    function initAddSkill() {
+        $('.skill-add').on('click', function() {
+            addSkill();
+        })
+    }
+
+    $(document).ready(function() {
+    	  $('.custom-validation').parsley();
+
+        initAddSkill();
+        addSkill();
+    });
+</script>

@@ -4,6 +4,7 @@ const ProfileCtrl = require('../controllers/ProfileCtrl')();
 const RankCtrl = require('../controllers/RankCtrl')();
 const WalletCtrl = require('../controllers/WalletCtrl')();
 const GreatPersonCtrl = require('../controllers/GreatPersonCtrl')();
+const MissionCtrl = require('../controllers/MissionCtrl')();
 const urlencodeParser = bodyParser.urlencoded({ extended: false });
 const config = require('../config/config');
 const multer  = require('multer');
@@ -50,4 +51,7 @@ module.exports = function (app) {
     app.get('/gp/add', isUserAllowed, GreatPersonCtrl.create);
     app.post('/gp/add', isUserAllowed, urlencodeParser, upload.single('icon'), GreatPersonCtrl.doCreate);
     app.post('/gp/update', isUserAllowed, urlencodeParser, upload.single('icon'), GreatPersonCtrl.doUpdate);
+
+    app.get('/mission', isUserAllowed, MissionCtrl.index);
+    app.get('/mission/add', isUserAllowed, MissionCtrl.create);
 }
