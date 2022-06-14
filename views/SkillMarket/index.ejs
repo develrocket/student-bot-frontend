@@ -117,5 +117,35 @@
         });
 
         $('#greatTable').DataTable();
+
+        $('#deleteOffer').on('click', function() {
+            let id =  $(this).data('id');
+            bootbox.confirm({
+                title: "Cancel Offer?",
+                message: "Do you want to cancel offer? This cannot be undone.",
+                buttons: {
+                    cancel: {
+                        label: '<i class="fa fa-times"></i> Cancel'
+                    },
+                    confirm: {
+                        label: '<i class="fa fa-check"></i> Confirm'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.ajax({
+                            type: 'POST',
+                            url: "/market/remove-offer",
+                            data: {
+                                id: id
+                            },
+                            success: function(res) {
+                                window.location.reload();
+                            }
+                        });
+                    }
+                }
+            });
+        })
     })
 </script>

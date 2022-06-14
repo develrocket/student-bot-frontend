@@ -359,3 +359,7 @@ div#profileSideTable_wrapper div.dataTables_paginate ul.pagination {
     top: 14px;
     right: 15px;
 }
+
+.bootbox-close-button {
+    border: none !important;
+}

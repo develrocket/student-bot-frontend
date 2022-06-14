@@ -139,6 +139,12 @@ module.exports = function(){
             let offers = await OfferModel.find(searchQuery).limit(15).skip(index * 15).lean().exec();
 
             res.render('SkillMarket/_buys_item', {offers, layout: false});
+        },
+
+        removeOffer: async function(req, res) {
+            let id = req.body.id;
+            await OfferModel.remove({telegramId: res.locals.user.telegramId, _id: id});
+            res.json({result: 'success'});
         }
     };
 
