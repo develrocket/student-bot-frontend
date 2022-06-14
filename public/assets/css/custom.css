@@ -342,3 +342,20 @@ div#profileSideTable_wrapper div.dataTables_paginate ul.pagination {
     background: #f1f1f1;
     border-color: #d6d6d6;
 }
+
+.buy-item {
+    box-shadow: 0 2px 4px rgba(15, 34, 58, 0.59);
+}
+
+.buy-item .skill-icon {
+    margin-right: 10px;
+}
+
+.buy-item .price {
+    color: red;
+    font-weight: bold;
+    font-size: 20px;
+    position: absolute;
+    top: 14px;
+    right: 15px;
+}

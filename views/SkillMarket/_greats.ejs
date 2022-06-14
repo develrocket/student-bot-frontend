@@ -1,0 +1,29 @@
+<table id="greatTable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+    <thead>
+    <tr>
+        <th>No</th>
+        <th>Icon</th>
+        <th>Name</th>
+        <th>Field</th>
+        <th>Price</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <% greats.forEach(function(person, index) { %>
+        <tr>
+            <td scope="row"><%= index + 1 %></td>
+            <td><img src="/uploads/<%= person.icon %>" style="height: 40px; border-radius: 50px;"/></td>
+            <td><%= person.name %></td>
+            <td><%= person.field %></td>
+            <td><%= person.price %></td>
+            <td>
+                <button class="btn btn-primary waves-effect waves-light" data-id="<%= person._id %>">
+                    Rent
+                </button>
+            </td>
+        </tr>
+    <% }); %>
+    </tbody>
+</table>

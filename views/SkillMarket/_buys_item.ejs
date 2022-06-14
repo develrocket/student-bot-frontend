@@ -1,0 +1,31 @@
+<div class="row">
+    <% offers.forEach(function(offer, index) { %>
+        <div class="col-4">
+            <div class="card buy-item">
+                <div class="card-body">
+
+                    <div style="display: flex">
+                        <div class="skill-icon">
+                            <img src="/public/assets/images/skills/<%= offer.skill %>.png" title="<%= offer.skill %>" style="width: 100px;"/>
+                        </div>
+                        <div>
+                            <p><b><%= offer.skill.charAt(0).toUpperCase() + offer.skill.substr(1) %></b></p>
+                            <p>Seller: <%= offer.username %></p>
+                            <p>Points: <%= offer.amount %></p>
+
+                            <p class="price"><%= offer.price %> FRT</p>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; margin-top: 10px">
+                        <input type="number" class="form-control" placeholder="Quantity" style="margin-right: 10px;"/>
+                        <button class="btn btn-primary waves-effect waves-light send-market" data-id="<%= offer._id %>" style="width: 200px;">
+                            Buy
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    <% }) %>
+</div>

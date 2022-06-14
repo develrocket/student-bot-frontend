@@ -1,0 +1,94 @@
+<%- contentFor('HeaderCss') %>
+
+<%- contentFor('breadcrumb') %>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Post New Offer</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Africa</a></li>
+                    <li class="breadcrumb-item"><a href="/market">Skills Market</a></li>
+                    <li class="breadcrumb-item active">Post New Offer</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<%- contentFor('body') %>
+
+<div class="row">
+    <div class="col-12">
+        <div class="mt-5 mt-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col-6">
+                            <form class="custom-validation" action="/market/create-offer" method="POST" novalidate>
+                                <div class="row mb-4">
+                                    <label for="horizontal-firstname-input" class="col-sm-3 col-form-label">Name</label>
+                                    <div class="col-sm-9">
+                                        <select class="form-control" name="skill" id="offer-skill">
+                                            <option value="" disabled selected>Select Skill</option>
+                                            <% Object.keys(mySkills).forEach(function(skill) { %>
+                                                <option value="<%= skill %>"><%= skill %></option>
+                                            <% }); %>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <label for="offer-points" class="col-sm-3 col-form-label">Points</label>
+                                    <div class="col-sm-9">
+                                        <input type="number" class="form-control" id="offer-points" name="points" step="0.1" required>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label for="horizontal-password-input" class="col-sm-3 col-form-label">Price</label>
+                                    <div class="col-sm-9">
+                                        <input type="number" class="form-control" id="horizontal-password-input" name="price" step="0.1" required>
+                                    </div>
+                                </div>
+
+                                <div class="row justify-content-end">
+                                    <div class="col-sm-9">
+                                        <div>
+                                            <button type="submit" class="btn btn-primary w-md">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- contentFor('FooterJs') %>
+<script src="/public/assets/libs/parsleyjs/parsley.min.js"></script>
+
+<%- contentFor('BottomJs') %>
+<script>
+    let ms = {};
+    <% Object.keys(mySkills).forEach(function(skill) { %>
+        ms['<%= skill %>'] = '<%= mySkills[skill] %>' * 1;
+    <% }); %>
+
+    $(document).ready(function() {
+        $('.custom-validation').parsley();
+
+        $('#offer-skill').on('change', function() {
+            console.log('ssss');
+            let maxPoints = ms[$(this).val()];
+            $('#offer-points').attr('max', maxPoints);
+        })
+    });
+</script>

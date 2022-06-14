@@ -5,6 +5,7 @@ const RankCtrl = require('../controllers/RankCtrl')();
 const WalletCtrl = require('../controllers/WalletCtrl')();
 const GreatPersonCtrl = require('../controllers/GreatPersonCtrl')();
 const MissionCtrl = require('../controllers/MissionCtrl')();
+const MarketCtrl = require('../controllers/MarketCtrl')();
 const urlencodeParser = bodyParser.urlencoded({ extended: false });
 const config = require('../config/config');
 const multer  = require('multer');
@@ -57,4 +58,13 @@ module.exports = function (app) {
     app.get('/mission/edit', isUserAllowed, MissionCtrl.edit);
     app.post('/mission/add', isUserAllowed, urlencodeParser, upload.fields([{name: 'banner', maxCount: 1}, {name: 'badge', maxCount: 1}]), MissionCtrl.doCreate);
     app.post('/mission/edit', isUserAllowed, urlencodeParser, upload.fields([{name: 'banner', maxCount: 1}, {name: 'badge', maxCount: 1}]), MissionCtrl.doUpdate);
+
+
+    app.get('/market', isUserAllowed, MarketCtrl.index);
+    app.get('/market/create-offer', isUserAllowed, MarketCtrl.createOffer);
+    app.get('/market/edit-offer', isUserAllowed, MarketCtrl.editOffer);
+    app.post('/market/create-offer', isUserAllowed, urlencodeParser, MarketCtrl.doCreateOffer);
+    app.post('/market/edit-offer', isUserAllowed, urlencodeParser, MarketCtrl.doEditOffer);
+    app.post('/market/search-buys', isUserAllowed, urlencodeParser, MarketCtrl.searchBuys);
+    app.post('/market/load-more-buys', isUserAllowed, urlencodeParser, MarketCtrl.loadMoreBuys);
 }
