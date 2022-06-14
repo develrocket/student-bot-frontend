@@ -55,6 +55,7 @@ app.use(i18n({
 }));
 
 app.use('/public', express.static('public'));
+app.use('/uploads', express.static('uploads'));
 
 app.get('/layouts/', function (req, res) {
     res.render('view');
@@ -150,7 +151,7 @@ async function transferFortuan(senderId, senderName, receiverId, receiverName, v
 
 bot.on('message', async (msg) => {
     console.log('tele-new-message:', msg);
-    
+
     if (msg.reply_to_message && Object.keys(msg.reply_to_message).length > 0) {
         try {
             if (msg.text.indexOf('/give') >= 0) {

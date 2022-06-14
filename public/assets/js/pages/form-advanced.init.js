@@ -10,7 +10,7 @@ File: Form Advanced Js File
     "use strict";
 
     var AdvancedForm = function() {};
-    
+
     AdvancedForm.prototype.init = function() {
 
         // Select2

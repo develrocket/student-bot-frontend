@@ -1,0 +1,43 @@
+<div class="row">
+    <div class="col-12 text-end">
+        <a class="btn btn-primary waves-effect waves-light send-market" href="/market/create-offer">
+            Post New Offer
+        </a>
+    </div>
+</div>
+
+<table id="buyTable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+    <thead>
+    <tr>
+        <th>No</th>
+        <th>Skill</th>
+        <th>Points</th>
+        <th>Price</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <% myOffers.forEach(function(offer, index) { %>
+        <tr>
+            <td scope="row"><%= index + 1 %></td>
+            <td>
+                <div class="skill-item">
+                    <img src="/public/assets/images/skills/<%= offer.skill %>.png" title="<%= offer.skill %>"/>
+                    <span><%= offer.skill %></span>
+                </div>
+            </td>
+            <td><%= offer.amount %></td>
+            <td><%= offer.price %></td>
+            <td>
+                <a class="btn btn-primary waves-effect waves-light send-market" href="/market/edit-offer?id=<%= offer._id %>">
+                    Change
+                </a>
+                <button class="btn btn-info waves-effect waves-light send-market" data-id="<%= offer._id %>" id="deleteOffer">
+                    Cancel
+                </button>
+            </td>
+        </tr>
+    <% }); %>
+    </tbody>
+</table>

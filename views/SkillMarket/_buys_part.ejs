@@ -1,0 +1,17 @@
+<% if (offersCount > 0) {%>
+
+<div id="buy-item-container">
+    <%- include ('./_buys_item')  %>
+</div>
+
+<div class="row">
+    <div class="col-12 text-center" style="margin: 20px 0px;">
+        <% if (showBuysMore) {%>
+            <button type="button" class="btn btn-outline-primary waves-effect waves-light" id="buysLoadMore" data-totalcount="<%= offersCount %>">Load More</button>
+        <% } %>
+    </div>
+</div>
+
+<% } else { %>
+    <p class="text-center">There are no offers.</p>
+<% } %>

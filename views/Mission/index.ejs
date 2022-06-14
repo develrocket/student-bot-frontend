@@ -1,0 +1,81 @@
+<%- contentFor('HeaderCss') %>
+
+<%- contentFor('breadcrumb') %>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Mission Status</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Africa</a></li>
+                    <li class="breadcrumb-item active">Mission Status Page</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<%- contentFor('body') %>
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                    <h4 class="card-title">Mission Status</h4>
+
+                    <a href="/mission/add" class="btn btn-primary waves-effect waves-light">Add New</a>
+                </div>
+
+                <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <% missions.forEach(function(mission, index) { %>
+                            <tr>
+                                <td scope="row"><%= index + 1 %></td>
+                                <td><%= mission.name %></td>
+                                <td><%= mission.status == 1 ? 'Planned' : (mission.status == 2 ? 'Ongoing' : 'Ended') %></td>
+                                <td><%= mission.start_at %></td>
+                                <td><%= mission.end_at %></td>
+                                <td>
+                                    <% if (mission.status != 2) { %>
+                                    <a class="btn btn-info waves-effect waves-light" href="/mission/edit?id=<%= mission._id %>">
+                                        Reschedule <i class="uil uil-edit-alt me-2"></i>
+                                    </a>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- contentFor('FooterJs') %>
+
+<%- contentFor('BottomJs') %>
+
+<script>
+    $(document).ready(function() {
+        $('#datatable').DataTable();
+    });
+</script>

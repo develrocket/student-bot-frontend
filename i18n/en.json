@@ -4,5 +4,9 @@
   "Ranks" : "Ranks",
   "Wallet" : "Wallet",
   "Profile" : "Profile",
-  "Sign_out" : "Sign Out"
+  "Sign_out" : "Sign Out",
+  "Admin" : "Admin",
+  "Great_Persons": "Great Persons",
+  "Missions": "Missions",
+  "Skills_Market": "Skills Market"
 }

@@ -1,5 +1,5 @@
 <%- contentFor('HeaderCss') %>
-<link href="public/assets/libs/bootstrap-editable/css/bootstrap-editable.css" rel="stylesheet" type="text/css" />
+<link href="/public/assets/libs/bootstrap-editable/css/bootstrap-editable.css" rel="stylesheet" type="text/css" />
 
 <%- contentFor('breadcrumb') %>
 
@@ -28,7 +28,7 @@
 
         <!-- Simple card -->
         <div class="card">
-            <img class="card-img-top img-fluid" src="public/assets/images/title/<%= user.title %>.jpg" alt="<%= user.username %>">
+            <img class="card-img-top img-fluid" src="/public/assets/images/title/<%= user.title %>.jpg" alt="<%= user.username %>">
             <div class="card-body">
                 <div style="display: flex; justify-content: space-between">
                     <h4 class="card-title mt-0"><%= user.firstName + ' ' + (user.lastName ? user.lastName : '') %></h4>
@@ -56,16 +56,16 @@
                 <p class="card-text">
                     Overall Rank: <a href="javascript:void(0);"  data-bs-toggle="modal" data-bs-target="#partModal"><%= rank %></a>
                 </p>
-                <p class="card-text"><img src="public/assets/images/fortuna-icon.jpg" alt="Overall Fortuna" style="width: 20px; height: 20px;" title="Overall Fortuna"/> <%= totalFortuna.toFixed(1) %></p>
+                <p class="card-text"><img src="/public/assets/images/fortuna-icon.jpg" alt="Overall Fortuna" style="width: 20px; height: 20px;" title="Overall Fortuna"/> <%= totalFortuna.toFixed(1) %></p>
             </div>
         </div>
 
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title mt-0 mb-2">Podium</h4>
-                <p><img src="public/assets/images/gold-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> <% if (rResult[0].count > 0) {%> <a href="javascript:void(0);"  data-bs-toggle="modal" data-bs-target="#rankModal0"> <%= rResult[0].count %></a> <% } else { %> 0 <% } %> time<%= rResult[0].count > 1 ? 's' : '' %></p>
-                <p><img src="public/assets/images/silver-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> <% if (rResult[1].count > 0) {%> <a href="javascript:void(0);"  data-bs-toggle="modal" data-bs-target="#rankModal1"> <%= rResult[1].count %></a> <% } else { %> 0 <% } %> time<%= rResult[1].count > 1 ? 's' : '' %></p>
-                <p><img src="public/assets/images/third-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> <% if (rResult[2].count > 0) {%> <a href="javascript:void(0);"  data-bs-toggle="modal" data-bs-target="#rankModal2"> <%= rResult[2].count %></a> <% } else { %> 0 <% } %> time<%= rResult[2].count > 1 ? 's' : '' %></p>
+                <p><img src="/public/assets/images/gold-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> <% if (rResult[0].count > 0) {%> <a href="javascript:void(0);"  data-bs-toggle="modal" data-bs-target="#rankModal0"> <%= rResult[0].count %></a> <% } else { %> 0 <% } %> time<%= rResult[0].count > 1 ? 's' : '' %></p>
+                <p><img src="/public/assets/images/silver-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> <% if (rResult[1].count > 0) {%> <a href="javascript:void(0);"  data-bs-toggle="modal" data-bs-target="#rankModal1"> <%= rResult[1].count %></a> <% } else { %> 0 <% } %> time<%= rResult[1].count > 1 ? 's' : '' %></p>
+                <p><img src="/public/assets/images/third-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> <% if (rResult[2].count > 0) {%> <a href="javascript:void(0);"  data-bs-toggle="modal" data-bs-target="#rankModal2"> <%= rResult[2].count %></a> <% } else { %> 0 <% } %> time<%= rResult[2].count > 1 ? 's' : '' %></p>
             </div>
         </div>
 
@@ -120,7 +120,7 @@
                             <div class="card-body">
                                 <% skills.forEach(function(item) { %>
                                     <div class="skill-item">
-                                        <img src="public/assets/images/skills/<%= item.name %>.png" title="<%= item.name %>"/>
+                                        <img src="/public/assets/images/skills/<%= item.name %>.png" title="<%= item.name %>"/>
                                         <span><%= mySkills[item.name] %></span>
                                         <div class="disabled <%= mySkills[item.name] * 1 > 0 ? 'hidden' : '' %>"></div>
                                     </div>
@@ -135,7 +135,7 @@
                             <div class="card-body">
                                 <div class="mb-3 row">
                                     <div class="col-4">
-                                        <img src="public/assets/images/trophies/legend.jpg" style="width: 100%; border-radius: 15px;"/>
+                                        <img src="/public/assets/images/trophies/legend.jpg" style="width: 100%; border-radius: 15px;"/>
                                         <% if (rResult[0].count < 150) {%>
                                             <div class="locked-trophy">
                                                 <div>
@@ -146,7 +146,7 @@
                                         <% } %>
                                     </div>
                                     <div class="col-4">
-                                        <img src="public/assets/images/trophies/lion.jpg" style="width: 100%; border-radius: 15px;"/>
+                                        <img src="/public/assets/images/trophies/lion.jpg" style="width: 100%; border-radius: 15px;"/>
                                         <% if (rResult[0].count < 100) {%>
                                             <div class="locked-trophy">
                                                 <div>
@@ -157,7 +157,7 @@
                                         <% } %>
                                     </div>
                                     <div class="col-4">
-                                        <img src="public/assets/images/trophies/love.jpg" style="width: 100%; border-radius: 15px;"/>
+                                        <img src="/public/assets/images/trophies/love.jpg" style="width: 100%; border-radius: 15px;"/>
                                         <% if (rResult[0].count < 50) {%>
                                             <div class="locked-trophy">
                                                 <div>
@@ -310,7 +310,7 @@
                         <tr>
                             <th>Rank</th>
                             <th>Username</th>
-                            <th>Telegram ID</th>
+                            <th>Country</th>
                             <th>Points</th>
                         </tr>
                         </thead>
@@ -320,14 +320,18 @@
                                     <tr>
                                         <th scope="row"><b style="color: black;"><%= partner.rank%></b></th>
                                         <td><b style="color: black;"><%= partner.username %></b></td>
-                                        <td><b style="color: black;"><%= partner.telegramId %></b></td>
+                                        <td>
+                                            <img src="public/assets/images/flags/<%= partner.country %>.svg" style="height: 20px;"/>
+                                        </td>
                                         <td><b style="color: black;"><%= partner.sum_point %></b></td>
                                     </tr>
                                 <% } else { %>
                                     <tr>
                                         <th scope="row"><%= partner.rank%></th>
                                         <td><%= partner.username %></td>
-                                        <td><%= partner.telegramId %></td>
+                                        <td>
+                                            <img src="public/assets/images/flags/<%= partner.country %>.svg" style="height: 20px;"/>
+                                        </td>
                                         <td><%= partner.sum_point %></td>
                                     </tr>
                                 <% } %>
@@ -344,7 +348,7 @@
 </div>
 
 <%- contentFor('FooterJs') %>
-<script src="public/assets/libs/bootstrap-editable/js/index.js"></script>
+<script src="/public/assets/libs/bootstrap-editable/js/index.js"></script>
 
 <%- contentFor('BottomJs') %>
 <script type="text/javascript">
@@ -365,16 +369,16 @@
                     html += '<tr>';
                     html += '<th scope="row">' + (i + 1) +'</th>';
                     html += '<td><a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="' + item.telegramId + '">' + item.username + '</a></td>';
-                    html += '<td><img src="public/assets/images/flags/' + item.country + '.svg" style="height: 20px;"/></td>';
+                    html += '<td><img src="/public/assets/images/flags/' + item.country + '.svg" style="height: 20px;"/></td>';
                     html += '<td>' + item.session_points + '</td>'
                     html += '<td style="display: flex;">';
 
                     if (item.session_rank == 1) {
-                        html += '<img src="public/assets/images/gold-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>';
+                        html += '<img src="/public/assets/images/gold-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>';
                     } else if (item.session_rank == 2) {
-                        html += '<img src="public/assets/images/silver-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>';
+                        html += '<img src="/public/assets/images/silver-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>';
                     } else if (item.session_rank == 3) {
-                        html += '<img src="public/assets/images/third-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>';
+                        html += '<img src="/public/assets/images/third-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/>';
                     }
 
                     html += item.session_rank + '</td>';

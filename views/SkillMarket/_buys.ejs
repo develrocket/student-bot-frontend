@@ -1,0 +1,41 @@
+<div class="row">
+    <div class="col-12">
+        <div class="search-box" style="background: rgb(220, 223, 255); margin-bottom: 20px; padding: 15px;">
+            <div class="row">
+                <div class="col-5">
+                    <div class="row">
+                        <label for="example-text-input" class="col-md-4 col-form-label">Filter By Skill</label>
+                        <div class="col-md-8">
+                            <select class="form-control" id="buySearchSkill">
+                                <option value="">All</option>
+                                <% skills.forEach(function(skill, index) { %>
+                                <option value="<%=skill.name%>"><%= skill.name.charAt(0).toUpperCase() + skill.name.substr(1) %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-5">
+                    <div class="row">
+                        <label for="example-text-input" class="col-md-4 col-form-label">Search By Seller</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="buySearchKey"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-primary waves-effect waves-light send-market" id="searchBuys">
+                        Search
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="buy-container">
+    <%- include ('./_buys_part')  %>
+</div>
+
+
+
