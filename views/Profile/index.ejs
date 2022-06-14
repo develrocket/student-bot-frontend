@@ -310,7 +310,7 @@
                         <tr>
                             <th>Rank</th>
                             <th>Username</th>
-                            <th>Telegram ID</th>
+                            <th>Country</th>
                             <th>Points</th>
                         </tr>
                         </thead>
@@ -320,14 +320,18 @@
                                     <tr>
                                         <th scope="row"><b style="color: black;"><%= partner.rank%></b></th>
                                         <td><b style="color: black;"><%= partner.username %></b></td>
-                                        <td><b style="color: black;"><%= partner.telegramId %></b></td>
+                                        <td>
+                                            <img src="public/assets/images/flags/<%= partner.country %>.svg" style="height: 20px;"/>
+                                        </td>
                                         <td><b style="color: black;"><%= partner.sum_point %></b></td>
                                     </tr>
                                 <% } else { %>
                                     <tr>
                                         <th scope="row"><%= partner.rank%></th>
                                         <td><%= partner.username %></td>
-                                        <td><%= partner.telegramId %></td>
+                                        <td>
+                                            <img src="public/assets/images/flags/<%= partner.country %>.svg" style="height: 20px;"/>
+                                        </td>
                                         <td><%= partner.sum_point %></td>
                                     </tr>
                                 <% } %>

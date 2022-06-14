@@ -67,10 +67,13 @@ module.exports = {
             let item = students[i];
             let rlt = await ResultModel.find({telegramId: item._id}).sort({session_no: -1}).lean().exec();
             rlt = rlt[0];
+            let user = await StudentModel.findOne({telegramId: rlt.telegramId});
+
             let ritem = {
                 username: rlt.username,
                 telegramId: rlt.telegramId,
                 sum_point: rlt.sum_point,
+                country: user ? (user.countryCode ? user.countryCode : 'af') : 'af',
                 title: rlt.title,
             };
             if (results.length === 0) {
