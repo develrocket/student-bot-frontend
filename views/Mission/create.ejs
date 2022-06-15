@@ -1,6 +1,7 @@
 <%- contentFor('HeaderCss') %>
 <link href="/public/assets/libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet">
 <link href="/public/assets/libs/@chenfengyuan/datepicker/datepicker.min.css" rel="stylesheet">
+<link href="/public/assets/libs/datetimepicker-master/jquery.datetimepicker.css" rel="stylesheet">
 
 <%- contentFor('breadcrumb') %>
 
@@ -108,10 +109,8 @@
                                     <label class="col-sm-3 col-form-label">Start</label>
                                     <div class="col-sm-9">
                                         <div class="input-group" id="datepicker1">
-                                            <input type="text" class="form-control" placeholder="yyyy-mm-dd"
-                                                   name="start" data-date-autoclose="true"
-                                                   data-date-format="yyyy-mm-dd" data-date-container='#datepicker1'
-                                                   data-provide="datepicker" value="<%= today %>">
+                                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="start"
+                                                   id="startDateTime">
 
                                             <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                         </div><!-- input-group -->
@@ -123,9 +122,7 @@
                                     <div class="col-sm-9">
                                         <div class="input-group" id="datepicker2">
                                             <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="end"
-                                                   data-date-autoclose="true"
-                                                   data-date-format="yyyy-mm-dd" data-date-container='#datepicker2'
-                                                   data-provide="datepicker" value="<%= today %>">
+                                                   id="endDateTime">
 
                                             <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
                                         </div><!-- input-group -->
@@ -171,10 +168,13 @@
 <!-- plugins -->
 <script src="/public/assets/libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
 <script src="/public/assets/libs/@chenfengyuan/datepicker/datepicker.min.js"></script>
-
+<script src="/public/assets/libs/datetimepicker-master/php-date-formatter.min.js"></script>
+<script src="/public/assets/libs/datetimepicker-master/jquery.mousewheel.js"></script>
+<script src="/public/assets/libs/datetimepicker-master/jquery.datetimepicker.js"></script>
 
 <%- contentFor('BottomJs') %>
 <script>
+    let today = '<%= today %>';
     function readURL(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
@@ -228,5 +228,21 @@
 
         initAddSkill();
         addSkill();
+
+        $('#endDateTime').datetimepicker({
+            dayOfWeekStart : 1,
+            lang:'en',
+            startDate:	today,
+        });
+
+        $('#endDateTime').datetimepicker({value:today, step:10});
+
+        $('#startDateTime').datetimepicker({
+            dayOfWeekStart : 1,
+            lang:'en',
+            startDate:	today,
+        });
+
+        $('#startDateTime').datetimepicker({value:today, step:10});
     });
 </script>

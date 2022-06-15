@@ -37,7 +37,7 @@
                                         <select class="form-control" name="skill" id="offer-skill">
                                             <option value="" disabled selected>Select Skill</option>
                                             <% Object.keys(mySkills).forEach(function(skill) { %>
-                                                <option value="<%= skill %>"><%= skill %></option>
+                                                <option value="<%= skill %>" style="background-image: url('/public/assets/images/skills/<%= skill %>.png')"><%= skill %></option>
                                             <% }); %>
                                         </select>
                                     </div>
