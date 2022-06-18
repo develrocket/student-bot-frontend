@@ -1,4 +1,6 @@
 <%- contentFor('HeaderCss') %>
+<link href="/public/assets/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+<link href="/public/assets/libs/ion-rangeslider/css/ion.rangeSlider.min.css" rel="stylesheet" type="text/css"/>
 
 <%- contentFor('breadcrumb') %>
 
@@ -34,25 +36,32 @@
                                 <div class="row mb-4">
                                     <label for="horizontal-firstname-input" class="col-sm-3 col-form-label">Name</label>
                                     <div class="col-sm-9">
-                                        <select class="form-control" name="skill" id="offer-skill">
+                                        <select class="form-control select2" name="skill" id="offer-skill">
                                             <option value="" disabled selected>Select Skill</option>
                                             <% Object.keys(mySkills).forEach(function(skill) { %>
-                                                <option value="<%= skill %>" style="background-image: url('/public/assets/images/skills/<%= skill %>.png')"><%= skill %></option>
+                                                <option value="<%= skill %>" data-image="/public/assets/images/skills/<%= skill %>.png"><%= skill %></option>
                                             <% }); %>
                                         </select>
                                     </div>
                                 </div>
-
                                 <div class="row mb-4">
                                     <label for="offer-points" class="col-sm-3 col-form-label">Points</label>
                                     <div class="col-sm-9">
-                                        <input type="number" class="form-control" id="offer-points" name="points" step="0.1" required>
+                                        <input type="text" class="form-control" id="offer-points" name="points" step="0.1" required min="1">
                                     </div>
                                 </div>
                                 <div class="row mb-4">
-                                    <label for="horizontal-password-input" class="col-sm-3 col-form-label">Price</label>
+                                    <label for="offer-price" class="col-sm-3 col-form-label">Price</label>
                                     <div class="col-sm-9">
-                                        <input type="number" class="form-control" id="horizontal-password-input" name="price" step="0.1" required>
+                                        <input type="text" class="form-control" id="offer-price" name="price">
+                                    </div>
+                                </div>
+
+                                <hr/>
+
+                                <div class="row mb-4">
+                                    <div class="col-12 text-end">
+                                        Total Price: <span id="total-price">10</span>
                                     </div>
                                 </div>
 
@@ -74,21 +83,77 @@
 
 <%- contentFor('FooterJs') %>
 <script src="/public/assets/libs/parsleyjs/parsley.min.js"></script>
+<script src="/public/assets/libs/select2/js/select2.min.js"></script>
+<script src="/public/assets/libs/ion-rangeslider/js/ion.rangeSlider.min.js"></script>
 
 <%- contentFor('BottomJs') %>
 <script>
     let ms = {};
+    let pointSlider = null;
     <% Object.keys(mySkills).forEach(function(skill) { %>
         ms['<%= skill %>'] = '<%= mySkills[skill] %>' * 1;
     <% }); %>
 
+    function formatState (opt) {
+        if (!opt.id) {
+            return opt.text.toUpperCase();
+        }
+
+        let optimage = $(opt.element).attr('data-image');
+        if(!optimage){
+            return opt.text.toUpperCase();
+        } else {
+            let $opt = $(
+                '<span><img src="' + optimage + '" height="30px" style="margin-right: 10px;"/> ' + opt.text.toUpperCase() + '</span>'
+            );
+            return $opt;
+        }
+    }
+
+    function calcPrice() {
+        let points = $('#offer-points').val();
+        let price = $('#offer-price').val();
+        $('#total-price').html((points * price).toFixed(1));
+    }
+
     $(document).ready(function() {
+        $(".select2").select2({
+            templateResult: formatState,
+            templateSelection: formatState
+        });
+
         $('.custom-validation').parsley();
 
         $('#offer-skill').on('change', function() {
             console.log('ssss');
             let maxPoints = ms[$(this).val()];
-            $('#offer-points').attr('max', maxPoints);
+            // $('#offer-points').attr('max', maxPoints);
+            pointSlider.update({
+                max: maxPoints
+            });
+            pointSlider.reset();
+        });
+
+        $('#offer-points').on('change', function() {
+            calcPrice();
         })
+
+        $('#offer-price').on('change', function() {
+            calcPrice();
+        })
+
+        $("#offer-points").ionRangeSlider({
+            skin: "round",
+            min: 1,
+            step: 0.1
+        });
+        $("#offer-price").ionRangeSlider({
+            skin: "round",
+            min: 10,
+            max: 100,
+            step: 0.1
+        });
+
+        pointSlider = $("#offer-points").data("ionRangeSlider");
     });
 </script>
