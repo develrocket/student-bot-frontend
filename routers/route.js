@@ -16,7 +16,7 @@ const { body } = require('express-validator');
 module.exports = function (app) {
 
     function isUserAllowed(req, res, next) {
-        sess = req.session;
+        let sess = req.session;
         if (config.isDev) {
             res.locals = {...res.locals, user: {
                     _id: "62811745edc9450e0b407e96",

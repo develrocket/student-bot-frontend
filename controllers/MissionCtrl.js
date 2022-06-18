@@ -28,8 +28,9 @@ module.exports = function(){
             let skills = await SkillModel.find({}).lean().exec();
             let id = req.query.id;
             let mission = await MissionModel.findOne({_id: id});
+            let today = moment().format('YYYY-MM-DD');
             res.locals = {...res.locals, title: 'Reschedule Mission'};
-            res.render('Mission/edit', {persons, skills, mission});
+            res.render('Mission/edit', {persons, skills, mission, today});
         },
 
         doCreate: async function(req, res) {
