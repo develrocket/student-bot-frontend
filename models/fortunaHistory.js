@@ -7,7 +7,7 @@ const FortunaHistorySchema = new Schema({
     telegramId: String,
     fortuna_point: Number,
     session_no: String,
-    state: Number,          //0: received by test, 1: received by tip, 2: Send, 3: withdraw to FRT token, 4: Rent Great Person, 5: Buy Offer, 6: Sell Offer
+    state: Number,          //0: received by test, 1: received by tip, 2: Send, 3: withdraw to FRT token, 4: Rent Great Person, 5: Buy Offer, 6: Sell Offer, 7: Complete mission
     created_at: String,
     senderId: String,       // sender telegramId,
     senderName: String,     // sender name

@@ -278,6 +278,15 @@ module.exports = function(){
                 $set: {isUsed: 1}
             });
 
+            let fHistory = new FortunaHistoryModel({
+                telegramId: telegramId,
+                fortuna_point: mission.price * -1,
+                mission: mission._id,
+                state: 7,
+                created_at: moment().format('YYYY-MM-DD HH:mm:ss')
+            });
+            await fHistory.save();
+
             req.flash('message', "You completed mission successfully!");
             return res.redirect('/tasks');
         }

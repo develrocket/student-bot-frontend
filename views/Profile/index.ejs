@@ -113,6 +113,22 @@
                             </div>
                         </div>
 
+                        <% if (missions.length > 0) {%>
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title mt-0"><i class="uil-bookmark-full"></i> Mission Badges</h4>
+                            </div>
+                            <div class="card-body">
+                                <% missions.forEach(function(mission) { %>
+                                    <div class="mission-item" style="float: left; margin-right: 10px;">
+                                        <img class="rounded-circle avatar-lg" src="/uploads/<%= mission.mission.badge %>"
+                                             data-holder-rendered="true" data-xblocker="passed" style="visibility: visible;">
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
+                        <% } %>
+
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title mt-0"><i class="uil-award-alt"></i> Skills</h4>
