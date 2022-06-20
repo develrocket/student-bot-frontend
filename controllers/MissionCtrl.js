@@ -15,7 +15,7 @@ module.exports = function(){
         index: async function(req, res) {
             let missions = await MissionModel.find({}).lean().exec();
             res.locals = {...res.locals, title: 'Mission Status'};
-            res.render('mission/index', {missions});
+            res.render('Mission/index', {missions});
         },
 
         studentIndex: async function(req, res) {
@@ -38,7 +38,7 @@ module.exports = function(){
             if (missionCount > 10) showMore = true;
 
             res.locals = {...res.locals, title: 'Mission Status'};
-            res.render('mission/student-index', {missions, skills, persons, showMore, missionCount, 'message': req.flash('message'), 'error': req.flash('error')});
+            res.render('Mission/student-index', {missions, skills, persons, showMore, missionCount, 'message': req.flash('message'), 'error': req.flash('error')});
         },
 
         search: async function(req, res) {
