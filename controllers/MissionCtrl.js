@@ -19,8 +19,9 @@ module.exports = function(){
         },
 
         studentIndex: async function(req, res) {
-            let missions = await MissionModel.find({}).populate('person').lean().exec();
-            let missionCount = await MissionModel.count({});
+            let currentTime = moment().format('YYYY/MM/DD HH:mm');
+            let missions = await MissionModel.find({start_at: {$lte: currentTime}, end_at: {$gte: currentTime}}).populate('person').lean().exec();
+            let missionCount = await MissionModel.count({start_at: {$lte: currentTime}, end_at: {$gte: currentTime}});
 
             let skills = await SkillModel.find({}).lean().exec();
             let persons = await GreatPersonModel.find({status: 2}).lean().exec();
@@ -160,6 +161,39 @@ module.exports = function(){
 
             res.locals = {...res.locals, title: 'Reschedule Mission'};
             res.render('Mission/check', {mission, totalFortuna, mySkills, isSkillChecked, isRentChecked});
+        },
+
+        rentGreat: async function(req, res) {
+            let missionId = req.body.missionId;
+            let telegramId = res.locals.user.telegramId;
+            let mission = await MissionModel.findOne({_id: missionId}).populate('person');
+            let rentHistory = await RentHistoryModel.find({
+                mission: missionId,
+                person: mission.person._id,
+                telegramId: telegramId
+            });
+
+            if (rentHistory.length === 0) {
+                let history = new RentHistoryModel({
+                    mission: missionId,
+                    person: mission.person._id,
+                    telegramId: telegramId,
+                    amount: mission.person.price
+                });
+                await history.save();
+
+                let fHistory = new FortunaHistoryModel({
+                    telegramId: telegramId,
+                    fortuna_point: mission.person.price * -1,
+                    mission: mission._id,
+                    person: mission.person._id,
+                    state: 4,
+                    created_at: moment().format('YYYY-MM-DD HH:mm:ss')
+                });
+                await fHistory.save();
+            }
+
+            res.json({result: 'success'});
         },
 
         doCreate: async function(req, res) {

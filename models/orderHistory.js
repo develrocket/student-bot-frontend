@@ -3,18 +3,19 @@ const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
 // create a schema
-const SkillHistorySchema = new Schema({
+const OrderHistorySchema = new Schema({
     telegramId: String,
-    skill: String,
-    score: Number,
-    session_no: Number,
+    username: String,
     offer: {type: mongoose.Schema.Types.ObjectId,ref:'offer'},
+    amount: Number,
+    price: Number,
+    total: Number
 }, {
     timestamps: true
 });
 
 // create the model
-const SkillHistoryModel = mongoose.model('skill_history', SkillHistorySchema);
+const OrderHistoryModel = mongoose.model('order_history', OrderHistorySchema);
 
 // export the model
-module.exports = SkillHistoryModel;
+module.exports = OrderHistoryModel;

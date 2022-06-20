@@ -1,31 +1,101 @@
 <div class="row">
-    <% offers.forEach(function(offer, index) { %>
-        <div class="col-4">
-            <div class="card buy-item">
-                <div class="card-body">
-
-                    <div style="display: flex">
-                        <div class="skill-icon">
-                            <img src="/public/assets/images/skills/<%= offer.skill %>.png" title="<%= offer.skill %>" style="width: 100px;"/>
-                        </div>
-                        <div>
-                            <p><b><%= offer.skill.charAt(0).toUpperCase() + offer.skill.substr(1) %></b></p>
-                            <p>Seller: <%= offer.username %></p>
-                            <p>Points: <%= offer.amount %></p>
-
-                            <p class="price"><%= offer.price %> FRT</p>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; justify-content: space-between; margin-top: 10px">
-                        <input type="number" class="form-control" placeholder="Quantity" style="margin-right: 10px;"/>
-                        <button class="btn btn-primary waves-effect waves-light send-market" data-id="<%= offer._id %>" style="width: 200px;">
-                            Buy
-                        </button>
-                    </div>
-                </div>
-            </div>
-
+    <div class="col-12">
+        <div class="table-responsive">
+            <table class="table table-primary table-striped" id="marketSkillTable">
+                <thead>
+                    <tr>
+                        <th>Skill</th>
+                        <th>Seller</th>
+                        <th>Points</th>
+                        <th>Price</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <% offers.forEach(function(offer, index) { %>
+                    <tr>
+                        <td>
+                            <img src="/public/assets/images/skills/<%= offer.skill %>.png" title="<%= offer.skill %>" style="height: 30px;"/>
+                            <%= offer.skill.charAt(0).toUpperCase() + offer.skill.substr(1) %>
+                        </td>
+                        <td>
+                            <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= offer.telegramId %>">
+                                <%= offer.username %>
+                            </a>
+                        </td>
+                        <td>
+                            <%= offer.amount %>
+                        </td>
+                        <td>
+                            <%= offer.price %>
+                        </td>
+                        <td>
+                            <button class="btn btn-primary waves-effect waves-light send-market" data-bs-toggle="modal" data-bs-target="#buyModal<%= index %>">
+                                Buy
+                            </button>
+                        </td>
+                    </tr>
+                <% }) %>
+                </tbody>
+            </table>
         </div>
-    <% }) %>
+    </div>
 </div>
+
+<% offers.forEach(function(offer, index) { %>
+    <div id="buyModal<%= index %>" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="/market/buy-skill" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title mt-0" id="myModalLabel">Buy Skill</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <table style="width: 100%" class="buy-skill-table">
+                        <tr>
+                            <th>Skill</th>
+                            <td>
+                                <img src="/public/assets/images/skills/<%= offer.skill %>.png" title="<%= offer.skill %>" style="height: 30px;"/>
+                                <%= offer.skill.charAt(0).toUpperCase() + offer.skill.substr(1) %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Seller</th>
+                            <td>
+                                <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= offer.telegramId %>">
+                                    <%= offer.username %>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Price</th>
+                            <td><%= offer.price %></td>
+                        </tr>
+                        <tr>
+                            <th>Amount</th>
+                            <td>
+                                <input type="text" class="form-control buy-points" name="amount" step="0.1" required max="<%= offer.amount %>" data-price="<%= offer.price %>">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Total</th>
+                            <td class="total-price">
+                                <%= (offer.price * 0.1).toFixed(1) %>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="offerId" value="<%= offer._id %>"/>
+                    <button type="button" class="btn btn-light waves-effect" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary waves-effect waves-light btn-buy-skill">Buy</button>
+                </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+<% }) %>

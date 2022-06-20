@@ -382,3 +382,21 @@ label.mission-fortuna {
     width: 100%;
     text-align: center;
 }
+
+.countdown-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    color: white;
+    background: rgba(0,0,0,0.2);
+}
+
+.counter-number {
+    width: 70%;
+}
+
+.buy-skill-table td, .buy-skill-table th {
+    padding-bottom: 20px;
+}
