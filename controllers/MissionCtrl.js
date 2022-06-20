@@ -7,7 +7,7 @@ const SkillModel = require('../models/skill');
 const FortunaHistoryModel = require('../models/fortunaHistory');
 const SkillHistoryModel = require('../models/skillHistory');
 const RentHistoryModel = require('../models/rentHistory');
-
+const MissionHistoryModel = require('../models/missionHistory');
 
 module.exports = function(){
 
@@ -20,8 +20,16 @@ module.exports = function(){
 
         studentIndex: async function(req, res) {
             let currentTime = moment().format('YYYY/MM/DD HH:mm');
-            let missions = await MissionModel.find({start_at: {$lte: currentTime}, end_at: {$gte: currentTime}}).populate('person').lean().exec();
-            let missionCount = await MissionModel.count({start_at: {$lte: currentTime}, end_at: {$gte: currentTime}});
+            let searchQuery = {start_at: {$lte: currentTime}, end_at: {$gte: currentTime}};
+            let telegramId = res.locals.user.telegramId;
+            let missionHistories = await MissionHistoryModel.find({telegramId: telegramId}).lean().exec();
+            let missionIds = missionHistories.map(item => item.mission);
+            if (missionIds.length > 0) {
+                searchQuery = {...searchQuery, _id: {$nin: missionIds}};
+            }
+
+            let missions = await MissionModel.find(searchQuery).populate('person').lean().exec();
+            let missionCount = await MissionModel.count(searchQuery);
 
             let skills = await SkillModel.find({}).lean().exec();
             let persons = await GreatPersonModel.find({status: 2}).lean().exec();
@@ -30,7 +38,7 @@ module.exports = function(){
             if (missionCount > 10) showMore = true;
 
             res.locals = {...res.locals, title: 'Mission Status'};
-            res.render('mission/student-index', {missions, skills, persons, showMore, missionCount});
+            res.render('mission/student-index', {missions, skills, persons, showMore, missionCount, 'message': req.flash('message'), 'error': req.flash('error')});
         },
 
         search: async function(req, res) {
@@ -151,7 +159,7 @@ module.exports = function(){
                 }
             }
 
-            let rentHistories = await RentHistoryModel.find({telegramId: telegramId, mission: id, person: mission.person});
+            let rentHistories = await RentHistoryModel.find({telegramId: telegramId, isUsed: 0, person: mission.person});
             let isRentChecked = false;
             if (rentHistories.length > 0) {
                 isRentChecked = true;
@@ -168,14 +176,14 @@ module.exports = function(){
             let telegramId = res.locals.user.telegramId;
             let mission = await MissionModel.findOne({_id: missionId}).populate('person');
             let rentHistory = await RentHistoryModel.find({
-                mission: missionId,
+                isUsed: 0,
                 person: mission.person._id,
                 telegramId: telegramId
             });
 
             if (rentHistory.length === 0) {
                 let history = new RentHistoryModel({
-                    mission: missionId,
+                    isUsed: 0,
                     person: mission.person._id,
                     telegramId: telegramId,
                     amount: mission.person.price
@@ -185,7 +193,7 @@ module.exports = function(){
                 let fHistory = new FortunaHistoryModel({
                     telegramId: telegramId,
                     fortuna_point: mission.person.price * -1,
-                    mission: mission._id,
+                    // mission: mission._id,
                     person: mission.person._id,
                     state: 4,
                     created_at: moment().format('YYYY-MM-DD HH:mm:ss')
@@ -248,6 +256,30 @@ module.exports = function(){
             await MissionModel.update({_id: id}, {$set: data})
 
             res.redirect('/mission');
+        },
+
+        complete: async function(req, res) {
+            let missionId = req.query.id;
+            let telegramId = res.locals.user.telegramId;
+            let history = new MissionHistoryModel({
+                telegramId: telegramId,
+                mission: missionId,
+                created_at: moment().format('YYYY-MM-DD HH:mm:ss')
+            });
+            await history.save();
+
+            let mission = await MissionModel.findOne({_id: missionId});
+
+            await RentHistoryModel.update({
+                telegramId: telegramId,
+                person: mission.person,
+                isUsed: 0
+            }, {
+                $set: {isUsed: 1}
+            });
+
+            req.flash('message', "You completed mission successfully!");
+            return res.redirect('/tasks');
         }
 
     };

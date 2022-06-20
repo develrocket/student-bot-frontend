@@ -23,6 +23,21 @@
 <%- contentFor('body') %>
 
 
+<% if(error.length> 0) { %>
+    <div class="alert alert-danger alert-dismissible mb-4 flash" role="alert">
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+    </div>
+<% } %>
+<% if(message.length> 0) { %>
+    <div class="alert alert-success alert-dismissible mb-4 flash" role="alert">
+        <%= message %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+    </div>
+<% } %>
+
 <div class="row">
     <div class="col-12">
         <div class="search-box" style="background: rgb(220, 223, 255); margin-bottom: 20px; padding: 15px;">

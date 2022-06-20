@@ -120,6 +120,16 @@
                         <% } %>
                     </div>
                 </div>
+
+                <%if (isSkillChecked && isRentChecked && totalFortuna >= mission.price ) {%>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <a href="/mission/complete?id=<%= mission._id%>" class="btn btn-primary waves-effect waves-light">
+                            Complete
+                        </a>
+                    </div>
+                </div>
+                <% } %>
             </div>
         </div>
     </div>

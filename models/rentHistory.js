@@ -7,7 +7,8 @@ const RentHistorySchema = new Schema({
     telegramId: String,
     person: {type: mongoose.Schema.Types.ObjectId,ref:'great_person'},
     mission: {type: mongoose.Schema.Types.ObjectId,ref:'mission'},
-    amount: Number
+    amount: Number,
+    isUsed: Number
 }, {
     timestamps: true
 });
