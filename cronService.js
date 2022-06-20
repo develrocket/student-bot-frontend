@@ -183,8 +183,6 @@ const fetchResult = async function(sessId, skills, bot) {
                 })
             }
 
-
-
             if (skill) {
                 let skillHistory = await SkillHistoryModel.find({session_no: sessId, telegramId: rItem.telegramId, skill: skill}).lean().exec();
                 if (skillHistory.length > 0) {

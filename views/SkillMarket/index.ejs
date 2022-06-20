@@ -1,4 +1,5 @@
 <%- contentFor('HeaderCss') %>
+<link href="/public/assets/libs/ion-rangeslider/css/ion.rangeSlider.min.css" rel="stylesheet" type="text/css"/>
 
 <%- contentFor('breadcrumb') %>
 
@@ -29,6 +30,21 @@
 
                 <h4 class="card-title">Skills Market</h4>
                 <p class="card-title-desc">Buy, Rent, Create Offer</p>
+
+                <% if(error.length> 0) { %>
+                    <div class="alert alert-danger alert-dismissible mb-4 flash" role="alert">
+                        <%= error %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                    </div>
+                <% } %>
+                <% if(message.length> 0) { %>
+                    <div class="alert alert-success alert-dismissible mb-4 flash" role="alert">
+                        <%= message %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                    </div>
+                <% } %>
 
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
@@ -71,6 +87,7 @@
 </div>
 
 <%- contentFor('FooterJs') %>
+<script src="/public/assets/libs/ion-rangeslider/js/ion.rangeSlider.min.js"></script>
 
 <%- contentFor('BottomJs') %>
 <script>
@@ -99,6 +116,23 @@
     }
 
     $(document).ready(function() {
+        $('.buy-points').each(function () {
+            console.log($(this));
+            $(this).ionRangeSlider({
+                skin: "round",
+                max: $(this).attr('max') * 1,
+                step: 0.1,
+                min: 0.1
+            })
+        });
+
+        $('.buy-points').on('change', function() {
+            let price = $(this).data('price');
+            let amount = $(this).val();
+            let total = price * amount;
+            $(this).closest('tbody').find('.total-price').html(total.toFixed(1));
+        })
+
         $('#searchBuys').on('click', function() {
             $.ajax({
                 type: 'POST',
@@ -111,11 +145,12 @@
                 success: function(res) {
                     buyIndex = 0;
                     $('#buy-container').html(res);
-                    initBuyLoadMore();
+                    $('#marketSkillTable').DataTable();
                 }
             });
         });
 
+        $('#marketSkillTable').DataTable();
         $('#greatTable').DataTable();
 
         $('#deleteOffer').on('click', function() {
@@ -146,6 +181,6 @@
                     }
                 }
             });
-        })
+        });
     })
 </script>

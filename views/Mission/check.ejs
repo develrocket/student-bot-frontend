@@ -1,0 +1,195 @@
+<%- contentFor('HeaderCss') %>
+<link href="/public/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+
+<%- contentFor('breadcrumb') %>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Mission Check</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Africa</a></li>
+                    <li class="breadcrumb-item active">Mission Check Page</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<%- contentFor('body') %>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-img-top" style="background-image: url('/uploads/<%= mission.banner %>'); position: relative">
+                <div class="countdown-container justify-content-center">
+                    <div data-countdown="<%= mission.end_at %>" class="counter-number"></div>
+                </div>
+            </div>
+            <div class="card-body">
+                <h4 class="card-title mt-0"><%= mission.name %></h4>
+                <p class="card-text"><%= mission.description %></p>
+                <p class="card-text">Mission Status: Ongoing</p>
+
+                <div class="row">
+                    <div class="col-lg-2">
+                        <div class="alert alert-success" role="alert">
+                            Great Person
+                        </div>
+
+                        <div class="mt-4 mt-md-0 text-center">
+                            <img class="img-thumbnail rounded-circle avatar-xl" alt="200x200" src="/uploads/<%= mission.person.icon %>" data-holder-rendered="true" data-xblocker="passed" style="visibility: visible;">
+                        </div>
+
+                        <p class="text-center"><%= mission.person.name %></p>
+                        <p class="text-center"><span style="color: red;"><%= mission.person.price %></span> Fortuna</p>
+
+                        <div style="text-align: center; margin-top: 30px;">
+                            <% if (!isRentChecked) { %>
+                                <button class="btn btn-primary waves-effect waves-light" id="btnRent" style="min-width: 120px" data-owned="<%= totalFortuna %>" data-needed="<%= mission.person.price %>">Rent</button>
+                            <% } else { %>
+                                <i class="uil-check-circle" style="font-size: 40px; color: #1f7556; line-height: 40px"></i>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="alert alert-success" role="alert">
+                            Skills
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <tbody>
+                                <% mission.skills.forEach(function(skill, index) { %>
+                                <tr>
+                                    <td width="50px"><img src="/public/assets/images/skills/<%= skill.skill %>.png" style="height: 40px;"/></td>
+                                    <td><label class="mission-fortuna" style="background: #50a5f1; color: white;"><%= skill.skill.substr(0, 1).toUpperCase() + skill.skill.substr(1) %></label></td>
+                                    <td><label class="mission-fortuna" style="margin-left: 0px;">Owned: <%= mySkills[skill.skill] %></label></td>
+                                    <td><label class="mission-fortuna" style="margin-left: 0px;">Needed: <%= skill.amount %></label></td>
+                                    <td>
+                                        <% if (mySkills[skill.skill] >= skill.amount) { %>
+                                            <i class="uil-check-circle" style="font-size: 40px; color: #1f7556; line-height: 40px"></i>
+                                        <% } else { %>
+                                            <i class="uil-times-circle" style="font-size: 40px; color: #924040; line-height: 40px"></i>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <% if (!isSkillChecked) {%>
+                            <div style="margin-top: 30px; text-align: center">
+                                <a href="/market" class="btn btn-primary waves-effect waves-light" style="min-width: 200px">Get Skills</a>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="alert alert-success" role="alert">
+                            Fortuna
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <tbody>
+                                <tr>
+                                    <td width="50px"><img src="/public/assets/images/fortuna-icon.jpg" style="height: 40px;"/></td>
+                                    <td><label class="mission-fortuna">Owned: <%= totalFortuna.toFixed(1) %></label></td>
+                                    <td><label class="mission-fortuna" style="margin-left: 0px;">Needed: <%= mission.price %></label></td>
+                                    <td>
+                                        <% if (totalFortuna >= mission.price) { %>
+                                            <i class="uil-check-circle" style="font-size: 40px; color: #1f7556; line-height: 40px"></i>
+                                        <% } else { %>
+                                            <i class="uil-times-circle" style="font-size: 40px; color: #924040; line-height: 40px"></i>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <% if (totalFortuna < mission.price) {%>
+                            <div style="margin-top: 30px; text-align: center">
+                                <a href="/market" class="btn btn-primary waves-effect waves-light" style="min-width: 200px">Sell Skills</a>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+
+                <%if (isSkillChecked && isRentChecked && totalFortuna >= mission.price ) {%>
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <a href="/mission/complete?id=<%= mission._id%>" class="btn btn-primary waves-effect waves-light">
+                            Complete
+                        </a>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<%- contentFor('FooterJs') %>
+<script src="/public/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+<script src="/public/assets/libs/jquery-countdown/jquery.countdown.min.js"></script>
+
+<%- contentFor('BottomJs') %>
+
+<script>
+    $(document).ready(function() {
+        $('[data-countdown]').each(function () {
+            var $this = $(this), finalDate = $(this).data('countdown');
+            $this.countdown(finalDate, function (event) {
+                $(this).html(event.strftime(''
+                    + '<div class="coming-box">%D <span>Days</span></div> '
+                    + '<div class="coming-box">%H <span>Hours</span></div> '
+                    + '<div class="coming-box">%M <span>Minutes</span></div> '
+                    + '<div class="coming-box">%S <span>Seconds</span></div> '));
+            });
+        });
+
+        $('#btnRent').on('click', function() {
+            let owned = $(this).data('owned');
+            let needed = $(this).data('needed');
+            if (owned * 1 < needed * 1) {
+                Swal.fire(
+                    {
+                        text: "You don't have enough fortuna to rent.",
+                        confirmButtonColor: '#5b73e8',
+                    }
+                )
+            } else {
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#34c38f",
+                    cancelButtonColor: "#f46a6a",
+                    confirmButtonText: "Yes, Rent!"
+                }).then(function (result) {
+                    if (result.value) {
+                        $.ajax({
+                            type: 'POST',
+                            url: "/mission/rent-great",
+                            data: {
+                                missionId: '<%= mission._id %>'
+                            },
+                            success: function(res) {
+                                console.log(res);
+                                window.location.reload();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    })
+</script>

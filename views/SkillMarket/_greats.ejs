@@ -19,9 +19,12 @@
             <td><%= person.field %></td>
             <td><%= person.price %></td>
             <td>
-                <button class="btn btn-primary waves-effect waves-light" data-id="<%= person._id %>">
-                    Rent
-                </button>
+                <form action="/market/rent-great" method="post">
+                    <input type="hidden" name="personId" value="<%= person._id %>" />
+                    <button class="btn btn-primary waves-effect waves-light" type="submit">
+                        Rent
+                    </button>
+                </form>
             </td>
         </tr>
     <% }); %>

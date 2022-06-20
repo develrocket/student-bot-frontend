@@ -1,0 +1,33 @@
+<% missions.forEach(function(mission, index) { %>
+    <div class="card border mission-card">
+        <div class="card-body">
+            <h2 class="card-title mt-0">
+                <a href="/mission/check?id=<%= mission._id %>"><%= mission.name %></a>
+
+                <small class="text-muted" style="font-size: 14px; float: right;">
+                    <i class="uil-clock"></i> <%= mission.start_at %>
+                </small>
+            </h2>
+            <p class="card-text">
+                <%= mission.description.length > 600 ? mission.description.substr(0, 600) + ' ...' : mission.description %>
+            </p>
+
+
+            <p class="card-text">
+                <small class="text-muted" style="margin-right: 20px; display: flex; align-items: center">
+                    <img src="/uploads/<%= mission.person.icon %>" style="height: 20px; border-radius: 10px; width: 20px; margin-right: 10px;"/> <b><%= mission.person.name %></b>
+                </small>
+
+                <small class="text-muted">
+                    <label>
+                        Required Skills:
+                        <% mission.skills.forEach(function(skill, index) { %>
+                            <b><%= skill.skill.substr(0, 1).toUpperCase() + skill.skill.substr(1) %></b>
+                            <%= index < mission.skills.length -1 ? ", " : '' %>
+                        <% }) %>
+                    </label>
+                </small>
+            </p>
+        </div>
+    </div>
+<% }); %>

@@ -5,6 +5,7 @@ const StudentModel = require('../models/student');
 const FortunaHistoryModel = require('../models/fortunaHistory');
 const SkillModel = require('../models/skill');
 const SkillHistoryModel = require('../models/skillHistory');
+const MissionHistoryModel = require('../models/missionHistory');
 
 module.exports = {
     randomString(length) {
@@ -183,6 +184,8 @@ module.exports = {
             }
         }
 
-        return {joinDate, result, sessionCount, rank, teleUser, rResult, motto, totalFortuna, myParts, countryCode, skills, mySkills};
+        let missions = await MissionHistoryModel.find({telegramId: telegramId}).populate('mission').lean().exec();
+
+        return {joinDate, result, sessionCount, rank, teleUser, rResult, motto, totalFortuna, myParts, countryCode, skills, mySkills, missions};
     }
 };

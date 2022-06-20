@@ -16,7 +16,7 @@ const MissionSchema = new Schema({
     price: Number,
     start_at: String,
     end_at: String,
-    status: Number
+    status: Number          //1: Pending 2: Ongoing, 3: Finished, 4: Hide
 }, {
     timestamps: true
 });

@@ -89,6 +89,10 @@
                                 <option value="1" <%= filter == 1 ? 'selected' : '' %>>Received By Tip</option>
                                 <option value="2" <%= filter == 2 ? 'selected' : '' %>>Send Tip</option>
                                 <option value="3" <%= filter == 3 ? 'selected' : '' %>>Withdraw to FRT Token</option>
+                                <option value="3" <%= filter == 4 ? 'selected' : '' %>>Rent Great Person</option>
+                                <option value="3" <%= filter == 5 ? 'selected' : '' %>>Buy Skill</option>
+                                <option value="3" <%= filter == 6 ? 'selected' : '' %>>Sell Skill</option>
+                                <option value="3" <%= filter == 7 ? 'selected' : '' %>>Complete Mission</option>
                             </select>
                         </div>
                         <label class="col-md-1 col-form-label text-end">Delivered On</label>
@@ -133,6 +137,18 @@
                                     <% } %>
                                     <% if (history.state == 3) { %>
                                         Wallet address: <%= history.walletAddr %>
+                                    <% } %>
+                                    <% if (history.state == 4) { %>
+                                        Great Person: <%= history.person.name %>
+                                    <% } %>
+                                    <% if (history.state == 5) { %>
+                                        Buy Skill
+                                    <% } %>
+                                    <% if (history.state == 6) { %>
+                                        Sell Skill
+                                    <% } %>
+                                    <% if (history.state == 7) { %>
+                                        Mission: <%= history.mission.name %>
                                     <% } %>
                                 </td>
                                 <td><%= moment(history.created_at).format('YYYY-MM-DD HH:mm:ss') %></td>

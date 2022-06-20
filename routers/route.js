@@ -78,4 +78,13 @@ module.exports = function (app) {
     app.post('/market/search-buys', isUserAllowed, urlencodeParser, MarketCtrl.searchBuys);
     app.post('/market/load-more-buys', isUserAllowed, urlencodeParser, MarketCtrl.loadMoreBuys);
     app.post('/market/remove-offer', isUserAllowed, urlencodeParser, MarketCtrl.removeOffer);
+    app.post('/market/buy-skill', isUserAllowed, urlencodeParser, MarketCtrl.buySkill);
+    app.post('/market/rent-great', isUserAllowed, urlencodeParser, MarketCtrl.rentGreat);
+
+    app.get('/tasks', isUserAllowed, MissionCtrl.studentIndex);
+    app.get('/mission/check', isUserAllowed, MissionCtrl.check);
+    app.get('/mission/complete', isUserAllowed, MissionCtrl.complete);
+    app.post('/mission/search', isUserAllowed, urlencodeParser, MissionCtrl.search);
+    app.post('/mission/load-more', isUserAllowed, urlencodeParser, MissionCtrl.loadMore);
+    app.post('/mission/rent-great', isUserAllowed, urlencodeParser, MissionCtrl.rentGreat   );
 }
