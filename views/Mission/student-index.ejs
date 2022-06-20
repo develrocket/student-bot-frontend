@@ -1,0 +1,127 @@
+<%- contentFor('HeaderCss') %>
+
+<%- contentFor('breadcrumb') %>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Missions</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Africa</a></li>
+                    <li class="breadcrumb-item active">Missions Page</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<%- contentFor('body') %>
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="search-box" style="background: rgb(220, 223, 255); margin-bottom: 20px; padding: 15px;">
+            <div class="row">
+                <div class="col-4">
+                    <div class="row">
+                        <label for="example-text-input" class="col-md-4 col-form-label">Filter By Skill</label>
+                        <div class="col-md-8">
+                            <select class="form-control" id="buySearchSkill">
+                                <option value="">All</option>
+                                <% skills.forEach(function(skill, index) { %>
+                                <option value="<%=skill.name%>"><%= skill.name.charAt(0).toUpperCase() + skill.name.substr(1) %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="row">
+                        <label for="example-text-input" class="col-md-4 col-form-label">Filter By G-Person</label>
+                        <div class="col-md-8">
+                            <select class="form-control" id="buySearchPerson">
+                                <option value="">All</option>
+                                <% persons.forEach(function(person, index) { %>
+                                <option value="<%=person._id%>"><%= person.name %></option>
+                                <% }) %>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="row">
+                        <label for="example-text-input" class="col-md-4 col-form-label">Search By</label>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="buySearchKey"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-1">
+                    <button class="btn btn-primary waves-effect waves-light send-market" id="searchBuys">
+                        Search
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="buy-container">
+            <%- include ('./_mission_parts')  %>
+        </div>
+    </div>
+</div>
+
+<%- contentFor('FooterJs') %>
+
+<%- contentFor('BottomJs') %>
+
+<script>
+    let buyIndex = 0;
+
+    function initBuyLoadMore() {
+        $('#buysLoadMore').on('click', function() {
+            buyIndex ++;
+            let totalCount = $(this).data('totalcount');
+            $.ajax({
+                type: 'POST',
+                url: "/mission/load-more",
+                data: {
+                    page: buyIndex,
+                    skill: $('#buySearchSkill').val(),
+                    person: $('#buySearchPerson').val(),
+                    key: $('#buySearchKey').val()
+                },
+                success: function(res) {
+                    $('#buy-item-container').append(res);
+                    if (totalCount < (buyIndex + 1) * 15) {
+                        $('#buysLoadMore').removeClass('hidden');
+                    }
+                }
+            });
+        });
+    }
+
+    $(document).ready(function() {
+        $('#searchBuys').on('click', function() {
+            $.ajax({
+                type: 'POST',
+                url: "/mission/search",
+                data: {
+                    page: buyIndex,
+                    skill: $('#buySearchSkill').val(),
+                    person: $('#buySearchPerson').val(),
+                    key: $('#buySearchKey').val()
+                },
+                success: function(res) {
+                    buyIndex = 0;
+                    $('#buy-container').html(res);
+                    initBuyLoadMore();
+                }
+            });
+        });
+    })
+</script>

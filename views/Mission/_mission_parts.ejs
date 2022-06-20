@@ -1,0 +1,17 @@
+<% if (missionCount > 0) {%>
+
+    <div id="buy-item-container">
+        <%- include ('./_mission_item')  %>
+    </div>
+
+    <div class="row">
+        <div class="col-12 text-center" style="margin: 20px 0px;">
+            <% if (showMore) {%>
+                <button type="button" class="btn btn-outline-primary waves-effect waves-light" id="buysLoadMore" data-totalcount="<%= missionCount %>">Load More</button>
+            <% } %>
+        </div>
+    </div>
+
+<% } else { %>
+    <p class="text-center">There are no missions.</p>
+<% } %>
