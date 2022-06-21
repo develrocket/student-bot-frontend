@@ -31,10 +31,10 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row justify-content-center">
-                        <div class="col-6">
+                        <div class="col-lg-6">
                             <form class="custom-validation" action="/market/create-offer" method="POST" novalidate>
                                 <div class="row mb-4">
-                                    <label for="horizontal-firstname-input" class="col-sm-3 col-form-label">Name</label>
+                                    <label for="horizontal-firstname-input" class="col-sm-3 col-form-label">Select Skill</label>
                                     <div class="col-sm-9">
                                         <select class="form-control select2" name="skill" id="offer-skill">
                                             <option value="" disabled selected>Select Skill</option>
@@ -42,18 +42,26 @@
                                                 <option value="<%= skill %>" data-image="/public/assets/images/skills/<%= skill %>.png"><%= skill %></option>
                                             <% }); %>
                                         </select>
+
+                                        <p>I have <span id="skillPoint" style="color: red"></span> points</p>
                                     </div>
                                 </div>
                                 <div class="row mb-4">
-                                    <label for="offer-points" class="col-sm-3 col-form-label">Points</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="offer-points" name="points" step="0.1" required min="1">
+                                    <label for="offer-points" class="col-sm-3 col-form-label">I sell</label>
+                                    <div class="col-sm-9" style="display: flex; justify-content: space-between; align-items: center">
+                                        <div style="width: 100%;">
+                                            <input type="text" class="form-control" id="offer-points" name="points" step="0.1" required min="1">
+                                        </div>
+                                        <img src="/public/assets/images/fortuna-icon.jpg" style="height: 30px; margin-left: 10px;"/>
                                     </div>
                                 </div>
                                 <div class="row mb-4">
-                                    <label for="offer-price" class="col-sm-3 col-form-label">Price</label>
-                                    <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="offer-price" name="price">
+                                    <label for="offer-price" class="col-sm-3 col-form-label">Price per point</label>
+                                    <div class="col-sm-9" style="display: flex; justify-content: space-between; align-items: center">
+                                        <div style="width: 100%;">
+                                            <input type="text" class="form-control" id="offer-price" name="price">
+                                        </div>
+                                        <img src="/public/assets/images/fortuna-icon.jpg" style="height: 30px; margin-left: 10px;"/>
                                     </div>
                                 </div>
 
@@ -131,6 +139,8 @@
             pointSlider.update({
                 max: maxPoints
             });
+
+            $('#skillPoint').html(maxPoints);
             pointSlider.reset();
         });
 

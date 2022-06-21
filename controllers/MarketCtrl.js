@@ -55,7 +55,9 @@ module.exports = function(){
             ]);
             let mySkills = {};
             for (let j = 0; j < skillHistories.length; j ++) {
-                mySkills[skillHistories[j]._id] = (skillHistories[j].totalPoints * 1).toFixed(1)
+                if (skillHistories[j].totalPoints * 1 >= 1) {
+                    mySkills[skillHistories[j]._id] = (skillHistories[j].totalPoints * 1).toFixed(1)
+                }
             }
 
             res.locals = {...res.locals, title: 'Post New Offer' };
