@@ -55,15 +55,21 @@
                                     </div>
                                 </div>
                                 <div class="row mb-4">
-                                    <label for="horizontal-email-input" class="col-sm-3 col-form-label">Field</label>
+                                    <label for="horizontal-email-input" class="col-sm-3 col-form-label">Skill</label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="horizontal-email-input" name="field" required value="<%= person.field %>">
+                                        <select class="form-control select2" name="field">
+                                            <option value="" disabled>Select Skill</option>
+                                            <% skills.forEach(function(skill) { %>
+                                                <option value="<%= skill.name %>" data-image="/public/assets/images/skills/<%= skill %>.png" <%= skill == person.field ? 'selected' : '' %>><%= skill.name.substr(0, 1).toUpperCase() + skill.name.substr(1) %></option>
+                                            <% }); %>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row mb-4">
-                                    <label for="horizontal-password-input" class="col-sm-3 col-form-label">Price</label>
-                                    <div class="col-sm-9">
+                                    <label for="horizontal-password-input" class="col-sm-3 col-form-label">Price per rent</label>
+                                    <div class="col-sm-9" style="display: flex;justify-content: space-between; align-items: center">
                                         <input type="number" class="form-control" id="horizontal-password-input" name="price" step="0.1" value="<%= person.price %>">
+                                        <img src="/public/assets/images/fortuna-icon.jpg" style="height: 30px; margin-left: 10px;" />
                                     </div>
                                 </div>
 

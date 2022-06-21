@@ -64,8 +64,9 @@ module.exports = function(){
         update: async function(req, res) {
             let id = req.query.id;
             let person = await GreatPersonModel.findOne({_id: id});
+            let skills = await SkillModel.find({}).lean().exec();
             res.locals = {...res.locals, title: 'Update Great Person'};
-            res.render('GreatPerson/edit', {person});
+            res.render('GreatPerson/edit', {person, skills});
         },
     };
 

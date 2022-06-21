@@ -60,7 +60,7 @@
                                         <select class="form-control select2" name="field">
                                             <option value="" disabled selected>Select Skill</option>
                                             <% skills.forEach(function(skill) { %>
-                                                <option value="<%= skill %>" data-image="/public/assets/images/skills/<%= skill %>.png"><%= skill.name.substr(0, 1).toUpperCase() + skill.name.substr(1) %></option>
+                                                <option value="<%= skill.name %>" data-image="/public/assets/images/skills/<%= skill %>.png"><%= skill.name.substr(0, 1).toUpperCase() + skill.name.substr(1) %></option>
                                             <% }); %>
                                         </select>
                                     </div>

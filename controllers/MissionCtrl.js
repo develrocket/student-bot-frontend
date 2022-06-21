@@ -92,7 +92,7 @@ module.exports = function(){
 
         create: async function(req, res) {
             let persons = await GreatPersonModel.find({status: 2}).lean().exec();
-            let skills = await SkillModel.find({}).lean().exec();
+            let skills = await SkillModel.find({}).sort({name: 1}).lean().exec();
             let today = moment().format('YYYY-MM-DD');
             res.locals = {...res.locals, title: 'Add New Mission'};
             res.render('Mission/create', {persons, skills, today});
