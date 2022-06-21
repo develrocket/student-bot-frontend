@@ -130,7 +130,7 @@
             let price = $(this).data('price');
             let amount = $(this).val();
             let total = price * amount;
-            $(this).closest('tbody').find('.total-price').html(total.toFixed(1));
+            $(this).closest('tbody').find('.total-price').html(total.toFixed(1) + '<img src="/public/assets/images/fortuna-icon.jpg" style="width: 20px; margin-left: 10px" />');
         })
 
         $('#searchBuys').on('click', function() {

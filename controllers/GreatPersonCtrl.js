@@ -2,7 +2,7 @@ const express = require('express');
 const moment = require('moment');
 const {validationResult}  = require('express-validator/check');
 const GreatPersonModel = require('../models/greatPerson');
-
+const SkillModel = require('../models/skill');
 
 module.exports = function(){
 
@@ -13,9 +13,10 @@ module.exports = function(){
             res.render('GreatPerson/index', {persons});
         },
 
-        create: function(req, res) {
+        create: async function(req, res) {
+            let skills = await SkillModel.find({}).lean().exec();
             res.locals = {...res.locals, title: 'Add Great Person'};
-            res.render('GreatPerson/create', {});
+            res.render('GreatPerson/create', {skills});
         },
 
         doCreate: async function(req, res) {

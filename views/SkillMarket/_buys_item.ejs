@@ -27,7 +27,7 @@
                             <%= offer.amount %>
                         </td>
                         <td>
-                            <%= offer.price %>
+                            <%= offer.price %> <img src="/public/assets/images/fortuna-icon.jpg" style="width: 20px; margin-left: 10px" />
                         </td>
                         <td>
                             <button class="btn btn-primary waves-effect waves-light send-market" data-bs-toggle="modal" data-bs-target="#buyModal<%= index %>">
@@ -72,7 +72,9 @@
                         </tr>
                         <tr>
                             <th>Price</th>
-                            <td><%= offer.price %></td>
+                            <td>
+                                <%= offer.price %> <img src="/public/assets/images/fortuna-icon.jpg" style="width: 20px; margin-left: 10px" />
+                            </td>
                         </tr>
                         <tr>
                             <th>Amount</th>
@@ -83,7 +85,7 @@
                         <tr>
                             <th>Total</th>
                             <td class="total-price">
-                                <%= (offer.price * 0.1).toFixed(1) %>
+                                <%= (offer.price * 0.1).toFixed(1) %> <img src="/public/assets/images/fortuna-icon.jpg" style="width: 20px; margin-left: 10px" />
                             </td>
                         </tr>
                     </table>
