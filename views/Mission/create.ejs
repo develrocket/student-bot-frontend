@@ -140,6 +140,7 @@
                                 <div class="row justify-content-end">
                                     <div class="col-sm-9">
                                         <div>
+                                            <input type="hidden" name="timezoneOffset" id="timezoneOffset" />
                                             <button type="submit" class="btn btn-primary w-md">Submit</button>
                                         </div>
                                     </div>
@@ -231,6 +232,7 @@
     }
 
     $(document).ready(function () {
+        $('#timezoneOffset').val(new Date().getTimezoneOffset());
         $('.custom-validation').parsley();
 
         initAddSkill();
