@@ -8,6 +8,8 @@ const moment = require('moment');
 const NewsModel = require('./models/news');
 const SkillModel = require('./models/skill');
 const SkillHistoryModel = require('./models/skillHistory');
+const MissionModel = require('./models/mission');
+const MissionHistoryModel = require('./models/missionHistory');
 
 // const serverUrl = 'http://my.loc/test/';
 const serverUrl = 'https://vmi586933.contaboserver.net/';
@@ -160,7 +162,7 @@ const fetchResult = async function(sessId, skills, bot) {
             let results = await ResultModel.find({session_no: sessId, telegramId: rItem.telegramId});
             if (results.length > 0) {
                 if (results[0].title != title) {
-                   bot.sendMessage(groupId, '🔥Congratulations fellow African @' + rItem.username + '! 🦇 You have just been promoted to **' + title +'**!');
+                   bot.sendMessage(groupId, '🔥Congratulations fellow African <a href="tg://user?id=' + rItem.telegramId+ '">' + rItem.username + '</a>! 🦇 You have just been promoted to **' + title +'**!', {pass_mode: 'Html'});
                 }
                 await ResultModel.update({_id: results[0]._id}, {
                     $set: rItem
@@ -171,7 +173,7 @@ const fetchResult = async function(sessId, skills, bot) {
 
                 let prevResults = await ResultModel.find({session_no: {$lt: sessId}, telegramId: rItem.telegramId}).sort({session_no: -1}).lean().exec();
                 if (prevResults[0].title != title) {
-                    bot.sendMessage(groupId, '🔥Congratulations fellow African @' + rItem.username + '! 🦇 You have just been promoted to **' + title +'**!');
+                    bot.sendMessage(groupId, '🔥Congratulations fellow African <a href="tg://user?id=' + rItem.telegramId+ '">' + rItem.username + '</a>! 🦇 You have just been promoted to **' + title +'**!', {pass_mode: 'Html'});
                 }
 
                 await SessionModel.update({
@@ -324,5 +326,57 @@ module.exports = function(){
                 await sleep(3000);
             }
         },
+
+        checkMission: async function(bot) {
+            while(true) {
+                let currentTime = moment.utc().format('YYYY-MM-DD HH:mm');
+                console.log('current-time:', currentTime);
+                let searchQuery = {start_at: {$lte: currentTime}, end_at: {$gte: currentTime}, isNoti: {$ne: 1}};
+                let missions = await MissionModel.find(searchQuery).lean().exec();
+
+                let missionIds = missions.map(item => item._id);
+
+                console.log(missionIds);
+
+                if (missionIds.length > 0) {
+                    bot.sendMessage(groupId, '🔥A new mission is available! Go to <a href="https://myafrica.link/tasks">myafrica.link</a> to check the details!', {pass_mode: 'Html'});
+                    await MissionModel.update({
+                        _id: {$in: missionIds}
+                    }, {
+                        $set: {
+                            isNoti: 1
+                        }
+                    }, {multi: true});
+                }
+                await sleep(60 * 1000);
+            }
+        },
+
+        checkComplete: async function(bot) {
+            while(true) {
+                let currentTime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+                let searchQuery = {created_at: {$lte: currentTime}, isNoti: {$ne: 1}};
+                let missions = await MissionHistoryModel.find(searchQuery).lean().exec();
+                let missionIds = missions.map(item => item._id);
+
+                if (missionIds.length > 0) {
+                    for (let i = 0; i < missions.length; i ++) {
+                        let mission = missions[i];
+                        bot.sendMessage(groupId, '🔥Congratulations ' + mission.username + '! You completed the mission and unlocked your badge!');
+                    }
+
+                    await MissionHistoryModel.update({
+                        _id: {$in: missionIds}
+                    }, {
+                        $set: {
+                            isNoti: 1
+                        }
+                    }, {multi: true});
+                }
+
+
+                await sleep(10 * 1000);
+            }
+        }
     };
 };

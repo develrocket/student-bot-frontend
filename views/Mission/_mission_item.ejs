@@ -5,7 +5,7 @@
                 <a href="/mission/check?id=<%= mission._id %>"><%= mission.name %></a>
 
                 <small class="text-muted" style="font-size: 14px; float: right;">
-                    <i class="uil-clock"></i> <%= mission.start_at %>
+                    <i class="uil-clock"></i> <span class="format-date"><%= mission.start_at %></span>
                 </small>
             </h2>
             <p class="card-text">

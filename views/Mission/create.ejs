@@ -53,6 +53,9 @@
                                                 </label>
                                             </div>
                                             <div class="avatar-preview">
+                                                <div class="placeholder">
+                                                    1400 X 200
+                                                </div>
                                                 <div id="imagePreview" style="">
                                                 </div>
                                             </div>
@@ -77,6 +80,9 @@
                                                 </label>
                                             </div>
                                             <div class="avatar-preview">
+                                                <div class="placeholder">
+                                                    200 X 200
+                                                </div>
                                                 <div id="imagePreview1" style="">
                                                 </div>
                                             </div>
@@ -84,7 +90,7 @@
                                     </div>
                                 </div>
                                 <div class="row mb-4">
-                                    <label class="col-sm-3 col-form-label">Great Person</label>
+                                    <label class="col-sm-3 col-form-label">Great Person Needed</label>
                                     <div class="col-sm-9">
                                         <select class="form-control" name="person">
                                             <% persons.forEach(function(person, index) { %>
@@ -94,15 +100,16 @@
                                     </div>
                                 </div>
                                 <div class="row mb-4">
-                                    <label class="col-sm-3 col-form-label">Skills</label>
+                                    <label class="col-sm-3 col-form-label">Skills Needed</label>
                                     <div class="col-sm-9" id="skillContainer">
 
                                     </div>
                                 </div>
                                 <div class="row mb-4">
-                                    <label class="col-sm-3 col-form-label">Price</label>
-                                    <div class="col-sm-9">
+                                    <label class="col-sm-3 col-form-label">Fortuna Needed</label>
+                                    <div class="col-sm-9" style="display: flex; justify-content: space-between; align-items: center">
                                         <input type="number" class="form-control" name="price" step="0.1" required>
+                                        <img src="/public/assets/images/fortuna-icon.jpg" style="height: 30px; margin-left: 10px;"/>
                                     </div>
                                 </div>
                                 <div class="row mb-4">
@@ -133,6 +140,7 @@
                                 <div class="row justify-content-end">
                                     <div class="col-sm-9">
                                         <div>
+                                            <input type="hidden" name="timezoneOffset" id="timezoneOffset" />
                                             <button type="submit" class="btn btn-primary w-md">Submit</button>
                                         </div>
                                     </div>
@@ -151,7 +159,7 @@
         <select class="form-control" name="skill[]">
             <option value="" disabled selected>Select skill</option>
             <% skills.forEach(function(skill, index) { %>
-                <option value="<%= skill.name %>"><%= skill.name %></option>
+                <option value="<%= skill.name %>"><%= skill.name.substr(0, 1).toUpperCase() + skill.name.substr(1) %></option>
             <% }) %>
         </select>
     </div>
@@ -224,6 +232,7 @@
     }
 
     $(document).ready(function () {
+        $('#timezoneOffset').val(new Date().getTimezoneOffset());
         $('.custom-validation').parsley();
 
         initAddSkill();

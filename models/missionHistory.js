@@ -5,10 +5,10 @@ const {Schema} = mongoose;
 // create a schema
 const MissionHistorySchema = new Schema({
     telegramId: String,
+    username: String,
     mission: {type: mongoose.Schema.Types.ObjectId,ref:'mission'},
-    created_at: String
-}, {
-    timestamps: true
+    created_at: String,
+    isNoti: Number
 });
 
 // create the model

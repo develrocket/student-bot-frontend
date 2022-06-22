@@ -442,3 +442,33 @@ function initProfileRightbar() {
     init();
 
 })(jQuery)
+
+function formatDateFromString(d) {
+    let month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    let hours = d.getHours();
+    let minutes = d.getMinutes();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    if (hours * 1 < 10) hours = '0' + hours;
+    if (minutes * 1 < 10) minutes = '0' + minutes;
+
+
+
+    return [year, month, day].join('-') + ' ' + hours + ':' + minutes;
+}
+
+$(document).ready(function() {
+    let toffset = new Date().getTimezoneOffset();
+    $('.format-date').each(function() {
+        let t = new Date($(this).html());
+        t.setTime(t.getTime() - toffset * 60 * 1000);
+        t = formatDateFromString(t);
+        console.log($(this).html() + ' : ' + t);
+        $(this).html(t);
+    });
+})

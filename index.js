@@ -94,6 +94,8 @@ db.on('connected', () => {
         app.emit('appStarted');
 
         cronService.start(io, bot);
+        cronService.checkMission(bot);
+        cronService.checkComplete(bot);
         // StudentApiController.getResultAll();
     });
 });

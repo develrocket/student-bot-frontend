@@ -81,35 +81,34 @@
 <%- contentFor('BottomJs') %>
 
 <script>
+    $(document).on('click', '.send-market', function() {
+        let id = $(this).data('id');
+        let elem = this;
+        $.ajax({
+            type: 'Get',
+            url: "/gp/send-market?id=" + id,
+            dataType: "json",
+            success: function(res) {
+                $(elem).closest('td').find('.suspend').removeClass('hidden');
+                $(elem).addClass('hidden');
+            }
+        });
+    })
+
+    $(document).on('click', '.suspend', function() {
+        let id = $(this).data('id');
+        let elem = this;
+        $.ajax({
+            type: 'Get',
+            url: "/gp/suspend?id=" + id,
+            dataType: "json",
+            success: function(res) {
+                $(elem).closest('td').find('.send-market').removeClass('hidden');
+                $(elem).addClass('hidden');
+            }
+        });
+    })
     $(document).ready(function() {
         $('#datatable').DataTable();
-
-        $('.send-market').on('click', function() {
-            let id = $(this).data('id');
-            let elem = this;
-            $.ajax({
-                type: 'Get',
-                url: "/gp/send-market?id=" + id,
-                dataType: "json",
-                success: function(res) {
-                    $(elem).closest('td').find('.suspend').removeClass('hidden');
-                    $(elem).addClass('hidden');
-                }
-            });
-        })
-
-        $('.suspend').on('click', function() {
-            let id = $(this).data('id');
-            let elem = this;
-            $.ajax({
-                type: 'Get',
-                url: "/gp/suspend?id=" + id,
-                dataType: "json",
-                success: function(res) {
-                    $(elem).closest('td').find('.send-market').removeClass('hidden');
-                    $(elem).addClass('hidden');
-                }
-            });
-        })
     });
 </script>

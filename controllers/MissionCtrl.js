@@ -19,7 +19,7 @@ module.exports = function(){
         },
 
         studentIndex: async function(req, res) {
-            let currentTime = moment().format('YYYY/MM/DD HH:mm');
+            let currentTime = moment.utc().format('YYYY-MM-DD HH:mm');
             let searchQuery = {start_at: {$lte: currentTime}, end_at: {$gte: currentTime}};
             let telegramId = res.locals.user.telegramId;
             let missionHistories = await MissionHistoryModel.find({telegramId: telegramId}).lean().exec();
@@ -92,7 +92,7 @@ module.exports = function(){
 
         create: async function(req, res) {
             let persons = await GreatPersonModel.find({status: 2}).lean().exec();
-            let skills = await SkillModel.find({}).lean().exec();
+            let skills = await SkillModel.find({}).sort({name: 1}).lean().exec();
             let today = moment().format('YYYY-MM-DD');
             res.locals = {...res.locals, title: 'Add New Mission'};
             res.render('Mission/create', {persons, skills, today});
@@ -205,6 +205,8 @@ module.exports = function(){
         },
 
         doCreate: async function(req, res) {
+            let start = moment(req.body.start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
+            let end = moment(req.body.end).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let data = {
                 name: req.body.name,
                 banner: req.files.banner[0].filename,
@@ -212,8 +214,8 @@ module.exports = function(){
                 description: req.body.description,
                 person: req.body.person,
                 price: req.body.price,
-                start_at: req.body.start,
-                end_at: req.body.end,
+                start_at: start,
+                end_at: end,
                 status: 1
             };
             let skills = req.body.skill;
@@ -230,15 +232,19 @@ module.exports = function(){
         },
 
         doUpdate: async function(req, res) {
+            let start = moment(req.body.start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
+            let end = moment(req.body.end).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
+
             let id = req.query.id;
             let data = {
                 name: req.body.name,
                 description: req.body.description,
                 person: req.body.person,
                 price: req.body.price,
-                start_at: req.body.start,
-                end_at: req.body.end,
-                status: 1
+                start_at: start,
+                end_at: end,
+                status: 1,
+                isNoti: 0
             };
             if (req.files && req.files.banner && req.files.banner.length > 0 ) {
                 data.banner = req.files.banner[0].filename;
@@ -264,6 +270,7 @@ module.exports = function(){
             let history = new MissionHistoryModel({
                 telegramId: telegramId,
                 mission: missionId,
+                username: res.locals.user.username,
                 created_at: moment().format('YYYY-MM-DD HH:mm:ss')
             });
             await history.save();

@@ -133,6 +133,7 @@
                                 <div class="row justify-content-end">
                                     <div class="col-sm-9">
                                         <div>
+                                            <input type="hidden" name="timezoneOffset" id="timezoneOffset" />
                                             <button type="submit" class="btn btn-primary w-md">Submit</button>
                                         </div>
                                     </div>
@@ -246,8 +247,38 @@
         })
     }
 
+    function formatDate(d) {
+        let month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        let hours = d.getHours();
+        let minutes = d.getMinutes();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+        if (hours.length < 2) hours = '0' + hours;
+        if (minutes.length < 2) minutes = '0' + minutes;
+
+
+
+        return [year, month, day].join('-') + ' ' + hours + ':' + minutes;
+    }
+
     $(document).ready(function () {
+        let timezoneOffset = new Date().getTimezoneOffset();
+        $('#timezoneOffset').val(new Date().getTimezoneOffset());
         $('.custom-validation').parsley();
+
+        startTime = new Date(startTime);
+        endTime = new Date(endTime);
+
+        startTime.setTime(startTime.getTime() - timezoneOffset * 60 * 1000);
+        endTime.setTime(endTime.getTime() - timezoneOffset * 60 * 1000);
+
+        startTime = formatDate(startTime);
+        endTime = formatDate(endTime);
 
         initAddSkill();
         if (skills.length == 0) {
