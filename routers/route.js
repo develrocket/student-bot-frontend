@@ -11,23 +11,45 @@ const config = require('../config/config');
 const multer  = require('multer');
 const upload = multer({ dest: 'uploads/' });
 const { body } = require('express-validator');
-
+const moment = require('moment');
+const MissionHistoryModel = require('../models/missionHistory');
+const MissionModel = require('../models/mission');
 
 module.exports = function (app) {
 
-    function isUserAllowed(req, res, next) {
+    async function isUserAllowed(req, res, next) {
         let sess = req.session;
         if (config.isDev) {
+            let currentTime = moment.utc().format('YYYY-MM-DD HH:mm');
+            let searchQuery = {start_at: {$lte: currentTime}, end_at: {$gte: currentTime}};
+            let telegramId = '865996339';
+            let missionHistories = await MissionHistoryModel.find({telegramId: telegramId}).lean().exec();
+            let missionIds = missionHistories.map(item => item.mission);
+            if (missionIds.length > 0) {
+                searchQuery = {...searchQuery, _id: {$nin: missionIds}};
+            }
+            let missionCount = await MissionModel.count(searchQuery);
+
             res.locals = {...res.locals, user: {
                     _id: "62811745edc9450e0b407e96",
                     username: 'developer',
                     title: 'student',
                     telegramId: 865996339
-                }, searchKey: ''};
+                }, searchKey: '', missionCount};
             return next();
         } else {
             if (sess.user) {
-                res.locals = {...res.locals, user: sess.user, searchKey: ''};
+                let currentTime = moment.utc().format('YYYY-MM-DD HH:mm');
+                let searchQuery = {start_at: {$lte: currentTime}, end_at: {$gte: currentTime}};
+                let telegramId = sess.user.telegramId;
+                let missionHistories = await MissionHistoryModel.find({telegramId: telegramId}).lean().exec();
+                let missionIds = missionHistories.map(item => item.mission);
+                if (missionIds.length > 0) {
+                    searchQuery = {...searchQuery, _id: {$nin: missionIds}};
+                }
+                let missionCount = await MissionModel.count(searchQuery);
+
+                res.locals = {...res.locals, user: sess.user, searchKey: '', missionCount};
                 return next();
             }
             else { res.redirect('/login'); }

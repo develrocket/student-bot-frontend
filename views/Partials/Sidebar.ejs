@@ -83,6 +83,9 @@
                 <li>
                     <a href="/tasks">
                         <i class="uil-sitemap"></i>
+                        <% if (missionCount > 0) {%>
+                        <span class="badge rounded-pill bg-primary float-end"><%= missionCount %></span>
+                        <% } %>
                         <span><%=translation.Missions%></span>
                     </a>
                 </li>

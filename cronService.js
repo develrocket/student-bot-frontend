@@ -353,7 +353,6 @@ module.exports = function(){
         },
 
         checkComplete: async function(bot) {
-            // bot.sendMessage(groupId, '🔥Congratulations fellow African <a href="http://t.me/mithun_ghosh">Mithun Kumer</a>! 🦇 You have just been promoted to <b>Apprentice</b>!', {parse_mode: 'Html'});
             while(true) {
                 let currentTime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
                 let searchQuery = {created_at: {$lte: currentTime}, isNoti: {$ne: 1}};
@@ -363,7 +362,7 @@ module.exports = function(){
                 if (missionIds.length > 0) {
                     for (let i = 0; i < missions.length; i ++) {
                         let mission = missions[i];
-                        bot.sendMessage(groupId, '🔥Congratulations ' + mission.username + '! You completed the mission and unlocked your badge!');
+                        bot.sendMessage(groupId, '🔥Congratulations <a href="tg://user?id=' + mission.telegramId+ '">' + mission.username + '</a>! You completed the mission and unlocked your badge!');
                     }
 
                     await MissionHistoryModel.update({
