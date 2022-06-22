@@ -243,6 +243,7 @@ module.exports = function(){
             let lastIds = [];
             let newSessionIds = [];
             let deleteSessionIds = [];
+            let firstTeleId = '';
             let skills = await SkillModel.find({}).lean().exec();
             skills = skills.map(item => item.name);
 
@@ -285,6 +286,11 @@ module.exports = function(){
                                 content: content,
                                 status: 1
                             });
+
+                            if (firstTeleId != results[0].telegramId) {
+                                bot.sendMessage(groupId, '🔥<a href="tg://user?id=' + results[0].telegramId+ '">' + results[0].username + '</a> you are the leader now!', {parse_mode: 'Html'});
+                                firstTeleId = results[0].telegramId;
+                            }
                             await news.save();
                         } else {
                             // console.log('here-session-end:', sessId);
