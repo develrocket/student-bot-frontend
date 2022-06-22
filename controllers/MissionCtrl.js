@@ -243,7 +243,8 @@ module.exports = function(){
                 price: req.body.price,
                 start_at: start,
                 end_at: end,
-                status: 1
+                status: 1,
+                isNoti: 0
             };
             if (req.files && req.files.banner && req.files.banner.length > 0 ) {
                 data.banner = req.files.banner[0].filename;
