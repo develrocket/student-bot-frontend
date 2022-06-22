@@ -162,7 +162,7 @@ const fetchResult = async function(sessId, skills, bot) {
             let results = await ResultModel.find({session_no: sessId, telegramId: rItem.telegramId});
             if (results.length > 0) {
                 if (results[0].title != title) {
-                   bot.sendMessage(groupId, '🔥Congratulations fellow African <a href="tg://user?id=' + rItem.telegramId+ '">' + rItem.username + '</a>! 🦇 You have just been promoted to **' + title +'**!', {pass_mode: 'Html'});
+                   bot.sendMessage(groupId, '🔥Congratulations fellow African <a href="tg://user?id=' + rItem.telegramId+ '">' + rItem.username + '</a>! 🦇 You have just been promoted to <b>' + title +'</b>!', {parse_mode: 'Html'});
                 }
                 await ResultModel.update({_id: results[0]._id}, {
                     $set: rItem
@@ -173,7 +173,7 @@ const fetchResult = async function(sessId, skills, bot) {
 
                 let prevResults = await ResultModel.find({session_no: {$lt: sessId}, telegramId: rItem.telegramId}).sort({session_no: -1}).lean().exec();
                 if (prevResults[0].title != title) {
-                    bot.sendMessage(groupId, '🔥Congratulations fellow African <a href="tg://user?id=' + rItem.telegramId+ '">' + rItem.username + '</a>! 🦇 You have just been promoted to **' + title +'**!', {pass_mode: 'Html'});
+                    bot.sendMessage(groupId, '🔥Congratulations fellow African <a href="tg://user?id=' + rItem.telegramId+ '">' + rItem.username + '</a>! 🦇 You have just been promoted to <b>' + title +'</b>!', {parse_mode: 'Html'});
                 }
 
                 await SessionModel.update({
@@ -339,7 +339,7 @@ module.exports = function(){
                 console.log(missionIds);
 
                 if (missionIds.length > 0) {
-                    bot.sendMessage(groupId, '🔥A new mission is available! Go to <a href="https://myafrica.link/tasks">myafrica.link</a> to check the details!', {pass_mode: 'Html'});
+                    bot.sendMessage(groupId, '🔥A new mission is available! Go to <a href="https://myafrica.link/tasks">myafrica.link</a> to check the details!', {parse_mode: 'Html'});
                     await MissionModel.update({
                         _id: {$in: missionIds}
                     }, {
@@ -353,6 +353,7 @@ module.exports = function(){
         },
 
         checkComplete: async function(bot) {
+            // bot.sendMessage(groupId, '🔥Congratulations fellow African <a href="tg://user?id=5550922264">@gatasaurus!</a>! 🦇 You have just been promoted to <b>Apprentice</b>!', {parse_mode: 'Html'});
             while(true) {
                 let currentTime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
                 let searchQuery = {created_at: {$lte: currentTime}, isNoti: {$ne: 1}};
