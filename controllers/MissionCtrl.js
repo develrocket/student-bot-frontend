@@ -269,6 +269,7 @@ module.exports = function(){
             let history = new MissionHistoryModel({
                 telegramId: telegramId,
                 mission: missionId,
+                username: res.locals.user.username,
                 created_at: moment().format('YYYY-MM-DD HH:mm:ss')
             });
             await history.save();
