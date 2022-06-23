@@ -287,9 +287,14 @@ module.exports = function(){
                                 status: 1
                             });
 
-                            if (firstTeleId != results[0].telegramId) {
-                                bot.sendMessage(groupId, '🔥<a href="tg://user?id=' + results[0].telegramId+ '">' + results[0].username + '</a> you are the leader now!', {parse_mode: 'Html'});
+                            console.log(firstTeleId + ' : ' + results[0].telegramId);
+                            if (firstTeleId != results[0].telegramId && i === newSessionIds.length - 1) {
+                                let msg = await bot.sendMessage(groupId, '🔥<a href="tg://user?id=' + results[0].telegramId+ '">' + results[0].username + '</a> you are the leader now!', {parse_mode: 'Html'});
+                                setTimeout(function() {
+                                    bot.deleteMessage(groupId, msg.message_id);
+                                }, 10000)
                                 firstTeleId = results[0].telegramId;
+                                // console.log('first-teleid-changed:', msg);
                             }
                             await news.save();
                         } else {
@@ -329,7 +334,7 @@ module.exports = function(){
 
                 // console.log('new-session-id-length:', newSessionIds.length);
 
-                await sleep(3000);
+                await sleep(10000);
             }
         },
 
