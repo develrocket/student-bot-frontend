@@ -8,6 +8,7 @@ const SkillHistorySchema = new Schema({
     skill: String,
     score: Number,
     session_no: Number,
+    mission: {type: mongoose.Schema.Types.ObjectId,ref:'mission'},
     offer: {type: mongoose.Schema.Types.ObjectId,ref:'offer'},
 }, {
     timestamps: true

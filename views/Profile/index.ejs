@@ -51,7 +51,7 @@
                 <p class="card-text">Joined At: <%= moment(joinDate).format('YYYY-MM-DD') %></p>
                 <% } %>
                 <% if (result.length) { %>
-                    <p class="card-text">Overall Points: <%= result[0].sum_point + missions.length * 200 %></p>
+                    <p class="card-text">Overall Points: <%= result[0].sum_point %></p>
                 <% } %>
                 <p class="card-text">
                     Overall Rank: <a href="javascript:void(0);"  data-bs-toggle="modal" data-bs-target="#partModal"><%= rank %></a>

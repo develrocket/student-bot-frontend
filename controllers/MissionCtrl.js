@@ -4,8 +4,8 @@ const {validationResult}  = require('express-validator/check');
 const MissionModel = require('../models/mission');
 const GreatPersonModel = require('../models/greatPerson');
 const SkillModel = require('../models/skill');
-const FortunaHistoryModel = require('../models/fortunaHistory');
 const SkillHistoryModel = require('../models/skillHistory');
+const FortunaHistoryModel = require('../models/fortunaHistory');
 const RentHistoryModel = require('../models/rentHistory');
 const MissionHistoryModel = require('../models/missionHistory');
 
@@ -284,6 +284,16 @@ module.exports = function(){
             }, {
                 $set: {isUsed: 1}
             });
+
+            let skill = mission.skills[0].skill;
+
+            let ns = new SkillHistoryModel({
+                telegramId: telegramId,
+                skill: skill,
+                score: 200,
+                mission: mission._id
+            });
+            await ns.save();
 
             let fHistory = new FortunaHistoryModel({
                 telegramId: telegramId,
