@@ -305,10 +305,11 @@ module.exports = function(){
                             }
                             content += ' Questions remaining ' + (session.questions_no * 1 - (results.length > 0 ? results[0].session_points + results[0].session_wrong_points : 0));
                             io.emit('news_updated', { content: content });
-                            let news = new NewsModel({
-                                content: content,
-                                status: 1
-                            });
+                            // let news = new NewsModel({
+                            //     content: content,
+                            //     status: 1
+                            // });
+                            // await news.save();
 
                             console.log(firstTeleId + ' : ' + results[0].telegramId);
                             if (firstTeleId != results[0].telegramId && i === newSessionIds.length - 1) {
@@ -319,7 +320,7 @@ module.exports = function(){
                                 firstTeleId = results[0].telegramId;
                                 // console.log('first-teleid-changed:', msg);
                             }
-                            await news.save();
+
                         } else {
                             // console.log('here-session-end:', sessId);
                             await SessionModel.update({
