@@ -240,6 +240,8 @@ module.exports = function(){
                     }
                 })
             }
+
+            return res.json({result: 'success'});
         },
 
         resetSkillScore: async function(req, res) {
