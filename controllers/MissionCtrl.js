@@ -10,7 +10,7 @@ const FortunaHistoryModel = require('../models/fortunaHistory');
 const RentHistoryModel = require('../models/rentHistory');
 const MissionHistoryModel = require('../models/missionHistory');
 const StudentPointHistoryModel = require('../models/studentPointHistory');
-const Utils = require('../../helpers/utils');
+const Utils = require('../helpers/utils');
 const StudentModel = require('../models/student');
 
 module.exports = function(){
