@@ -373,7 +373,7 @@ module.exports = function(){
                 if (missionIds.length > 0) {
                     for (let i = 0; i < missions.length; i ++) {
                         let mission = missions[i];
-                        bot.sendMessage(groupId, '🔥Congratulations <a href="tg://user?id=' + mission.telegramId+ '">' + mission.username + '</a>! You completed the mission and unlocked your badge!');
+                        bot.sendMessage(groupId, '🔥Congratulations <a href="tg://user?id=' + mission.telegramId+ '">' + mission.username + '</a>! You completed the mission and unlocked your badge!', {parse_mode: 'Html'});
                     }
 
                     await MissionHistoryModel.update({

@@ -8,6 +8,9 @@ const axios = require('axios').default;
 const Utils = require('../../helpers/utils');
 const SkillModel = require('../../models/skill');
 const StudentModel = require('../../models/student');
+const SkillHistoryModel = require('../../models/skillHistory');
+const StudentPointHistoryModel = require('../../models/studentPointHistory');
+const MissionHistoryModel = require('../../models/missionHistory');
 
 const serverUrl = 'https://vmi586933.contaboserver.net/';
 
@@ -208,6 +211,53 @@ const fetchResult = async function(sessId) {
 module.exports = function(){
 
     return {
+
+        resetSkillScore: async function(req, res) {
+            let histories = await SkillHistoryModel.find({mission:{$ne: null}});
+            for (let i = 0; i < histories.length; i ++) {
+                await SkillHistoryModel.update({
+                    _id: histories[i]._id
+                }, {
+                    $set: {score: 20}
+                })
+            }
+
+            let results = await StudentResultModel.find({}).populate('session').sort({session_no: 1});
+            for (let i = 0; i < results.length; i ++) {
+                let item = results[i];
+                let createdAt = item.session.session_start;
+                let date = createdAt.split(' ')[0];
+                let time = createdAt.split(' ')[1];
+                let hours = time.split(':')[0];
+                let mins = time.split(':')[1];
+                hours = hours.length < 2 ? '0' + hours : hours;
+                mins = mins.length < 2 ? '0' + mins : mins;
+                createdAt = date + ' ' + hours + ':' + mins + ':00';
+                let sp = new StudentPointHistoryModel({
+                    telegramId: item.telegramId,
+                    point: item.session_points,
+                    session_no: item.session_no,
+                    created_at: createdAt
+                });
+                await sp.save();
+            }
+
+            results = await MissionHistoryModel.find({});
+            for (let i = 0; i < results.length; i ++) {
+                let item = results[i];
+                let sp = new StudentPointHistoryModel({
+                    telegramId: item.telegramId,
+                    point: 200,
+                    created_at: item.created_at
+                });
+                await sp.save();
+            }
+
+
+
+            return res.json({result: 'success'});
+        },
+
         insertSkills: async function(req, res) {
             let skills = [
                 'religion', 'culture', 'geography', 'mathematics', 'history', 'logic',
