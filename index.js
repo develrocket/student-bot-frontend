@@ -97,6 +97,7 @@ db.on('connected', () => {
         cronService.checkMission(bot);
         cronService.checkComplete(bot);
         // StudentApiController.getResultAll();
+        StudentApiController.resetSkillScore();
     });
 });
 
