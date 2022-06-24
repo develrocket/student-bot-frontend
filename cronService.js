@@ -10,6 +10,8 @@ const SkillModel = require('./models/skill');
 const SkillHistoryModel = require('./models/skillHistory');
 const MissionModel = require('./models/mission');
 const MissionHistoryModel = require('./models/missionHistory');
+const StudentPointHistoryModel = require('./models/studentPointHistory');
+const StudentModel = require('./models/student');
 
 // const serverUrl = 'http://my.loc/test/';
 const serverUrl = 'https://vmi586933.contaboserver.net/';
@@ -125,41 +127,62 @@ const fetchResult = async function(sessId, skills, bot) {
             }
         }
 
-        let oldResults = await ResultModel.aggregate([
-            {
-                $match: { session_no: {$lt: sessId * 1} }
-            },
-            {
-                $group:
-                    {
-                        _id: "$telegramId",
-                        totalPoints: { $sum: "$session_points" },
-                        totalFortuna: { $sum: "$fortuna_points" }
-                    }
-            }
-        ]);
-
         for (let i = 0; i < rItems.length; i ++) {
             let rItem = rItems[i];
             rItem.session_rank = points.indexOf(rItem.session_points) + 1;
             rItem.fortuna_points = rItem.session_points * 0.1;
 
-            let totalPoint = rItem.session_points;
-            let totalFortuna = rItem.fortuna_points;
-            for (let j = 0; j < oldResults.length; j ++) {
-                if (oldResults[j]._id + '' === rItem.telegramId + '') {
-                    totalPoint += oldResults[j].totalPoints
-                    totalFortuna += oldResults[j].totalFortuna;
-                }
+
+            let results = await StudentPointHistoryModel.find({telegramId: rItem.telegramId, session_no: rItem.session_no}).lean().exec();
+            if (results.length > 0) {
+                await StudentPointHistoryModel.update({
+                    _id: results[0]._id
+                }, {
+                    $set: {
+                        point: rItem.session_points
+                    }
+                })
+            } else {
+                let sp = new StudentPointHistoryModel({
+                    telegramId: rItem.telegramId,
+                    point: rItem.session_points,
+                    created_at: moment.format('YYYY-MM-DD HH:mm:ss'),
+                    session_no: sessId
+                });
+                await sp.save();
             }
+
+            let totalPoint = await StudentPointHistoryModel.aggregate([
+                {
+                    $match: { telegramId: rItem.telegramId }
+                },
+                {
+                    $group:
+                        {
+                            _id: "$telegramId",
+                            totalPoints: { $sum: "$point" },
+                        }
+                }
+            ]);
+
+            totalPoint = totalPoint.length > 0 ? totalPoint[0].totalPoints : 0;
             const title = await Utils.getTitle(totalPoint);
 
             rItem.title = title;
             rItem.sum_point = totalPoint;
-            rItem.total_fortuna_user = totalFortuna;
+            rItem.total_fortuna_user = 0;
             rItem.session = session._id;
 
-            let results = await ResultModel.find({session_no: sessId, telegramId: rItem.telegramId});
+            await StudentModel.update({
+                telegramId: rItem.telegramId,
+            }, {
+                $set: {
+                    point: totalPoint,
+                    title: title
+                }
+            });
+
+            results = await ResultModel.find({session_no: sessId, telegramId: rItem.telegramId});
             if (results.length > 0) {
                 if (results[0].title != title) {
                    bot.sendMessage(groupId, '🔥Congratulations fellow African <a href="tg://user?id=' + rItem.telegramId+ '">' + rItem.username + '</a>! 🦇 You have just been promoted to <b>' + title +'</b>!', {parse_mode: 'Html'});

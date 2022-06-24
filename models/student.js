@@ -10,7 +10,8 @@ const TitleSchema = new Schema({
     username: String,
     motto: String,
     countryCode: String,
-    point: Number
+    point: Number,
+    title: String
 });
 
 // create the model
