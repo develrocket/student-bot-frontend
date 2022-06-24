@@ -212,6 +212,36 @@ module.exports = function(){
 
     return {
 
+        resetUserPoint: async function(req, res) {
+            let students = await StudentModel.find({});
+            for (let i = 0; i < students.length; i ++) {
+                let totalPoint = await StudentPointHistoryModel.aggregate([
+                    {
+                        $match: { telegramId: students[i].telegramId }
+                    },
+                    {
+                        $group:
+                            {
+                                _id: "$telegramId",
+                                totalPoints: { $sum: "$point" },
+                            }
+                    }
+                ]);
+
+                totalPoint = totalPoint.length > 0 ? totalPoint[0].totalPoints : 0;
+                const title = await Utils.getTitle(totalPoint);
+
+                await StudentModel.update({
+                    _id: students[i]._id
+                }, {
+                    $set: {
+                        title: title,
+                        point: totalPoint
+                    }
+                })
+            }
+        },
+
         resetSkillScore: async function(req, res) {
             let histories = await SkillHistoryModel.find({mission:{$ne: null}});
             for (let i = 0; i < histories.length; i ++) {
