@@ -10,6 +10,8 @@ const FortunaHistoryModel = require('../models/fortunaHistory');
 const RentHistoryModel = require('../models/rentHistory');
 const MissionHistoryModel = require('../models/missionHistory');
 const StudentPointHistoryModel = require('../models/studentPointHistory');
+const Utils = require('../../helpers/utils');
+const StudentModel = require('../models/student');
 
 module.exports = function(){
 
@@ -303,6 +305,31 @@ module.exports = function(){
                 created_at: moment().format('YYYY-MM-DD HH:mm:ss')
             });
             await sp.save();
+
+            let totalPoint = await StudentPointHistoryModel.aggregate([
+                {
+                    $match: { telegramId: telegramId }
+                },
+                {
+                    $group:
+                        {
+                            _id: "$telegramId",
+                            totalPoints: { $sum: "$point" },
+                        }
+                }
+            ]);
+
+            totalPoint = totalPoint.length > 0 ? totalPoint[0].totalPoints : 0;
+            const title = await Utils.getTitle(totalPoint);
+
+            await StudentModel.update({
+                telegramId: telegramId
+            }, {
+                $set: {
+                    title: title,
+                    point: totalPoint
+                }
+            })
 
             let fHistory = new FortunaHistoryModel({
                 telegramId: telegramId,
