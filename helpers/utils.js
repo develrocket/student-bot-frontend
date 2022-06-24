@@ -49,9 +49,18 @@ module.exports = {
 
     async getProfileData(telegramId) {
         let result = await ResultModel.find({telegramId: telegramId + ''}).populate('session').sort({session_no: -1}).lean().exec();
-        let joinDate = result.length > 0 ? result[result.length - 1].session.session_start : '';
+        let joinDate = '';
         let sessionCount = await SessionModel.countDocuments({});
-        let teleUser = result.length > 0 ? result[0] : {};
+        let teleUser = await ResultModel.find({telegramId: telegramId + ''}).sort({sum_point: -1}).lean().exec();
+        teleUser = teleUser[0];
+        let totalPoint = teleUser.sum_point;
+
+        // for (let i = result.length -1 ; i >= 0; i --) {
+        //     let item = result[i];
+        //     if (item.session_no == 1) continue;
+        //     joinDate = item.session.session_start;
+        //     break;
+        // }
 
         let students = await ResultModel.aggregate([
             {
@@ -186,6 +195,6 @@ module.exports = {
 
         let missions = await MissionHistoryModel.find({telegramId: telegramId}).populate('mission').lean().exec();
 
-        return {joinDate, result, sessionCount, rank, teleUser, rResult, motto, totalFortuna, myParts, countryCode, skills, mySkills, missions};
+        return {joinDate, result, sessionCount, rank, teleUser, rResult, motto, totalFortuna, myParts, countryCode, skills, mySkills, missions, totalPoint};
     }
 };

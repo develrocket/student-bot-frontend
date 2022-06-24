@@ -28,7 +28,7 @@
 
         <!-- Simple card -->
         <div class="card">
-            <img class="card-img-top img-fluid" src="/public/assets/images/title/<%= user.title %>.jpg" alt="<%= user.username %>">
+            <img class="card-img-top img-fluid" src="/public/assets/images/title/<%= teleUser.title %>.jpg" alt="<%= user.username %>">
             <div class="card-body">
                 <div style="display: flex; justify-content: space-between">
                     <h4 class="card-title mt-0"><%= user.firstName + ' ' + (user.lastName ? user.lastName : '') %></h4>
@@ -50,9 +50,7 @@
                 <% if (joinDate) { %>
                 <p class="card-text">Joined At: <%= moment(joinDate).format('YYYY-MM-DD') %></p>
                 <% } %>
-                <% if (result.length) { %>
-                    <p class="card-text">Overall Points: <%= result[0].sum_point %></p>
-                <% } %>
+                <p class="card-text">Overall Points: <%= totalPoint %></p>
                 <p class="card-text">
                     Overall Rank: <a href="javascript:void(0);"  data-bs-toggle="modal" data-bs-target="#partModal"><%= rank %></a>
                 </p>

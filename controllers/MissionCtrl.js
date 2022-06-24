@@ -5,9 +5,11 @@ const MissionModel = require('../models/mission');
 const GreatPersonModel = require('../models/greatPerson');
 const SkillModel = require('../models/skill');
 const SkillHistoryModel = require('../models/skillHistory');
+const StudentResultModel = require('../models/studentResult');
 const FortunaHistoryModel = require('../models/fortunaHistory');
 const RentHistoryModel = require('../models/rentHistory');
 const MissionHistoryModel = require('../models/missionHistory');
+const StudentPointHistoryModel = require('../models/studentPointHistory');
 
 module.exports = function(){
 
@@ -290,10 +292,17 @@ module.exports = function(){
             let ns = new SkillHistoryModel({
                 telegramId: telegramId,
                 skill: skill,
-                score: 200,
+                score: 20,
                 mission: mission._id
             });
             await ns.save();
+
+            let sp = new StudentPointHistoryModel({
+                telegramId: telegramId,
+                point: 200,
+                created_at: moment().format('YYYY-MM-DD HH:mm:ss')
+            });
+            await sp.save();
 
             let fHistory = new FortunaHistoryModel({
                 telegramId: telegramId,

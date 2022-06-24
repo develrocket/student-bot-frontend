@@ -16,6 +16,7 @@ const ResultSchema = new Schema({
     title: String,
     sum_point: Number,
     total_fortuna_user: String,
+    isMission: Number,
 });
 
 // create the model

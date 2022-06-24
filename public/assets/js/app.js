@@ -73,6 +73,8 @@ function initProfileRightbar() {
                     let totalFortuna = res.totalFortuna;
                     let countryCode = res.countryCode;
                     let mySkills = res.mySkills;
+                    let totalPoint = res.totalPoint;
+                    let missions = res.missions;
 
                     let coptions = {
                         // defaultCountry: "jp",
@@ -115,10 +117,21 @@ function initProfileRightbar() {
                         $('#profile-side-joindate').html('Joined At: ' + joinDate);
                     }
 
-                    if (result.length > 0) {
-                        $('#profile-side-overall').removeClass('hidden');
-                        $('#profile-side-overall').html('Overall Points: ' + result[0].sum_point);
+                    if (missions.length > 0) {
+                        $('#profile-side-mission').removeClass('hidden');
+                        let html = '';
+                        for (let i = 0; i < missions.length; i ++) {
+                            let mission = missions[i];
+                            html += '<div class="mission-item" style="float: left; margin-right: 10px;">\n' +
+                                '                                    <img class="rounded-circle avatar-lg" src="/uploads/' + mission.mission.badge + '"\n' +
+                                '                                         data-holder-rendered="true" data-xblocker="passed" style="visibility: visible;">\n' +
+                                '                                </div>'
+                        }
+                        $('#profile-side-mission-container').html(html);
                     }
+
+                    $('#profile-side-overall').removeClass('hidden');
+                    $('#profile-side-overall').html('Overall Points: ' + totalPoint);
 
                     $('#profile-side-rank').html('Overall Rank: ' + rank);
 
