@@ -5,6 +5,7 @@ const SessionModel = require('../models/sessionResult');
 const ResultModel = require('../models/studentResult');
 const StudentModel = require('../models/student');
 const axios = require('axios').default;
+const StudentPointHistoryModel = require('../models/studentPointHistory');
 
 module.exports = function(){
 
@@ -25,104 +26,37 @@ module.exports = function(){
                     let end = moment().format('YYYY-MM-DD') + ' 23:59:59';
                     let start = moment().subtract(subdays[period - 1],'d').format('YYYY-MM-DD') + ' 00:00:00';
 
-                    let sessions = await SessionModel.find({session_start: {$gte: start, $lte: end}}).sort({session_no: 1}).lean().exec();
 
-                    let results = [];
-
-                    if (sessions.length === 0) {
-                        return res.render('Rank/' + tab, {results, period});
-                    }
-
-                    let sessionStart = sessions[0].session_no;
-
-                    let students = await ResultModel.aggregate([
+                    let students = await StudentPointHistoryModel.aggregate([
                         {
-                            $match: { session_no: {$gte: sessionStart} }
+                            $match: { created_at: {$gte: start} }
                         },
                         {
                             $group:
                                 {
                                     _id: "$telegramId",
-                                    totalPoints: { $sum: "$session_points" }
+                                    totalPoints: { $sum: "$point" }
                                 }
                         }
                     ]);
 
-
-                    for (let i = 0; i < students.length; i ++) {
-                        let item = students[i];
-                        let result = await ResultModel.find({telegramId: item._id}).sort({session_no: -1}).lean().exec();
-                        result = result[0];
-                        let ritem = {
-                            username: result.username,
-                            telegramId: result.telegramId,
-                            sum_point: item.totalPoints,
-                            title: result.title,
-                        };
-
-                        let user = await StudentModel.findOne({telegramId: result.telegramId});
-                        ritem.country =  user ? (user.countryCode ? user.countryCode : 'af') : 'af';
-
-                        if (results.length === 0) {
-                            results.push(ritem);
-                            continue;
-                        }
-                        let insert = false;
-                        for (let j = 0; j < results.length; j ++) {
-                            if (results[j].sum_point < ritem.sum_point) {
-                                results.splice(j, 0, ritem);
-                                insert = true;
-                                break;
-                            }
-                        }
-                        if (!insert) {
-                            results.push(ritem);
-                        }
-                    }
-
-                    res.render('Rank/' + tab, {results, period});
-
-                } else {
-                    let students = await ResultModel.aggregate([
-                        {
-                            $group:
-                                {
-                                    _id: "$telegramId",
-                                    maxPoint: { $max: "$sum_point" }
-                                }
-                        }
-                    ]);
 
                     let results = [];
                     for (let i = 0; i < students.length; i ++) {
                         let item = students[i];
-                        let result = await ResultModel.find({telegramId: item._id}).sort({session_no: -1}).lean().exec();
-                        result = result[0];
-                        let ritem = {
-                            username: result.username,
-                            telegramId: result.telegramId,
-                            sum_point: result.sum_point,
-                            title: result.title,
-                        };
-                        let user = await StudentModel.findOne({telegramId: result.telegramId});
-                        ritem.country =  user ? (user.countryCode ? user.countryCode : 'af') : 'af';
-
-                        if (results.length === 0) {
-                            results.push(ritem);
-                            continue;
-                        }
-                        let insert = false;
-                        for (let j = 0; j < results.length; j ++) {
-                            if (results[j].sum_point < ritem.sum_point) {
-                                results.splice(j, 0, ritem);
-                                insert = true;
-                                break;
-                            }
-                        }
-                        if (!insert) {
-                            results.push(ritem);
-                        }
+                        let user = await StudentModel.findOne({telegramId: item._id});
+                        user.point = item.totalPoints;
+                        results.push(user);
                     }
+
+                    results = results.sort((a, b) => b.point - a.point);
+
+
+                    res.render('Rank/' + tab, {results, period});
+
+                } else {
+                    let results = await StudentModel.find();
+                    results = results.sort((a, b) => b.point - a.point);
 
                     res.render('Rank/' + tab, {results, period});
                 }

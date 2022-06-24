@@ -30,7 +30,7 @@ module.exports = {
                 return titles[i - 1].title;
             }
         }
-        return titles[0].title;
+        return titles[titles.length - 1].title;
     },
 
     async getPupilsInfo() {
