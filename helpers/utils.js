@@ -51,10 +51,8 @@ module.exports = {
         let result = await ResultModel.find({telegramId: telegramId + ''}).populate('session').sort({session_no: -1}).lean().exec();
         let joinDate = '';
         let sessionCount = await SessionModel.countDocuments({});
-        let teleUser = await ResultModel.find({telegramId: telegramId + ''}).sort({sum_point: -1}).lean().exec();
-        teleUser = teleUser[0];
-        let totalPoint = teleUser.sum_point;
-
+        let teleUser = await StudentModel.findOne({telegramId: telegramId + ''});
+        let totalPoint = teleUser.point;
         // for (let i = result.length -1 ; i >= 0; i --) {
         //     let item = result[i];
         //     if (item.session_no == 1) continue;
