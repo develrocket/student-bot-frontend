@@ -93,7 +93,7 @@ db.on('connected', () => {
         debug(`App listening on ${config.server.hostname} port: ${config.server.port}`);
         app.emit('appStarted');
 
-        cronService.start(io, bot);
+        // cronService.start(io, bot);
         cronService.checkMission(bot);
         cronService.checkComplete(bot);
         // StudentApiController.getResultAll();
