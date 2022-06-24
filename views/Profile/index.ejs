@@ -28,7 +28,7 @@
 
         <!-- Simple card -->
         <div class="card">
-            <img class="card-img-top img-fluid" src="/public/assets/images/title/<%= teleUser.title %>.jpg" alt="<%= user.username %>">
+            <img class="card-img-top img-fluid" src="/public/assets/images/title/<%= teleUser.title.toLowerCase() %>.jpg" alt="<%= user.username %>">
             <div class="card-body">
                 <div style="display: flex; justify-content: space-between">
                     <h4 class="card-title mt-0"><%= user.firstName + ' ' + (user.lastName ? user.lastName : '') %></h4>
