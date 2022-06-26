@@ -42,6 +42,12 @@ module.exports = function(){
                     });
                 }
 
+                let users = await StudentModel.find({}).lean().exec();
+                let usernames = {};
+                for (let i = 0; i < users.length; i ++) {
+                    usernames[users[i].telegramId] = users[i].username;
+                }
+
                 let students = await StudentPointHistoryModel.aggregate(aggregateOptions);
 
                 let results = [];
@@ -52,6 +58,9 @@ module.exports = function(){
                         item.countryCode = user.countryCode ? user.countryCode : 'af';
                     } else {
                         item.countryCode = 'af';
+                    }
+                    if (usernames[item._id]) {
+                        item.username = usernames[item._id];
                     }
                     item.title = await Utils.getTitle(item.sum_point);
                     results.push(item);
