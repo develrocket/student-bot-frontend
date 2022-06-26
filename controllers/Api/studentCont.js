@@ -322,6 +322,29 @@ module.exports = function(){
             }
 
 
+            let totalPoints = await StudentPointHistoryModel.aggregate([
+                {
+                    $group:
+                        {
+                            _id: "$telegramId",
+                            totalPoints: { $sum: "$point" },
+                        }
+                }
+            ]);
+
+            for (let i = 0; i < totalPoints.length; i ++) {
+                let totalPoint = totalPoints[0];
+                const title = await Utils.getTitle(totalPoint.totalPoints);
+
+                await StudentModel.update({telegramId: totalPoint._id}, {
+                    $set: {
+                        point: totalPoint.totalPoints,
+                        title: title
+                    }
+                })
+            }
+
+
 
             return res.json({result: 'success'});
         },
