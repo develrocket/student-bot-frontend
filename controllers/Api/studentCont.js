@@ -303,6 +303,7 @@ module.exports = function(){
                 createdAt = date + ' ' + hours + ':' + mins + ':00';
                 let sp = new StudentPointHistoryModel({
                     telegramId: item.telegramId,
+                    username: item.username,
                     point: item.session_points,
                     session_no: item.session_no,
                     created_at: createdAt
@@ -315,6 +316,7 @@ module.exports = function(){
                 let item = results[i];
                 let sp = new StudentPointHistoryModel({
                     telegramId: item.telegramId,
+                    username: item.username,
                     point: 200,
                     created_at: item.created_at
                 });

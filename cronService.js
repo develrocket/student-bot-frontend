@@ -145,6 +145,7 @@ const fetchResult = async function(sessId, skills, bot) {
             } else {
                 let sp = new StudentPointHistoryModel({
                     telegramId: rItem.telegramId,
+                    username: rItem.username,
                     point: rItem.session_points,
                     created_at: moment.utc().format('YYYY-MM-DD HH:mm:ss'),
                     session_no: sessId

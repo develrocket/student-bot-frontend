@@ -301,6 +301,7 @@ module.exports = function(){
 
             let sp = new StudentPointHistoryModel({
                 telegramId: telegramId,
+                username: res.locals.user.username,
                 point: 200,
                 created_at: moment().format('YYYY-MM-DD HH:mm:ss')
             });
