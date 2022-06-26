@@ -106,7 +106,7 @@ module.exports = function(){
             let persons = await GreatPersonModel.find({status: 2}).lean().exec();
             let skills = await SkillModel.find({}).lean().exec();
             let id = req.query.id;
-            let mission = await MissionModel.findOne({_id: id});
+            let mission = await MissionModel.findOne({_id: id}).populate('person');
             let today = moment().format('YYYY-MM-DD');
             res.locals = {...res.locals, title: 'Reschedule Mission'};
             res.render('Mission/edit', {persons, skills, mission, today});
