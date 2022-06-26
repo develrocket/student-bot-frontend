@@ -146,7 +146,7 @@ const fetchResult = async function(sessId, skills, bot) {
                 let sp = new StudentPointHistoryModel({
                     telegramId: rItem.telegramId,
                     point: rItem.session_points,
-                    created_at: moment.format('YYYY-MM-DD HH:mm:ss'),
+                    created_at: moment.utc().format('YYYY-MM-DD HH:mm:ss'),
                     session_no: sessId
                 });
                 await sp.save();
@@ -195,7 +195,7 @@ const fetchResult = async function(sessId, skills, bot) {
                 await item.save();
 
                 let prevResults = await ResultModel.find({session_no: {$lt: sessId}, telegramId: rItem.telegramId}).sort({session_no: -1}).lean().exec();
-                if (prevResults[0].title != title) {
+                if ((prevResults.length > 0 && prevResults[0].title != title) || prevResults.length === 0) {
                     bot.sendMessage(groupId, '🔥Congratulations fellow African <a href="tg://user?id=' + rItem.telegramId+ '">' + rItem.username + '</a>! 🦇 You have just been promoted to <b>' + title +'</b>!', {parse_mode: 'Html'});
                 }
 
@@ -256,7 +256,7 @@ const fetchResult = async function(sessId, skills, bot) {
 
 
     } catch (err) {
-        // console.log(err);
+        console.log(err);
     }
 }
 
