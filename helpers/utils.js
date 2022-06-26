@@ -54,6 +54,11 @@ module.exports = {
         let sessionCount = await SessionModel.countDocuments({});
         let teleUser = result.length > 0 ? result[0] : {};
 
+        let student = await StudentModel.findOne({telegramId: telegramId});
+        if (student) {
+            teleUser.username = student.username;
+        }
+
         let totalPoint = await StudentPointHistoryModel.aggregate([
             {
                 $match: { telegramId: telegramId }
