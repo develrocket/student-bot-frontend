@@ -5,6 +5,7 @@ const SessionModel = require('../models/sessionResult');
 const ResultModel = require('../models/studentResult');
 const StudentModel = require('../models/student');
 const axios = require('axios').default;
+const Utils = require('../helpers/utils');
 const StudentPointHistoryModel = require('../models/studentPointHistory');
 
 module.exports = function(){
@@ -20,46 +21,46 @@ module.exports = function(){
             if (tab === 'top') {
 
                 let period = req.query.period || 0;
+                let aggregateOptions = [
+                    {
+                        $group:
+                            {
+                                _id: "$telegramId",
+                                sum_point: { $sum: "$point" },
+                                username: {$first: '$username'}
+                            }
+                    }
+                ];
 
                 if (period * 1 > 0) {
                     let subdays = [0, 7, 30];
                     let end = moment().format('YYYY-MM-DD') + ' 23:59:59';
                     let start = moment().subtract(subdays[period - 1],'d').format('YYYY-MM-DD') + ' 00:00:00';
 
-
-                    let students = await StudentPointHistoryModel.aggregate([
-                        {
-                            $match: { created_at: {$gte: start} }
-                        },
-                        {
-                            $group:
-                                {
-                                    _id: "$telegramId",
-                                    totalPoints: { $sum: "$point" }
-                                }
-                        }
-                    ]);
-
-
-                    let results = [];
-                    for (let i = 0; i < students.length; i ++) {
-                        let item = students[i];
-                        let user = await StudentModel.findOne({telegramId: item._id});
-                        user.point = item.totalPoints;
-                        results.push(user);
-                    }
-
-                    results = results.sort((a, b) => b.point - a.point);
-
-
-                    res.render('Rank/' + tab, {results, period});
-
-                } else {
-                    let results = await StudentModel.find();
-                    results = results.sort((a, b) => b.point - a.point);
-
-                    res.render('Rank/' + tab, {results, period});
+                    aggregateOptions.push({
+                        $match: { created_at: {$gte: start} }
+                    });
                 }
+
+                let students = await StudentPointHistoryModel.aggregate(aggregateOptions);
+
+                let results = [];
+                for (let i = 0; i < students.length; i ++) {
+                    let item = students[i];
+                    let user = await StudentModel.findOne({telegramId: item._id});
+                    if (user) {
+                        item.countryCode = user.countryCode;
+                    } else {
+                        item.countryCode = 'af';
+                    }
+                    item.title = await Utils.getTitle(item.sum_point);
+                    results.push(item);
+                }
+
+
+                results = results.sort((a, b) => b.sum_point - a.sum_point);
+
+                res.render('Rank/' + tab, {results, period});
             } else if (tab === 'mine') {
                 let searchQuery = {};
                 let startSessionNo = 0;
