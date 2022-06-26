@@ -6,6 +6,7 @@ const FortunaHistoryModel = require('../models/fortunaHistory');
 const SkillModel = require('../models/skill');
 const SkillHistoryModel = require('../models/skillHistory');
 const MissionHistoryModel = require('../models/missionHistory');
+const StudentPointHistoryModel = require('../models/studentPointHistory');
 
 module.exports = {
     randomString(length) {
@@ -49,16 +50,24 @@ module.exports = {
 
     async getProfileData(telegramId) {
         let result = await ResultModel.find({telegramId: telegramId + ''}).populate('session').sort({session_no: -1}).lean().exec();
-        let joinDate = '';
+        let joinDate = result.length > 0 ? result[result.length - 1].session.session_start : '';
         let sessionCount = await SessionModel.countDocuments({});
-        let teleUser = await StudentModel.findOne({telegramId: telegramId + ''});
-        let totalPoint = teleUser.point;
-        // for (let i = result.length -1 ; i >= 0; i --) {
-        //     let item = result[i];
-        //     if (item.session_no == 1) continue;
-        //     joinDate = item.session.session_start;
-        //     break;
-        // }
+        let teleUser = result.length > 0 ? result[0] : {};
+
+        let totalPoint = await StudentPointHistoryModel.aggregate([
+            {
+                $match: { telegramId: telegramId }
+            },
+            {
+                $group:
+                    {
+                        _id: "$telegramId",
+                        totalPoints: { $sum: "$point" },
+                    }
+            }
+        ]);
+
+        totalPoint = totalPoint.length > 0 ? totalPoint[0].totalPoints : 0;
 
         let students = await ResultModel.aggregate([
             {

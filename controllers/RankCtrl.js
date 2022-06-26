@@ -28,7 +28,6 @@ module.exports = function(){
                                 _id: "$telegramId",
                                 sum_point: { $sum: "$point" },
                                 username: {$first: '$username'},
-                                telegramId: {$first: '$telegramId'}
                             }
                     }
                 ];
