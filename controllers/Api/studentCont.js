@@ -97,6 +97,18 @@ const fetchResult = async function(sessId) {
         let points = [];
         let telegramIds = [];
 
+        let skills = await SkillModel.find({}).lean().exec();
+        skills = skills.map(item => item.name);
+
+        let skill = '';
+        for (let i =  0; i < skills.length; i ++) {
+            if (session.session_name.toLowerCase().indexOf(skills[i]) >= 0) {
+                skill = skills[i];
+                break;
+            }
+        }
+
+
         for (const rItem of res.data) {
             let a = rItem.username;
             let username = ((a.split('">')[1]).split('</')[0]).trim();
@@ -117,21 +129,6 @@ const fetchResult = async function(sessId) {
             }
         }
         points.sort((a, b) => b - a);
-
-
-        let oldResults = await StudentResultModel.aggregate([
-            {
-                $match: { session_no: {$lt: sessId * 1} }
-            },
-            {
-                $group:
-                    {
-                        _id: "$telegramId",
-                        totalPoints: { $sum: "$session_points" },
-                        totalFortuna: { $sum: "$fortuna_points" }
-                    }
-            }
-        ]);
 
         console.log('fetch-result-points:', points);
 
@@ -209,6 +206,26 @@ const fetchResult = async function(sessId) {
                         playerCount: 1
                     }
                 })
+            }
+
+            if (skill) {
+                let skillHistory = await SkillHistoryModel.find({session_no: sessId, telegramId: rItem.telegramId, skill: skill}).lean().exec();
+                if (skillHistory.length > 0) {
+                    skillHistory = skillHistory[0];
+                    await SkillHistoryModel.update({
+                        _id: skillHistory._id
+                    }, {
+                        $set: {score: rItem.fortuna_points}
+                    });
+                } else {
+                    skillHistory = new SkillHistoryModel({
+                        skill: skill,
+                        session_no: sessId,
+                        telegramId: rItem.telegramId,
+                        score: rItem.fortuna_points
+                    });
+                    await skillHistory.save();
+                }
             }
 
             let lastHistory = await FortunaHistoryModel.find({session_no: sessId, telegramId: rItem.telegramId}).lean().exec();

@@ -49,7 +49,7 @@ module.exports = function(){
                     let item = students[i];
                     let user = await StudentModel.findOne({telegramId: item._id});
                     if (user) {
-                        item.countryCode = user.countryCode;
+                        item.countryCode = user.countryCode ? user.countryCode : 'af';
                     } else {
                         item.countryCode = 'af';
                     }
