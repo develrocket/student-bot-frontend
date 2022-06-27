@@ -174,20 +174,33 @@ const fetchResult = async function(sessId, skills, bot) {
             rItem.total_fortuna_user = 0;
             rItem.session = session._id;
 
-            await StudentModel.update({
-                telegramId: rItem.telegramId,
-            }, {
-                $set: {
+            let student = await StudentModel.findOne({telegramId: rItem.telegramId});
+            if (student) {
+                if (student.title != title) {
+                    bot.sendMessage(groupId, '🔥Congratulations fellow African <a href="tg://user?id=' + rItem.telegramId+ '">' + rItem.username + '</a>! 🦇 You have just been promoted to <b>' + title +'</b>!', {parse_mode: 'Html'});
+                }
+                student = await StudentModel.update({
+                    telegramId: rItem.telegramId,
+                }, {
+                    $set: {
+                        point: totalPoint,
+                        title: title
+                    }
+                });
+            } else {
+                student = new StudentModel({
+                    telegramId: rItem.telegramId,
+                    username: rItem.username,
+                    countryCode: 'af',
                     point: totalPoint,
                     title: title
-                }
-            });
+                })
+
+                await student.save();
+            }
 
             results = await ResultModel.find({session_no: sessId, telegramId: rItem.telegramId});
             if (results.length > 0) {
-                if (results[0].title != title) {
-                   bot.sendMessage(groupId, '🔥Congratulations fellow African <a href="tg://user?id=' + rItem.telegramId+ '">' + rItem.username + '</a>! 🦇 You have just been promoted to <b>' + title +'</b>!', {parse_mode: 'Html'});
-                }
                 await ResultModel.update({_id: results[0]._id}, {
                     $set: rItem
                 })
