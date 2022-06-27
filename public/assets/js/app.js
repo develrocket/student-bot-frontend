@@ -139,9 +139,9 @@ function initProfileRightbar() {
                     $('#profile-right-2nd-rank').html('<img src="public/assets/images/silver-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> ' + rResult[1].count  + ' time' + (rResult[1] > 1 ? 's' : ''))
                     $('#profile-right-3rd-rank').html('<img src="public/assets/images/third-cup.png" style="width: 20px; height: 20px; margin-right: 5px;"/> ' + rResult[2].count  + ' time' + (rResult[2] > 1 ? 's' : ''))
 
-                    if (rResult[0].count >= 50) $('#lockTrophy50').addClass('hidden');
-                    if (rResult[0].count >= 100) $('#lockTrophy100').addClass('hidden');
-                    if (rResult[0].count >= 150) $('#lockTrophy150').addClass('hidden');
+                    if (rResult[0].count >= 50) $('#lockTrophy50').addClass('hidden'); else $('#lockTrophy50').removeClass('hidden');
+                    if (rResult[0].count >= 100) $('#lockTrophy100').addClass('hidden'); else  $('#lockTrophy100').removeClass('hidden');
+                    if (rResult[0].count >= 150) $('#lockTrophy150').addClass('hidden'); else $('#lockTrophy150').removeClass('hidden');
 
                     let tbody = '<table id="profileSideTable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">'
                     tbody +='<thead><tr><th>Session No</th><th>Session Name</th><th>Points</th><th>Rank</th></tr></thead><tbody>';
