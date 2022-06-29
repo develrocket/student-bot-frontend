@@ -50,8 +50,9 @@ module.exports = function(){
             let person = req.body.person;
             let index = req.body.page;
             let key = req.body.key;
+            let currentTime = moment.utc().format('YYYY-MM-DD HH:mm');
+            let searchQuery = {start_at: {$lte: currentTime}, end_at: {$gte: currentTime}};
 
-            let searchQuery = {};
             if (skill) {
                 searchQuery = {...searchQuery, skills: {skill}};
             }
