@@ -28,7 +28,7 @@
                 </div>
             </td>
             <td><%= offer.amount %></td>
-            <td><%= offer.price %></td>
+            <td><%= (offer.price * 1).toFixed(1) %></td>
             <td>
                 <a class="btn btn-primary waves-effect waves-light send-market" href="/market/edit-offer?id=<%= offer._id %>">
                     Change
