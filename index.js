@@ -25,7 +25,6 @@ const cronService = require('./cronService')();
 const StudentApiController = require('./controllers/Api/studentCont')();
 const TelegramBot = require('node-telegram-bot-api');
 const token = '5348149050:AAEjr0XWpzz3_P9bZCs7lf9J6zLg8q4h1mg';
-const bot = new TelegramBot(token, {polling: true});
 const FortunaHistoryModel = require('./models/fortunaHistory');
 const StudentModel = require('./models/student');
 const StudentResultModel = require('./models/studentResult');
@@ -87,21 +86,6 @@ io.on('connection', (socket) => {
 //     io.emit('news_updated', { content: 'This is test' });
 // }, 10000);
 
-db.on('connected', () => {
-    server.listen(config.server.port, () => {
-        console.log(`www.${config.server.hostname  }:${  config.server.port}`);
-        debug(`App listening on ${config.server.hostname} port: ${config.server.port}`);
-        app.emit('appStarted');
-
-        cronService.start(io, bot);
-        cronService.checkMission(bot);
-        cronService.checkComplete(bot);
-        // StudentApiController.getResultAll();
-        // StudentApiController.resetSkillScore();
-    });
-});
-
-
 async function transferFortuan(senderId, senderName, receiverId, receiverName, value) {
     let result = await FortunaHistoryModel.aggregate([
         {
@@ -152,99 +136,125 @@ async function transferFortuan(senderId, senderName, receiverId, receiverName, v
     }
 }
 
-bot.on('message', async (msg) => {
-    console.log('tele-new-message:', msg);
+try {
+    const bot = new TelegramBot(token, {polling: true});
 
-    if (msg.reply_to_message && Object.keys(msg.reply_to_message).length > 0) {
-        try {
-            if (msg.text.indexOf('/give') >= 0) {
-                let value = 0;
-                let parts = msg.text.split(' ');
-                for (let i = 1; i < parts.length; i++) {
-                    if (parts[i].trim())  {
-                        value = parts[i].trim();
-                        break;
+    db.on('connected', () => {
+        server.listen(config.server.port, () => {
+            try {
+                console.log(`www.${config.server.hostname  }:${  config.server.port}`);
+                debug(`App listening on ${config.server.hostname} port: ${config.server.port}`);
+                app.emit('appStarted');
+
+                cronService.start(io, bot);
+                cronService.checkMission(bot);
+                cronService.checkComplete(bot);
+                // cronService.syncFortunaData();
+                // StudentApiController.getResultAll();
+                // StudentApiController.resetSkillScore();
+            } catch (err) {
+                console.log('error on running cron service');
+            }
+        });
+    });
+
+    bot.on('message', async (msg) => {
+        console.log('tele-new-message:', msg);
+
+        if (msg.reply_to_message && Object.keys(msg.reply_to_message).length > 0) {
+            try {
+                if (msg.text.indexOf('/give') >= 0) {
+                    let value = 0;
+                    let parts = msg.text.split(' ');
+                    for (let i = 1; i < parts.length; i++) {
+                        if (parts[i].trim())  {
+                            value = parts[i].trim();
+                            break;
+                        }
                     }
-                }
-                if (value >= 0.05 && value <= 5) {
-                    let senderId = msg.from.id;
-                    let senderName = msg.from.username;
-                    let receiverId = msg.reply_to_message.from.id;
-                    let receiverName = msg.reply_to_message.from.username;
+                    if (value >= 0.05 && value <= 5) {
+                        let senderId = msg.from.id;
+                        let senderName = msg.from.username;
+                        let receiverId = msg.reply_to_message.from.id;
+                        let receiverName = msg.reply_to_message.from.username;
 
-                    let result = await transferFortuan(senderId, senderName, receiverId, receiverName, value);
+                        let result = await transferFortuan(senderId, senderName, receiverId, receiverName, value);
 
-                    if (result == 0) {
-                        bot.sendMessage(msg.chat.id, "🤑 @" + senderName + " tipped @" + receiverName + " with " + value + " Fortuna!");
-                    } else if (result == 1) {
-                        bot.sendMessage(msg.chat.id, "🤑 You have insufficient Fortuna into your account. Get smarter! Get Fortuna by answering to quizzes.");
+                        if (result == 0) {
+                            bot.sendMessage(msg.chat.id, "🤑 @" + senderName + " tipped @" + receiverName + " with " + value + " Fortuna!");
+                        } else if (result == 1) {
+                            bot.sendMessage(msg.chat.id, "🤑 You have insufficient Fortuna into your account. Get smarter! Get Fortuna by answering to quizzes.");
+                        }
+                    } else {
+                        bot.sendMessage(msg.chat.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
                     }
                 } else {
-                    bot.sendMessage(msg.chat.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
+                    console.log('**** not found tip:', msg.text.indexOf('/give'));
                 }
-            } else {
-                console.log('**** not found tip:', msg.text.indexOf('/give'));
+            } catch (error) {
+                console.log('+++++++++++ error occurred:', error);
             }
-        } catch (error) {
-            console.log('+++++++++++ error occurred:', error);
         }
-    }
-});
+    });
 
-bot.onText(/\/give/, async (msg) => {
-    if (msg.text.split(' ').length < 3) return;
+    bot.onText(/\/give/, async (msg) => {
+        if (msg.text.split(' ').length < 3) return;
 
-    let parts = msg.text.split(' ');
-    let receiverName = '';
-    let value = '';
-    for (let i = 1; i < parts.length; i ++) {
-        if (parts[i].trim())  {
-            if (!receiverName) {
-                receiverName = parts[i].trim();
-            } else {
-                if (!value) {
-                    value = parts[i].trim();
+        let parts = msg.text.split(' ');
+        let receiverName = '';
+        let value = '';
+        for (let i = 1; i < parts.length; i ++) {
+            if (parts[i].trim())  {
+                if (!receiverName) {
+                    receiverName = parts[i].trim();
+                } else {
+                    if (!value) {
+                        value = parts[i].trim();
+                    }
                 }
             }
         }
-    }
 
-    if (receiverName.indexOf('@') >= 0) {
-        receiverName = receiverName.substr(1);
-    }
+        if (receiverName.indexOf('@') >= 0) {
+            receiverName = receiverName.substr(1);
+        }
 
-    let receiverId = '';
+        let receiverId = '';
 
-    let student = await StudentModel.find({username: receiverName}).lean().exec();
-    if (student.length > 0) {
-        student = student[0];
-        receiverId = student.telegramId;
-    } else {
-        student = await StudentResultModel.find({usernane: receiverName}).lean().exec();
+        let student = await StudentModel.find({username: receiverName}).lean().exec();
         if (student.length > 0) {
             student = student[0];
             receiverId = student.telegramId;
+        } else {
+            student = await StudentResultModel.find({usernane: receiverName}).lean().exec();
+            if (student.length > 0) {
+                student = student[0];
+                receiverId = student.telegramId;
+            }
         }
-    }
 
-    if (receiverId && value * 1 >= 0.05 && value * 1 <= 5) {
-        let senderId = msg.from.id;
-        let senderName = msg.from.username;
+        if (receiverId && value * 1 >= 0.05 && value * 1 <= 5) {
+            let senderId = msg.from.id;
+            let senderName = msg.from.username;
 
-        let result = await transferFortuan(senderId, senderName, receiverId, receiverName, value);
+            let result = await transferFortuan(senderId, senderName, receiverId, receiverName, value);
 
-        if (result == 0) {
-            // console.log('~~~~~~~~~~~~~~~~~~~~~ send *success* message to', msg.chat.id, msg.from.username);
-            bot.sendMessage(msg.chat.id, "🤑 @" + senderName + " tipped @" + receiverName + " with " + value + " Fortuna!");
-        } else if (result == 1) {
-            // console.log('~~~~~~~~~~~~~~~~~~~~~ send ^balance^ message to', msg.chat.id, msg.from.username);
-            bot.sendMessage(msg.chat.id, "🤑 You have insufficient Fortuna into your account. Get smarter! Get Fortuna by answering to quizzes.");
+            if (result == 0) {
+                // console.log('~~~~~~~~~~~~~~~~~~~~~ send *success* message to', msg.chat.id, msg.from.username);
+                bot.sendMessage(msg.chat.id, "🤑 @" + senderName + " tipped @" + receiverName + " with " + value + " Fortuna!");
+            } else if (result == 1) {
+                // console.log('~~~~~~~~~~~~~~~~~~~~~ send ^balance^ message to', msg.chat.id, msg.from.username);
+                bot.sendMessage(msg.chat.id, "🤑 You have insufficient Fortuna into your account. Get smarter! Get Fortuna by answering to quizzes.");
+            }
+        } else if (!receiverId) {
+            // console.log('~~~~~~~~~~~~~~~~~~~~~ send @user@ message to', msg.chat.id, msg.from.username);
+            bot.sendMessage(msg.chat.id, "🤑 Receiver is not user of Myafrica.link .");
+        } else {
+            // console.log('~~~~~~~~~~~~~~~~~~~~~ send $value$ message to', msg.chat.id, msg.from.username);
+            bot.sendMessage(msg.chat.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
         }
-    } else if (!receiverId) {
-        // console.log('~~~~~~~~~~~~~~~~~~~~~ send @user@ message to', msg.chat.id, msg.from.username);
-        bot.sendMessage(msg.chat.id, "🤑 Receiver is not user of Myafrica.link .");
-    } else {
-        // console.log('~~~~~~~~~~~~~~~~~~~~~ send $value$ message to', msg.chat.id, msg.from.username);
-        bot.sendMessage(msg.chat.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
-    }
-});
+    });
+} catch (err) {
+    console.log('Error on running Server');
+}
+
