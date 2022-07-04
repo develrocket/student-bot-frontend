@@ -49,6 +49,7 @@ module.exports = {
     },
 
     async getProfileData(telegramId) {
+        console.log('get-profile-data-start:', new Date());
         let result = await ResultModel.find({telegramId: telegramId + ''}).populate('session').sort({session_no: -1}).lean().exec();
         let joinDate = result.length > 0 ? result[result.length - 1].session.session_start : '';
         let sessionCount = await SessionModel.countDocuments({});
@@ -74,6 +75,8 @@ module.exports = {
 
         totalPoint = totalPoint.length > 0 ? totalPoint[0].totalPoints : 0;
 
+        console.log('get-profile-data-after-total-point:', new Date());
+
         let students = await ResultModel.aggregate([
             {
                 $group:
@@ -85,11 +88,33 @@ module.exports = {
         ]);
 
         let results = [];
+        let sts = await StudentModel.find({}).lean().exec();
+        let rlts = await ResultModel.aggregate([
+            {
+                $group:
+                    {
+                        _id: "$telegramId",
+                        sum_point: {$sum: "$point" },
+                        username: {$first: '$username'},
+                        telegramId: {$first: '$telegramId'},
+                        title: {$first: '$title'},
+                    }
+            },
+            {$sort: {session_no: -1}}
+        ]);
+
         for (let i = 0; i < students.length; i ++) {
             let item = students[i];
-            let rlt = await ResultModel.find({telegramId: item._id}).sort({session_no: -1}).lean().exec();
+            // let rlt = await ResultModel.find({telegramId: item._id}).sort({session_no: -1}).lean().exec();
+            let rlt = rlts.filter(ritem => ritem.telegramId + '' === item._id + '');
             rlt = rlt[0];
-            let user = await StudentModel.findOne({telegramId: rlt.telegramId});
+            let user = sts.filter(ritem => ritem.telegramId + '' === rlt.telegramId);
+            if (user.length > 0) {
+                user = user[0];
+            } else {
+                user = null;
+            }
+
 
             let ritem = {
                 username: rlt.username,
@@ -98,22 +123,10 @@ module.exports = {
                 country: user ? (user.countryCode ? user.countryCode : 'af') : 'af',
                 title: rlt.title,
             };
-            if (results.length === 0) {
-                results.push(ritem);
-                continue;
-            }
-            let insert = false;
-            for (let j = 0; j < results.length; j ++) {
-                if (results[j].sum_point < ritem.sum_point) {
-                    results.splice(j, 0, ritem);
-                    insert = true;
-                    break;
-                }
-            }
-            if (!insert) {
-                results.push(ritem);
-            }
+            results.push(ritem);
         }
+
+        console.log('get-profile-data-after-results:', new Date());
 
         let rank = 0;
         for (let i = 0; i < results.length; i++) {
@@ -162,6 +175,8 @@ module.exports = {
             }
         }
 
+        console.log('get-profile-data-after-rank:', new Date());
+
         let user = await StudentModel.find({telegramId: telegramId}).lean().exec();
         let motto = user.length > 0 ? user[0].motto : '';
         let countryCode = user.length > 0 ? user[0].countryCode : '';
@@ -206,6 +221,8 @@ module.exports = {
         }
 
         let missions = await MissionHistoryModel.find({telegramId: telegramId}).populate('mission').lean().exec();
+
+        console.log('get-profile-data-finished:', new Date());
 
         return {joinDate, result, sessionCount, rank, teleUser, rResult, motto, totalFortuna, myParts, countryCode, skills, mySkills, missions, totalPoint};
     }
