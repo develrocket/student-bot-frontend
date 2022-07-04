@@ -71,7 +71,7 @@ module.exports = {
 
         let totalPoint = await StudentPointHistoryModel.aggregate([
             {
-                $match: { telegramId: telegramId }
+                $match: { telegramId: telegramId + '' }
             },
             {
                 $group:
@@ -91,19 +91,7 @@ module.exports = {
                 $group:
                     {
                         _id: "$telegramId",
-                        maxPoint: { $max: "$sum_point" }
-                    }
-            }
-        ]);
-
-        let results = [];
-        let sts = await StudentModel.find({}).lean().exec();
-        let rlts = await ResultModel.aggregate([
-            {
-                $group:
-                    {
-                        _id: "$telegramId",
-                        sum_point: {$sum: "$point" },
+                        maxPoint: { $max: "$sum_point" },
                         username: {$first: '$username'},
                         telegramId: {$first: '$telegramId'},
                         title: {$first: '$title'},
@@ -112,12 +100,28 @@ module.exports = {
             {$sort: {session_no: -1}}
         ]);
 
+        let uScores = await StudentPointHistoryModel.aggregate([
+            {
+                $group:
+                    {
+                        _id: "$telegramId",
+                        totalPoints: { $sum: "$point" },
+                    }
+            }
+        ]);
+        let userScores = {};
+        for (let i = 0; i < uScores.length; i ++) {
+            userScores[uScores[i]._id] = uScores[i].totalPoints;
+        }
+
+        let results = [];
+        let sts = await StudentModel.find({}).lean().exec();
+
         for (let i = 0; i < students.length; i ++) {
             let item = students[i];
             // let rlt = await ResultModel.find({telegramId: item._id}).sort({session_no: -1}).lean().exec();
-            let rlt = rlts.filter(ritem => ritem.telegramId + '' === item._id + '');
-            rlt = rlt[0];
-            let user = sts.filter(ritem => ritem.telegramId + '' === rlt.telegramId);
+
+            let user = sts.filter(ritem => ritem.telegramId + '' === item.telegramId);
             if (user.length > 0) {
                 user = user[0];
             } else {
@@ -126,11 +130,11 @@ module.exports = {
 
 
             let ritem = {
-                username: rlt.username,
-                telegramId: rlt.telegramId,
-                sum_point: rlt.sum_point,
+                username: item.username,
+                telegramId: item.telegramId,
+                sum_point: userScores[item.telegramId],
                 country: user ? (user.countryCode ? user.countryCode : 'af') : 'af',
-                title: rlt.title,
+                title: item.title,
             };
             results.push(ritem);
         }
