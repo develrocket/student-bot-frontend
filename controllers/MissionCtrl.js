@@ -53,6 +53,13 @@ module.exports = function(){
             let currentTime = moment.utc().format('YYYY-MM-DD HH:mm');
             let searchQuery = {start_at: {$lte: currentTime}, end_at: {$gte: currentTime}};
 
+            let telegramId = res.locals.user.telegramId;
+            let missionHistories = await MissionHistoryModel.find({telegramId: telegramId}).lean().exec();
+            let missionIds = missionHistories.map(item => item.mission);
+            if (missionIds.length > 0) {
+                searchQuery = {...searchQuery, _id: {$nin: missionIds}};
+            }
+
             if (skill) {
                 searchQuery = {...searchQuery, skills: {skill}};
             }
@@ -272,6 +279,16 @@ module.exports = function(){
         complete: async function(req, res) {
             let missionId = req.query.id;
             let telegramId = res.locals.user.telegramId;
+
+            let exists = await MissionHistoryModel.find({
+                telegramId: telegramId,
+                mission: missionId
+            });
+            if (exists.length > 0) {
+                req.flash('message', "You already completed this mission!");
+                return res.redirect('/tasks');
+            }
+
             let history = new MissionHistoryModel({
                 telegramId: telegramId,
                 mission: missionId,
