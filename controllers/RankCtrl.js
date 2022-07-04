@@ -4,6 +4,7 @@ const moment = require('moment');
 const SessionModel = require('../models/sessionResult');
 const ResultModel = require('../models/studentResult');
 const StudentModel = require('../models/student');
+const TitleModel = require('../models/studentTitle');
 const axios = require('axios').default;
 const Utils = require('../helpers/utils');
 const StudentPointHistoryModel = require('../models/studentPointHistory');
@@ -19,6 +20,8 @@ module.exports = function(){
             console.log('my-rank:', tab);
 
             if (tab === 'top') {
+
+                console.log('rank-page-start:', new Date());
 
                 let period = req.query.period || 0;
                 let aggregateOptions = [
@@ -50,10 +53,19 @@ module.exports = function(){
 
                 let students = await StudentPointHistoryModel.aggregate(aggregateOptions);
 
+                let rusers = {};
+                for (let i = 0; i < users.length; i ++) {
+                    rusers[users[i].telegramId + ''] = users[i];
+                }
+
+
+                console.log('rank-page-after-aggregate:', new Date());
+                const titles = await TitleModel.find({}).lean().exec();
                 let results = [];
                 for (let i = 0; i < students.length; i ++) {
                     let item = students[i];
-                    let user = await StudentModel.findOne({telegramId: item._id});
+                    // let user = await StudentModel.findOne({telegramId: item._id});
+                    let user = rusers[item._id + ''];
                     if (user) {
                         item.countryCode = user.countryCode ? user.countryCode : 'af';
                     } else {
@@ -62,9 +74,11 @@ module.exports = function(){
                     if (usernames[item._id]) {
                         item.username = usernames[item._id];
                     }
-                    item.title = await Utils.getTitle(item.sum_point);
+                    item.title = await Utils.getTitlebyData(item.sum_point, titles);
                     results.push(item);
                 }
+
+                console.log('rank-page-finished:', new Date());
 
 
                 results = results.sort((a, b) => b.sum_point - a.sum_point);

@@ -34,6 +34,15 @@ module.exports = {
         return titles[titles.length - 1].title;
     },
 
+    async getTitlebyData(sumPoint, titles) {
+        for (let i = 1; i < titles.length; i++) {
+            if (sumPoint < titles[i].limit) {
+                return titles[i - 1].title;
+            }
+        }
+        return titles[titles.length - 1].title;
+    },
+
     async getPupilsInfo() {
         const res = await ResultModel.find().sort({session_no: - 1});
         let pupilsInfo = [];
@@ -125,6 +134,8 @@ module.exports = {
             };
             results.push(ritem);
         }
+
+        results = results.sort((a, b) => b.sum_point - a.sum_point);
 
         console.log('get-profile-data-after-results:', new Date());
 
