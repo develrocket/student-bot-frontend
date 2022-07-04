@@ -12,6 +12,7 @@ const MissionModel = require('./models/mission');
 const MissionHistoryModel = require('./models/missionHistory');
 const StudentPointHistoryModel = require('./models/studentPointHistory');
 const StudentModel = require('./models/student');
+const FortunaController = require('./controllers/Api/FortunaCtrl')();
 
 // const serverUrl = 'http://my.loc/test/';
 const serverUrl = 'https://vmi586933.contaboserver.net/';
@@ -425,6 +426,21 @@ module.exports = function(){
 
 
                 await sleep(10 * 1000);
+            }
+        },
+
+        syncFortunaData: async function() {
+            while(true) {
+                console.log('===============> Start Sync Data');
+                await FortunaController.fetchLanguage();
+                console.log('===============> finished fetch language');
+                await FortunaController.fetchLevel();
+                console.log('===============> finished fetch level');
+                await FortunaController.fetchType();
+                console.log('===============> finished fetch type');
+                await FortunaController.fetchSession();
+                console.log('===============> finished fetch session');
+                await sleep(3600 * 1000);
             }
         }
     };
