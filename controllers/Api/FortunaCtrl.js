@@ -91,38 +91,44 @@ module.exports = function() {
             let questionIds = questions.map(item => item.question_id);
             let sessionIds = sessions.map(item => item.session_id);
 
-            let config = {
-                method: 'get',
-                url: ServerUrl + '/fetch/session',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            };
+            try {
+                let config = {
+                    method: 'get',
+                    url: ServerUrl + '/fetch/session',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                };
 
-            let result = await axios(config);
+                let result = await axios(config);
 
-            for (const item of result.data) {
-                config.url = ServerUrl + '/fetch/question?sessId=' + item.id;
-                let qresult = await axios(config);
+                for (const item of result.data) {
+                    config.url = ServerUrl + '/fetch/question?sessId=' + item.id;
+                    let qresult = await axios(config);
 
-                if (sessionIds.indexOf(item.id) >= 0) {
-                    await FortunaSessionModel.update({session_id: item.id}, {
-                        $set: item
-                    })
-                } else {
-                    let session = new FortunaSessionModel({...item, session_id: item.id});
-                    await session.save();
-                }
-
-                for (const qitem of qresult.data) {
-                    if (questionIds.indexOf(item.id) >= 0) {
-                        await QuestionModel.update({question_id: qitem.id}, {$set: qitem});
+                    if (sessionIds.indexOf(item.id) >= 0) {
+                        await FortunaSessionModel.update({session_id: item.id}, {
+                            $set: item
+                        })
                     } else {
-                        let question = new QuestionModel({...qitem, question_id: item.id});
-                        await question.save();
+                        let session = new FortunaSessionModel({...item, session_id: item.id});
+                        await session.save();
+                    }
+
+                    for (const qitem of qresult.data) {
+                        if (questionIds.indexOf(item.id) >= 0) {
+                            await QuestionModel.update({question_id: qitem.id}, {$set: qitem});
+                        } else {
+                            let question = new QuestionModel({...qitem, question_id: item.id});
+                            await question.save();
+                        }
                     }
                 }
+            } catch (e) {
+                console.log('fetch-livesession-error:', e);
             }
+
+
 
             // return res.json({result: 'success'});
         }

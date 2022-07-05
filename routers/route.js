@@ -6,6 +6,7 @@ const WalletCtrl = require('../controllers/WalletCtrl')();
 const GreatPersonCtrl = require('../controllers/GreatPersonCtrl')();
 const MissionCtrl = require('../controllers/MissionCtrl')();
 const MarketCtrl = require('../controllers/MarketCtrl')();
+const TournamentCtrl = require('../controllers/TournamentCtrl')();
 const urlencodeParser = bodyParser.urlencoded({ extended: false });
 const config = require('../config/config');
 const multer  = require('multer');
@@ -81,7 +82,15 @@ module.exports = function (app) {
     app.post('/mission/add', isUserAllowed, isAdminAllowed, urlencodeParser, upload.fields([{name: 'banner', maxCount: 1}, {name: 'badge', maxCount: 1}]), MissionCtrl.doCreate);
     app.post('/mission/edit', isUserAllowed, isAdminAllowed, urlencodeParser, upload.fields([{name: 'banner', maxCount: 1}, {name: 'badge', maxCount: 1}]), MissionCtrl.doUpdate);
 
-
+    app.get('/tournament', isUserAllowed, isAdminAllowed, TournamentCtrl.index);
+    app.get('/tournament/add', isUserAllowed, isAdminAllowed, TournamentCtrl.create);
+    app.get('/tournament/edit', isUserAllowed, isAdminAllowed, TournamentCtrl.edit);
+    app.post('/tournament/add', isUserAllowed, isAdminAllowed, urlencodeParser,
+        upload.fields([{name: 'banner', maxCount: 1}, {name: 'awards_1', maxCount: 1}, {name: 'awards_2', maxCount: 1}, {name: 'awards_3', maxCount: 1}]),
+        TournamentCtrl.doCreate)
+    app.post('/tournament/edit', isUserAllowed, isAdminAllowed, urlencodeParser,
+        upload.fields([{name: 'banner', maxCount: 1}, {name: 'awards_1', maxCount: 1}, {name: 'awards_2', maxCount: 1}, {name: 'awards_3', maxCount: 1}]),
+        TournamentCtrl.doUpdate)
     // User
 
     app.get('/', isUserAllowed, ProfileCtrl.index);

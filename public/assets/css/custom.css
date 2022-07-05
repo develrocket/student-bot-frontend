@@ -295,6 +295,7 @@ div#profileSideTable_wrapper div.dataTables_paginate ul.pagination {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    position: absolute;
 }
 
 .avatar-upload.banner .avatar-preview > div {
