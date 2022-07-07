@@ -4,6 +4,7 @@ const {validationResult}  = require('express-validator/check');
 const TournamentModel = require('../models/tournament');
 const LanguageModel = require('../models/language');
 const SessionModel = require('../models/fortunaSession');
+const TournamentHistoryModel = require('../models/tournamentHistory');
 const TypeModel = require('../models/type');
 const LevelModel = require('../models/level');
 
@@ -14,6 +15,27 @@ module.exports = function(){
             let tournaments = await TournamentModel.find({}).lean().exec();
             res.locals = {...res.locals, title: 'Tournament'};
             res.render('Tournament/index', {tournaments});
+        },
+
+        studentIndex: async function(req, res) {
+            let currentTime = moment.utc().format('YYYY-MM-DD HH:mm');
+            let searchQuery = {start_at: {$lte: currentTime}, end_at: {$gte: currentTime}};
+            let telegramId = res.locals.user.telegramId;
+            let tournamentHistories = await TournamentHistoryModel.find({telegramId: telegramId, isEnd: 1}).lean().exec();
+            let tournamentIds = tournamentHistories.map(item => item.tournament);
+            if (tournamentIds.length > 0) {
+                searchQuery = {...searchQuery, _id: {$nin: tournamentIds}};
+            }
+
+            let tournaments = await TournamentModel.find(searchQuery).lean().exec();
+            res.locals = {...res.locals, title: 'Tournament'};
+
+            if (tournaments.length > 0) {
+                let tournament = tournaments[0];
+                res.render('Tournament/student-index', {tournament});
+            } else {
+                res.render('Tournament/not-exist');
+            }
         },
 
         create: async function(req, res) {
@@ -93,7 +115,7 @@ module.exports = function(){
             };
             let tournament = new TournamentModel(data);
             await tournament.save();
-            res.redirect('/tournament');
+            res.redirect('/admin/tournament');
         },
 
         doUpdate: async function(req, res) {
@@ -160,7 +182,7 @@ module.exports = function(){
             }
 
             await TournamentModel.update({_id: req.query.id}, {$set: data});
-            res.redirect('/tournament');
+            res.redirect('/admin/tournament');
         }
 
     };

@@ -35,7 +35,8 @@ module.exports = function (app) {
                     _id: "62811745edc9450e0b407e96",
                     username: 'developer',
                     title: 'student',
-                    telegramId: 865996339
+                    // telegramId: 865996339
+                    telegramId: 893468109
                 }, searchKey: '', missionCount};
             return next();
         } else {
@@ -82,13 +83,13 @@ module.exports = function (app) {
     app.post('/mission/add', isUserAllowed, isAdminAllowed, urlencodeParser, upload.fields([{name: 'banner', maxCount: 1}, {name: 'badge', maxCount: 1}]), MissionCtrl.doCreate);
     app.post('/mission/edit', isUserAllowed, isAdminAllowed, urlencodeParser, upload.fields([{name: 'banner', maxCount: 1}, {name: 'badge', maxCount: 1}]), MissionCtrl.doUpdate);
 
-    app.get('/tournament', isUserAllowed, isAdminAllowed, TournamentCtrl.index);
-    app.get('/tournament/add', isUserAllowed, isAdminAllowed, TournamentCtrl.create);
-    app.get('/tournament/edit', isUserAllowed, isAdminAllowed, TournamentCtrl.edit);
-    app.post('/tournament/add', isUserAllowed, isAdminAllowed, urlencodeParser,
+    app.get('/admin/tournament', isUserAllowed, isAdminAllowed, TournamentCtrl.index);
+    app.get('/admin/tournament/add', isUserAllowed, isAdminAllowed, TournamentCtrl.create);
+    app.get('/admin/tournament/edit', isUserAllowed, isAdminAllowed, TournamentCtrl.edit);
+    app.post('/admin/tournament/add', isUserAllowed, isAdminAllowed, urlencodeParser,
         upload.fields([{name: 'banner', maxCount: 1}, {name: 'awards_1', maxCount: 1}, {name: 'awards_2', maxCount: 1}, {name: 'awards_3', maxCount: 1}]),
         TournamentCtrl.doCreate)
-    app.post('/tournament/edit', isUserAllowed, isAdminAllowed, urlencodeParser,
+    app.post('/admin/tournament/edit', isUserAllowed, isAdminAllowed, urlencodeParser,
         upload.fields([{name: 'banner', maxCount: 1}, {name: 'awards_1', maxCount: 1}, {name: 'awards_2', maxCount: 1}, {name: 'awards_3', maxCount: 1}]),
         TournamentCtrl.doUpdate)
     // User
@@ -117,5 +118,7 @@ module.exports = function (app) {
     app.get('/mission/complete', isUserAllowed, MissionCtrl.complete);
     app.post('/mission/search', isUserAllowed, urlencodeParser, MissionCtrl.search);
     app.post('/mission/load-more', isUserAllowed, urlencodeParser, MissionCtrl.loadMore);
-    app.post('/mission/rent-great', isUserAllowed, urlencodeParser, MissionCtrl.rentGreat   );
+    app.post('/mission/rent-great', isUserAllowed, urlencodeParser, MissionCtrl.rentGreat);
+
+    app.get('/tournament', isUserAllowed, TournamentCtrl.studentIndex);
 }

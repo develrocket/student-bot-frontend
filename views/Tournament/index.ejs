@@ -31,7 +31,7 @@
                 <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
                     <h4 class="card-title">Tournament Status</h4>
 
-                    <a href="/tournament/add" class="btn btn-primary waves-effect waves-light">Add New</a>
+                    <a href="/admin/tournament/add" class="btn btn-primary waves-effect waves-light">Add New</a>
                 </div>
 
                 <table id="datatable" class="table table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
@@ -55,7 +55,7 @@
                                 <td class="format-date"><%= tournament.start_at %></td>
                                 <td class="format-date"><%= tournament.end_at %></td>
                                 <td>
-                                    <a class="btn btn-info waves-effect waves-light" href="/tournament/edit?id=<%= tournament._id %>">
+                                    <a class="btn btn-info waves-effect waves-light" href="/admin/tournament/edit?id=<%= tournament._id %>">
                                         Update
                                     </a>
                                 </td>

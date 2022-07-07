@@ -66,11 +66,11 @@ const fetchSession = async function(io) {
                     let content = 'Tournament ' + newSessionItem.session_name + ' started! Level:' + newSessionItem.level + ' Questions:' + newSessionItem.questions_no;
                     io.emit('news_updated', { content: content });
 
-                    let news = new NewsModel({
-                        content: content,
-                        status: 0
-                    });
-                    await news.save();
+                    // let news = new NewsModel({
+                    //     content: content,
+                    //     status: 0
+                    // });
+                    // await news.save();
                 }
                 newSessionIds.push(sessionItem.sess_id);
             }
@@ -348,11 +348,11 @@ module.exports = function(){
 
                             let content = 'Tournament ' + session.session_name + ' over. 🥇Winner ' + results[0].username + ' with' + results[0].session_points + '! Congratulations! Stay tuned for the next broadcast!';
                             io.emit('news_updated', { content: content });
-                            let news = new NewsModel({
-                                content: content,
-                                status: 2
-                            });
-                            await news.save();
+                            // let news = new NewsModel({
+                            //     content: content,
+                            //     status: 2
+                            // });
+                            // await news.save();
                             deleteSessionIds.push(sessId);
                         }
 
