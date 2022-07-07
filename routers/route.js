@@ -35,8 +35,8 @@ module.exports = function (app) {
                     _id: "62811745edc9450e0b407e96",
                     username: 'developer',
                     title: 'student',
-                    // telegramId: 865996339
-                    telegramId: 893468109
+                    telegramId: 865996339
+                    // telegramId: 893468109
                 }, searchKey: '', missionCount};
             return next();
         } else {

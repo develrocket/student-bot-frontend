@@ -36,7 +36,98 @@
                 </div>
             </div>
             <div class="card-body">
-                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="alert alert-primary" role="alert">
+                            Awards
+                        </div>
+
+                        <div class="tournament-view">
+                            <div class="award-box">
+                                <img src="/uploads/<%= tournament.award_1 %>" style="width: 200px; height: 200px; border-radius: 50%" class="award-img"/>
+
+                                <div style="width: 200px; text-align: center; margin-top: 10px;">
+                                    <%= tournament.gains_1 %> <img src="/public/assets/images/fortuna-icon.jpg" style="height: 30px; margin-left: 10px;"/>
+                                </div>
+                            </div>
+
+                            <div class="award-box">
+                                <img src="/uploads/<%= tournament.award_2 %>" style="width: 200px; height: 200px; border-radius: 50%" class="award-img"/>
+
+                                <div style="width: 200px; text-align: center; margin-top: 10px;">
+                                    <%= tournament.gains_2 %> <img src="/public/assets/images/fortuna-icon.jpg" style="height: 30px; margin-left: 10px;"/>
+                                </div>
+                            </div>
+
+                            <div class="award-box">
+                                <img src="/uploads/<%= tournament.award_3 %>" style="width: 200px; height: 200px; border-radius: 50%" class="award-img"/>
+
+                                <div style="width: 200px; text-align: center; margin-top: 10px;">
+                                    <%= tournament.gains_3 %> <img src="/public/assets/images/fortuna-icon.jpg" style="height: 30px; margin-left: 10px;"/>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="alert alert-primary" role="alert">
+                            Stages
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="example-text-input" class="col-md-2 col-form-label">Qualifier</label>
+                            <div class="col-md-5">
+                                <input class="form-control" type="text" value="<%= tournament.qualifier.start %>" id="example-text-input">
+                            </div>
+                            <div class="col-md-3">
+                                <input class="form-control" type="text" value="<%= tournament.qualifier.qualified %>">
+                            </div>
+                            <label for="example-text-input" class="col-md-2 col-form-label">will qualify</label>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="example-text-input" class="col-md-2 col-form-label">Quarterfinals</label>
+                            <div class="col-md-5">
+                                <input class="form-control" type="text" value="<%= tournament.quarterfinal.start %>" id="example-text-input">
+                            </div>
+                            <div class="col-md-3">
+                                <input class="form-control" type="text" value="<%= tournament.quarterfinal.qualified %>">
+                            </div>
+                            <label for="example-text-input" class="col-md-2 col-form-label">will qualify</label>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="example-text-input" class="col-md-2 col-form-label">Semifinals</label>
+                            <div class="col-md-5">
+                                <input class="form-control" type="text" value="<%= tournament.semifinal.start %>" id="example-text-input">
+                            </div>
+                            <div class="col-md-3">
+                                <input class="form-control" type="text" value="<%= tournament.semifinal.qualified %>">
+                            </div>
+                            <label for="example-text-input" class="col-md-2 col-form-label">will qualify</label>
+                        </div>
+
+                        <div class="mb-5 row">
+                            <label for="example-text-input" class="col-md-2 col-form-label">
+                                <img src="public/assets/images/gold-cup.png" style="width: 20px; height: 20px; margin-right: 5px; visibility: visible;" data-xblocker="passed"> Finals
+                            </label>
+                            <div class="col-md-5">
+                                <input class="form-control" type="text" value="<%= tournament.final.start %>" id="example-text-input">
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="example-text-input" class="col-md-4 col-form-label">Enrollment fee</label>
+                            <div class="col-md-4">
+                                <input class="form-control" type="text" value="<%= tournament.price %>" id="example-text-input">
+                            </div>
+                            <div class="col-md-4">
+                                <button type="button" class="btn btn-primary waves-effect waves-light">Enroll</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

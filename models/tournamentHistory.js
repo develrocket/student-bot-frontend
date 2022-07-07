@@ -9,7 +9,8 @@ const TournamentHistorySchema = new Schema({
     tournament: {type: mongoose.Schema.Types.ObjectId,ref:'tournament'},
     created_at: String,
     isNoti: Number,
-    isEnd: Number
+    isEnd: Number,
+    level: Number
 });
 
 // create the model
