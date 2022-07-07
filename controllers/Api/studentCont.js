@@ -265,6 +265,56 @@ module.exports = function(){
 
     return {
 
+        resetMission: async function(req, res) {
+            let users = {};
+            let missions = await MissionHistoryModel.find({});
+            console.log('reset-mission:', missions.length);
+            for (let i = 0; i < missions.length; i ++) {
+                let mission = missions[i];
+                console.log(mission.telegramId, ' : ', mission.mission);
+                if (!users[mission.telegramId]) {
+                    users[mission.telegramId] = [];
+                }
+                if (users[mission.telegramId].indexOf(mission.mission + '') >= 0) {
+                    console.log('duplicate-mission');
+                    await MissionHistoryModel.remove({_id: mission._id});
+                    await SkillHistoryModel.deleteOne({telegramId: mission.telegramId, mission: mission.mission});
+                    await StudentPointHistoryModel.deleteOne({telegramId: mission.telegramId, point: 200});
+                    await FortunaHistoryModel.deleteOne({telegramId: mission.telegramId, mission: mission.mission});
+
+                    let totalPoint = await StudentPointHistoryModel.aggregate([
+                        {
+                            $match: { telegramId: mission.telegramId }
+                        },
+                        {
+                            $group:
+                                {
+                                    _id: "$telegramId",
+                                    totalPoints: { $sum: "$point" },
+                                }
+                        }
+                    ]);
+
+                    totalPoint = totalPoint.length > 0 ? totalPoint[0].totalPoints : 0;
+                    const title = await Utils.getTitle(totalPoint);
+
+                    await StudentModel.update({
+                        telegramId: mission.telegramId
+                    }, {
+                        $set: {
+                            title: title,
+                            point: totalPoint
+                        }
+                    })
+                } else {
+                    users[mission.telegramId].push(mission.mission + '');
+                }
+            }
+
+            console.log(users);
+            return res.json({result: 'success'});
+        },
+
         resetUserPoint: async function(req, res) {
             let students = await StudentModel.find({});
             for (let i = 0; i < students.length; i ++) {

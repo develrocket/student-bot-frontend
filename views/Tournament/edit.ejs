@@ -1,0 +1,660 @@
+<%- contentFor('HeaderCss') %>
+<link href="/public/assets/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+<link href="/public/assets/libs/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet">
+<link href="/public/assets/libs/@chenfengyuan/datepicker/datepicker.min.css" rel="stylesheet">
+<link href="/public/assets/libs/datetimepicker-master/jquery.datetimepicker.css" rel="stylesheet">
+
+<%- contentFor('breadcrumb') %>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Edit Tournament</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Africa</a></li>
+                    <li class="breadcrumb-item"><a href="/admin/tournament">Tournament Status</a></li>
+                    <li class="breadcrumb-item active">Edit</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<%- contentFor('body') %>
+
+<div class="row">
+    <div class="col-12">
+        <div class="mt-5 mt-lg-4">
+            <div class="card" style="margin-bottom: 200px;">
+                <div class="card-body">
+                    <div class="row justify-content-center">
+                        <div class="col-md-9">
+                            <form enctype="multipart/form-data" class="custom-validation" action="/admin/tournament/edit?id=<%= tournament._id %>"
+                                  method="POST" novalidate>
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">Name</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" name="name" required value="<%= tournament.name %>">
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">Enrollment Fee</label>
+                                    <div class="col-sm-9" style="display: flex; justify-content: space-between; align-items: center">
+                                        <input type="number" class="form-control" name="price" step="0.1" required value="<%= tournament.price %>">
+                                        <img src="/public/assets/images/fortuna-icon.jpg" style="height: 30px; margin-left: 10px;"/>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">Start</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group" id="datepicker1">
+                                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="start"
+                                                   id="startDateTime">
+
+                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                        </div><!-- input-group -->
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">End</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group" id="datepicker2">
+                                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="end"
+                                                   id="endDateTime">
+
+                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                        </div><!-- input-group -->
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">Banner</label>
+                                    <div class="col-sm-9">
+                                        <div class="avatar-upload banner">
+                                            <div class="avatar-edit">
+                                                <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg"
+                                                       name="banner"/>
+                                                <label for="imageUpload">
+                                                    <i class="fas fa-edit"></i>
+                                                </label>
+                                            </div>
+                                            <div class="avatar-preview">
+                                                <div class="placeholder">
+                                                    1600 X 200
+                                                </div>
+                                                <div id="imagePreview" style="background-image: url(/uploads/<%= tournament.banner %>)">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">Tournament awards</label>
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-sm-4 text-center" style="margin-bottom: 10px">
+                                                <div class="avatar-upload" style="margin: auto">
+                                                    <div class="avatar-edit">
+                                                        <input type='file' id="imageUpload1" accept=".png, .jpg, .jpeg"
+                                                               name="awards_1"/>
+                                                        <label for="imageUpload1">
+                                                            <i class="fas fa-edit"></i>
+                                                        </label>
+                                                    </div>
+                                                    <div class="avatar-preview">
+                                                        <div class="placeholder">
+                                                            <div>
+                                                                <p style="margin-bottom: 0;">1<sup>st</sup> Place</p>
+                                                                <p>200 X 200</p>
+                                                            </div>
+                                                        </div>
+                                                        <div id="imagePreview1" style="background-image: url(/uploads/<%= tournament.award_1 %>)">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 text-center" style="margin-bottom: 10px">
+                                                <div class="avatar-upload" style="margin: auto">
+                                                    <div class="avatar-edit">
+                                                        <input type='file' id="imageUpload2" accept=".png, .jpg, .jpeg"
+                                                               name="awards_2"/>
+                                                        <label for="imageUpload2">
+                                                            <i class="fas fa-edit"></i>
+                                                        </label>
+                                                    </div>
+                                                    <div class="avatar-preview">
+                                                        <div class="placeholder">
+                                                            <div>
+                                                                <p style="margin-bottom: 0;">2<sup>nd</sup> Place</p>
+                                                                <p>200 X 200</p>
+                                                            </div>
+                                                        </div>
+                                                        <div id="imagePreview2" style="background-image: url(/uploads/<%= tournament.award_2 %>)">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4 text-center" style="margin-bottom: 10px">
+                                                <div class="avatar-upload" style="margin: auto">
+                                                    <div class="avatar-edit">
+                                                        <input type='file' id="imageUpload3" accept=".png, .jpg, .jpeg"
+                                                               name="awards_3"/>
+                                                        <label for="imageUpload3">
+                                                            <i class="fas fa-edit"></i>
+                                                        </label>
+                                                    </div>
+                                                    <div class="avatar-preview">
+                                                        <div class="placeholder">
+                                                            <div>
+                                                                <p style="margin-bottom: 0;">3<sup>rd</sup> Place</p>
+                                                                <p>200 X 200</p>
+                                                            </div>
+                                                        </div>
+                                                        <div id="imagePreview3"style="background-image: url(/uploads/<%= tournament.award_3 %>)">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">Tournament Gains</label>
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-sm-4" style="margin-bottom: 10px;">
+                                                <div class="alert alert-success" role="alert">
+                                                    1st Place
+                                                </div>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" name="gains_1" step="0.1" required value="<%= tournament.gains_1 %>">
+                                                    <img src="/public/assets/images/fortuna-icon.jpg" style="height: 30px; margin-left: 10px;"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4" style="margin-bottom: 10px;">
+                                                <div class="alert alert-primary" role="alert">
+                                                    2nd Place
+                                                </div>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" name="gains_2" step="0.1" required value="<%= tournament.gains_2 %>">
+                                                    <img src="/public/assets/images/fortuna-icon.jpg" style="height: 30px; margin-left: 10px;"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-4" style="margin-bottom: 10px;">
+                                                <div class="alert alert-secondary" role="alert">
+                                                    3rd Place
+                                                </div>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" name="gains_3" step="0.1" required value="<%= tournament.gains_3 %>">
+                                                    <img src="/public/assets/images/fortuna-icon.jpg" style="height: 30px; margin-left: 10px;"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">Stages</label>
+                                    <div class="col-sm-9">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Qualifiers</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="input-group" id="datepicker2">
+                                                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="first_start"
+                                                                   id="1stStart">
+
+                                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                                        </div><!-- input-group -->
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Language</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control" name="first_language">
+                                                            <option value="" disabled selected>Select Language</option>
+                                                            <% languages.forEach(function(item, index) { %>
+                                                                <option value="<%= item.name %>" <%= tournament.qualifier.language + '' === item.name + '' ? 'selected' : '' %>><%= item.name %></option>
+                                                            <% }) %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Exerc Type</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control" name="first_type">
+                                                            <option value="" disabled selected>Select Type</option>
+                                                            <% types.forEach(function(item, index) { %>
+                                                                <option value="<%= item.type %>" <%= tournament.qualifier.exec_type + '' === item.type + '' ? 'selected' : '' %>><%= item.type %></option>
+                                                            <% }) %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Level</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control" name="first_level">
+                                                            <option value="" disabled selected>Select Level</option>
+                                                            <% levels.forEach(function(item, index) { %>
+                                                                <option value="<%= item.name %>" <%= tournament.qualifier.level + '' === item.name + '' ? 'selected' : '' %>><%= item.name %></option>
+                                                            <% }) %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Session</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control select2" name="first_session">
+                                                            <option value="" disabled selected>Select Session</option>
+                                                            <% sessions.forEach(function(item, index) { %>
+                                                                <option value="<%= item.session_id %>" <%= tournament.qualifier.session + '' === item.session_id + '' ? 'selected' : '' %>><%= item.session + ' (' + item.session_name + ')' %></option>
+                                                            <% }) %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Open</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" class="form-control" name="first_open" required value="<%= tournament.qualifier.open %>">
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Qualified</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" class="form-control" name="first_qualified" required value="<%= tournament.qualifier.qualified %>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <hr style="border-top: 1px solid #ced4da;"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Quaterfinals</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="input-group" id="datepicker2">
+                                                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="second_start"
+                                                                   id="2ndStart">
+
+                                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                                        </div><!-- input-group -->
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Language</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control" name="second_language">
+                                                            <option value="" disabled selected>Select Language</option>
+                                                            <% languages.forEach(function(item, index) { %>
+                                                                <option value="<%= item.name %>" <%= tournament.quarterfinal.language + '' === item.name + '' ? 'selected' : '' %>><%= item.name %></option>
+                                                            <% }) %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Exerc Type</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control" name="second_type">
+                                                            <option value="" disabled selected>Select Type</option>
+                                                            <% types.forEach(function(item, index) { %>
+                                                                <option value="<%= item.type %>" <%= tournament.quarterfinal.exec_type + '' === item.type + '' ? 'selected' : '' %>><%= item.type %></option>
+                                                            <% }) %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Level</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control" name="second_level">
+                                                            <option value="" disabled selected>Select Level</option>
+                                                            <% levels.forEach(function(item, index) { %>
+                                                                <option value="<%= item.name %>" <%= tournament.quarterfinal.level + '' === item.name + '' ? 'selected' : '' %>><%= item.name %></option>
+                                                            <% }) %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Session</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control select2" name="second_session">
+                                                            <option value="" disabled selected>Select Session</option>
+                                                            <% sessions.forEach(function(item, index) { %>
+                                                                <option value="<%= item.session_id %>" <%= tournament.quarterfinal.session + '' === item.session_id + '' ? 'selected' : '' %>><%= item.session + ' (' + item.session_name + ')' %></option>
+                                                            <% }) %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Qualified</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" class="form-control" name="second_qualified" required value="<%= tournament.quarterfinal.qualified %>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <hr style="border-top: 1px solid #ced4da;"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Semifinals</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="input-group" id="datepicker2">
+                                                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="third_start"
+                                                                   id="3rdStart">
+
+                                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                                        </div><!-- input-group -->
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Language</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control" name="third_language">
+                                                            <option value="" disabled selected>Select Language</option>
+                                                            <% languages.forEach(function(item, index) { %>
+                                                                <option value="<%= item.name %>" <%= tournament.semifinal.language + '' === item.name + '' ? 'selected' : '' %>><%= item.name %></option>
+                                                            <% }) %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Exerc Type</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control" name="third_type">
+                                                            <option value="" disabled selected>Select Type</option>
+                                                            <% types.forEach(function(item, index) { %>
+                                                                <option value="<%= item.type %>" <%= tournament.semifinal.exec_type + '' === item.type + '' ? 'selected' : '' %>><%= item.type %></option>
+                                                            <% }) %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Level</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control" name="third_level">
+                                                            <option value="" disabled selected>Select Level</option>
+                                                            <% levels.forEach(function(item, index) { %>
+                                                                <option value="<%= item.name %>" <%= tournament.semifinal.level + '' === item.name + '' ? 'selected' : '' %>><%= item.name %></option>
+                                                            <% }) %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Session</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control select2" name="third_session">
+                                                            <option value="" disabled selected>Select Session</option>
+                                                            <% sessions.forEach(function(item, index) { %>
+                                                                <option value="<%= item.session_id %>" <%= tournament.semifinal.session + '' === item.session_id + '' ? 'selected' : '' %>><%= item.session + ' (' + item.session_name + ')' %></option>
+                                                            <% }) %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Qualified</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" class="form-control" name="third_qualified" required value="<%= tournament.semifinal.qualified %>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <hr style="border-top: 1px solid #ced4da;"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Finals</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="input-group" id="datepicker2">
+                                                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="fourth_start"
+                                                                   id="4thStart">
+
+                                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                                        </div><!-- input-group -->
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Language</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control" name="fourth_language">
+                                                            <option value="" disabled selected>Select Language</option>
+                                                            <% languages.forEach(function(item, index) { %>
+                                                                <option value="<%= item.name %>" <%= tournament.final.language + '' === item.name + '' ? 'selected' : '' %>><%= item.name %></option>
+                                                            <% }) %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Exerc Type</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control" name="fourth_type">
+                                                            <option value="" disabled selected>Select Type</option>
+                                                            <% types.forEach(function(item, index) { %>
+                                                                <option value="<%= item.type %>" <%= tournament.final.exec_type + '' === item.name + '' ? 'selected' : '' %>><%= item.type %></option>
+                                                            <% }) %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Level</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control" name="fourth_level">
+                                                            <option value="" disabled selected>Select Level</option>
+                                                            <% levels.forEach(function(item, index) { %>
+                                                                <option value="<%= item.name %>" <%= tournament.final.level + '' === item.name + '' ? 'selected' : '' %>><%= item.name %></option>
+                                                            <% }) %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Session</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control select2" name="fourth_session">
+                                                            <option value="" disabled selected>Select Session</option>
+                                                            <% sessions.forEach(function(item, index) { %>
+                                                                <option value="<%= item.session_id %>" <%= tournament.final.session + '' === item.session_id + '' ? 'selected' : '' %>><%= item.session + ' (' + item.session_name + ')' %></option>
+                                                            <% }) %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row justify-content-end">
+                                    <div class="col-sm-9">
+                                        <div>
+                                            <input type="hidden" name="timezoneOffset" id="timezoneOffset" />
+                                            <button type="submit" class="btn btn-primary w-md">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<%- contentFor('FooterJs') %>
+<script src="/public/assets/libs/parsleyjs/parsley.min.js"></script>
+<!-- plugins -->
+<script src="/public/assets/libs/select2/js/select2.min.js"></script>
+<script src="/public/assets/libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+<script src="/public/assets/libs/@chenfengyuan/datepicker/datepicker.min.js"></script>
+<script src="/public/assets/libs/datetimepicker-master/php-date-formatter.min.js"></script>
+<script src="/public/assets/libs/datetimepicker-master/jquery.mousewheel.js"></script>
+<script src="/public/assets/libs/datetimepicker-master/jquery.datetimepicker.js"></script>
+
+<%- contentFor('BottomJs') %>
+<script>
+    let today = '<%= today %>';
+    let endTime = '<%= tournament.end_at %>';
+    let startTime = '<%= tournament.start_at %>';
+    let firstTime = '<%= tournament.qualifier.start %>';
+    let secondTime = '<%= tournament.quarterfinal.start %>';
+    let thirdTime = '<%= tournament.semifinal.start %>';
+    let fourthTime = '<%= tournament.final.start %>';
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+                $('#imagePreview').hide();
+                $('#imagePreview').fadeIn(650);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function formatDate(d) {
+        let month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        let hours = d.getHours();
+        let minutes = d.getMinutes();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+        if (hours.length < 2) hours = '0' + hours;
+        if (minutes.length < 2) minutes = '0' + minutes;
+
+
+
+        return [year, month, day].join('-') + ' ' + hours + ':' + minutes;
+    }
+
+    function reformatDate(d, offset) {
+        d = new Date(d);
+        d.setTime(d.getTime() - offset * 60 * 1000);
+        d = formatDate(d);
+
+        return d;
+    }
+
+    $("#imageUpload").change(function () {
+        readURL(this);
+    });
+
+    function readURLAvatar(input, num) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#imagePreview' + num).css('background-image', 'url(' + e.target.result + ')');
+                $('#imagePreview' + num).hide();
+                $('#imagePreview' + num).fadeIn(650);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#imageUpload1").change(function () {
+        readURLAvatar(this, 1);
+    });
+
+    $("#imageUpload2").change(function () {
+        readURLAvatar(this, 2);
+    });
+
+    $("#imageUpload3").change(function () {
+        readURLAvatar(this, 3);
+    });
+
+
+    $(document).ready(function () {
+        let timezoneOffset = new Date().getTimezoneOffset();
+        $('#timezoneOffset').val(new Date().getTimezoneOffset());
+        $('.custom-validation').parsley();
+        $(".select2").select2();
+
+        startTime = reformatDate(startTime, timezoneOffset);
+        endTime = reformatDate(endTime, timezoneOffset);
+        firstTime = reformatDate(firstTime, timezoneOffset);
+        secondTime = reformatDate(secondTime, timezoneOffset);
+        thirdTime = reformatDate(thirdTime, timezoneOffset);
+        fourthTime = reformatDate(fourthTime, timezoneOffset);
+
+        console.log(fourthTime);
+
+        $('#endDateTime').datetimepicker({
+            dayOfWeekStart : 1,
+            lang:'en',
+            startDate:	today,
+            value:endTime,
+            step:10
+        });
+
+        $('#startDateTime').datetimepicker({
+            dayOfWeekStart : 1,
+            lang:'en',
+            startDate:	today,
+            value:startTime, step:10
+        });
+
+        $('#1stStart').datetimepicker({
+            dayOfWeekStart : 1,
+            lang:'en',
+            startDate:	today,
+            value:firstTime,
+            step:10
+        });
+
+        $('#2ndStart').datetimepicker({
+            dayOfWeekStart : 1,
+            lang:'en',
+            startDate:	today,
+            value:secondTime, step:10
+        });
+
+        $('#3rdStart').datetimepicker({
+            dayOfWeekStart : 1,
+            lang:'en',
+            startDate:	today,
+            value:thirdTime, step:10
+        });
+
+        $('#4thStart').datetimepicker({
+            dayOfWeekStart : 1,
+            lang:'en',
+            startDate:	today,
+            value:fourthTime, step:10
+        });
+    });
+</script>

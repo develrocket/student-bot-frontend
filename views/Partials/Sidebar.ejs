@@ -69,6 +69,7 @@
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="/gp"><%=translation.Great_Persons%></a></li>
                         <li><a href="/mission"><%=translation.Missions%></a></li>
+                        <li><a href="/admin/tournament"><%=translation.Tournament%></a></li>
                     </ul>
                 </li>
                 <% } %>
@@ -87,6 +88,13 @@
                         <span class="badge rounded-pill bg-primary float-end"><%= missionCount %></span>
                         <% } %>
                         <span><%=translation.Missions%></span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="/tournament">
+                        <i class="uil-award"></i>
+                        <span><%=translation.Tournament%></span>
                     </a>
                 </li>
             </ul>

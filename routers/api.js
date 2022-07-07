@@ -32,4 +32,5 @@ module.exports = function (app) {
     app.get('/api/insert-skill', studentCont.insertSkills);
     app.get('/api/reset-skill-score', studentCont.resetSkillScore);
     app.get('/api/reset-student-point', studentCont.resetUserPoint);
+    app.get('/api/reset-mission', studentCont.resetMission);
 };
