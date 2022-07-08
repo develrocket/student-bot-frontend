@@ -7,6 +7,8 @@ const SessionModel = require('../models/fortunaSession');
 const TournamentHistoryModel = require('../models/tournamentHistory');
 const TypeModel = require('../models/type');
 const LevelModel = require('../models/level');
+const FortunaHistoryModel = require('../models/fortunaHistory');
+const StudentModel = require('../models/student');
 
 module.exports = function(){
 
@@ -32,10 +34,85 @@ module.exports = function(){
 
             if (tournaments.length > 0) {
                 let tournament = tournaments[0];
-                res.render('Tournament/student-index', {tournament});
+                tournamentHistories = await TournamentHistoryModel.find({telegramId: telegramId, tournament: tournament._id});
+                let isSlot = false;
+                if (tournamentHistories.length > 0) isSlot = true;
+                res.render('Tournament/student-index', {tournament, isSlot});
             } else {
                 res.render('Tournament/not-exist');
             }
+        },
+
+        doEnroll: async function(req, res) {
+            let telegramId = res.locals.user.telegramId;
+            let tournamentId = req.body.tournament_id;
+            let tournament = await TournamentModel.findOne({_id: tournamentId});
+
+            let oldHistories = await TournamentHistoryModel.find({
+                telegramId: telegramId,
+                tournament: tournamentId
+            });
+
+            let counts = await TournamentHistoryModel.aggregate([
+                {
+                    $match: {tournament: tournamentId}
+                },
+                {
+                    $group: {
+                        _id: '$tournament',
+                        count: {$sum: 1}
+                    }
+                }
+            ]);
+
+            if (counts[0].count >= tournament.qualifier) {
+                return res.json({result: 'fail', msg: 'Tournament is full'});
+            }
+
+            let fResults = await FortunaHistoryModel.aggregate([
+                {
+                    $match: { telegramId: telegramId + '' }
+                },
+                {
+                    $group:
+                        {
+                            _id: "$telegramId",
+                            totalPoints: { $sum: "$fortuna_point" }
+                        }
+                }
+            ]);
+
+            let totalFortuna = fResults.length > 0 ? fResults[0].totalPoints : 0;
+            if (totalFortuna < tournament.price) {
+                return res.json({result: 'false', msg: 'Insufficient FRT!'});
+            }
+
+            if (oldHistories.length > 0) {
+                return res.json({result: 'success'});
+            }
+
+            let fHistory = new FortunaHistoryModel({
+                telegramId: telegramId,
+                fortuna_point: tournament.price * -1,
+                tournament: tournamentId,
+                state: 8,
+                created_at: moment().format('YYYY-MM-DD HH:mm:ss')
+            });
+            await fHistory.save();
+
+            let user = await StudentModel.findOne({telegramId: telegramId});
+
+            let tHistory = new TournamentHistoryModel({
+                telegramId: telegramId,
+                username: user.username,
+                tournament: tournamentId,
+                created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+                level: 1
+            });
+
+            await tHistory.save();
+
+            return res.json({result: 'success'});
         },
 
         create: async function(req, res) {

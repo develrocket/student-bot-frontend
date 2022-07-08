@@ -439,3 +439,13 @@ label.mission-fortuna {
     font-weight: bold;
     font-size: 21px;
 }
+
+.award-box {
+    float: left;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+.award-box .award-img {
+    border: 1px solid #333;
+}
