@@ -16,8 +16,8 @@
                     <tr>
                         <td>
                             <% if (offer.skill) { %>
-                            <img src="/public/assets/images/skills/<%= offer.skill %>.png" title="<%= offer.skill %>" style="height: 30px;"/>
-                            <%= offer.skill.charAt(0).toUpperCase() + offer.skill.substr(1) %>
+                                <img src="/public/assets/images/skills/<%= offer.skill %>.png" title="<%= offer.skill %>" style="height: 30px;"/>
+                                <%= offer.skill.charAt(0).toUpperCase() + offer.skill.substr(1) %>
                             <% } %>
                         </td>
                         <td>
@@ -60,8 +60,10 @@
                         <tr>
                             <th>Skill</th>
                             <td>
-                                <img src="/public/assets/images/skills/<%= offer.skill %>.png" title="<%= offer.skill %>" style="height: 30px;"/>
-                                <%= offer.skill.charAt(0).toUpperCase() + offer.skill.substr(1) %>
+                                <% if (offer.skill) { %>
+                                    <img src="/public/assets/images/skills/<%= offer.skill %>.png" title="<%= offer.skill %>" style="height: 30px;"/>
+                                    <%= offer.skill.charAt(0).toUpperCase() + offer.skill.substr(1) %>
+                                <% } %>
                             </td>
                         </tr>
                         <tr>
