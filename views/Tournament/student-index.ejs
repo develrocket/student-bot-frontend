@@ -1,4 +1,5 @@
 <%- contentFor('HeaderCss') %>
+<link href="/public/assets/libs/jquery-toastr-plugin/jquery.toast.min.css" rel="stylesheet" type="text/css" />
 
 <%- contentFor('breadcrumb') %>
 
@@ -123,7 +124,8 @@
                                 <input class="form-control" type="text" value="<%= tournament.price %>" id="example-text-input">
                             </div>
                             <div class="col-md-4">
-                                <button type="button" class="btn btn-primary waves-effect waves-light">Enroll</button>
+                                <button type="button" class="btn btn-primary waves-effect waves-light <%= isSlot ? 'hidden' : '' %>"  id="btnEnroll">Enroll</button>
+                                <a href="/tournament/slot?id=<%= tournament._id %>" class="btn btn-primary waves-effect waves-light <%= isSlot ? '' : 'hidden' %>" id="btnSlot">See Slots</a>
                             </div>
                         </div>
                     </div>
@@ -134,5 +136,26 @@
 </div>
 
 <%- contentFor('FooterJs') %>
-
+<script src="/public/assets/libs/jquery-toastr-plugin/jquery.toast.min.js"></script>
 <%- contentFor('BottomJs') %>
+<script type="text/javascript">
+    let tournamentId = '<%= tournament._id %>';
+    $('#btnEnroll').on('click', function() {
+        $.ajax({
+            type: 'post',
+            url: "/tournament/enroll",
+            dataType: "json",
+            data: {
+                tournament_id: tournamentId
+            },
+            success: function(res) {
+                if (res.result === 'fail') {
+                    $.toast(res.msg);
+                } else {
+                    $('#btnEnroll').addClass('hidden');
+                    $('#btnSlot').removeClass('hidden');
+                }
+            }
+        });
+    });
+</script>

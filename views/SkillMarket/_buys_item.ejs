@@ -15,8 +15,10 @@
                 <% offers.forEach(function(offer, index) { %>
                     <tr>
                         <td>
+                            <% if (offer.skill) { %>
                             <img src="/public/assets/images/skills/<%= offer.skill %>.png" title="<%= offer.skill %>" style="height: 30px;"/>
                             <%= offer.skill.charAt(0).toUpperCase() + offer.skill.substr(1) %>
+                            <% } %>
                         </td>
                         <td>
                             <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= offer.telegramId %>">

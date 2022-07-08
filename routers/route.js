@@ -121,4 +121,5 @@ module.exports = function (app) {
     app.post('/mission/rent-great', isUserAllowed, urlencodeParser, MissionCtrl.rentGreat);
 
     app.get('/tournament', isUserAllowed, TournamentCtrl.studentIndex);
+    app.post('/tournament/enroll', isUserAllowed, urlencodeParser, TournamentCtrl.doEnroll);
 }
