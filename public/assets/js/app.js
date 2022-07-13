@@ -481,7 +481,13 @@ $(document).ready(function() {
         let t = new Date($(this).html());
         t.setTime(t.getTime() - toffset * 60 * 1000);
         t = formatDateFromString(t);
-        console.log($(this).html() + ' : ' + t);
         $(this).html(t);
+    });
+
+    $('.format-date-input').each(function() {
+        let t = new Date($(this).val());
+        t.setTime(t.getTime() - toffset * 60 * 1000);
+        t = formatDateFromString(t);
+        $(this).val(t);
     });
 })

@@ -1,0 +1,183 @@
+<%- contentFor('HeaderCss') %>
+
+<%- contentFor('breadcrumb') %>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Tournament Slot</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Africa</a></li>
+                    <li class="breadcrumb-item active">Tournament Slot</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<%- contentFor('body') %>
+<div class="row">
+    <div class="col-lg-4">
+        <div class="alert alert-primary" role="alert">
+            Qualifiers
+        </div>
+
+        <div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert">
+            <i class="uil uil-clock text-primary font-size-16 me-2"></i>
+            <span class="format-date"><%= tournament.qualifier.start %></span>
+        </div>
+
+        <div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert" style="display: flex; justify-content: space-between; align-items: center; padding-right: 1.25rem;">
+            <span>
+                Status: <%= tournament.qualifier.status == 0 ? 'Planned' : (tournament.qualifier.status == 1 ? 'Ongoing' : 'Ended') %>
+            </span>
+
+            <% if (exist) { %>
+                <a href="/tournament/test?type=qualifier" class="btn btn-primary" style="float: right;">Join Test</a>
+            <% } %>
+        </div>
+
+        <div class="card slot-card">
+            <div class="card-body">
+                <div class="row">
+                    <% qualifierSlots.forEach(function(slot, index) { %>
+                        <div class="col-sm-6">
+                            <div class="slot-item">
+                                <% if (Object.keys(slot).length > 0) {%>
+                                    <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= slot.telegramId %>">
+                                        <%= slot.username %>
+                                    </a>
+                                <% } else {%>
+                                    <span> Empty </span>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-2">
+        <div class="alert alert-primary" role="alert">
+            Quarterfinals
+        </div>
+
+        <div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert">
+            <i class="uil uil-clock text-primary font-size-16 me-2"></i>
+            <span class="format-date"><%= tournament.quarterfinal.start %></span>
+        </div>
+
+        <div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert">
+            Status: <%= tournament.quarterfinal.status == 0 ? 'Planned' : (tournament.quarterfinal.status == 1 ? 'Ongoing' : 'Ended') %>
+        </div>
+
+        <div class="card slot-card">
+            <div class="card-body">
+                <div class="row">
+                    <% quarterSlots.forEach(function(slot, index) { %>
+                        <div class="col-sm-12">
+                            <div class="slot-item">
+                                <% if (Object.keys(slot).length > 0) {%>
+                                    <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= slot.telegramId %>">
+                                        <%= slot.username %>
+                                    </a>
+                                <% } else {%>
+                                    <span> Empty </span>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-2">
+        <div class="alert alert-primary" role="alert">
+            Semifinals
+        </div>
+
+        <div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert">
+            <i class="uil uil-clock text-primary font-size-16 me-2"></i>
+            <span class="format-date"><%= tournament.semifinal.start %></span>
+        </div>
+
+        <div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert">
+            Status: <%= tournament.semifinal.status == 0 ? 'Planned' : (tournament.semifinal.status == 1 ? 'Ongoing' : 'Ended') %>
+        </div>
+
+        <div class="card slot-card">
+            <div class="card-body">
+                <div class="row">
+                    <% semiSlots.forEach(function(slot, index) { %>
+                        <div class="col-sm-12">
+                            <div class="slot-item">
+                                <% if (Object.keys(slot).length > 0) {%>
+                                    <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= slot.telegramId %>">
+                                        <%= slot.username %>
+                                    </a>
+                                <% } else {%>
+                                    <span> Empty </span>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-2">
+        <div class="alert alert-primary" role="alert">
+            Finals
+        </div>
+
+        <div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert">
+            <i class="uil uil-clock text-primary font-size-16 me-2"></i>
+            <span class="format-date"><%= tournament.final.start %></span>
+        </div>
+
+        <div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert">
+            Status: <%= tournament.final.status == 0 ? 'Planned' : (tournament.final.status == 1 ? 'Ongoing' : 'Ended') %>
+        </div>
+
+        <div class="card slot-card">
+            <div class="card-body">
+                <div class="row">
+                    <% finalSlots.forEach(function(slot, index) { %>
+                        <div class="col-sm-12">
+                            <div class="slot-item">
+                                <% if (Object.keys(slot).length > 0) {%>
+                                    <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= slot.telegramId %>">
+                                        <%= slot.username %>
+                                    </a>
+                                <% } else {%>
+                                    <span> Empty </span>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-2">
+        <div class="alert alert-primary" role="alert">
+            Winner
+        </div>
+        <div style="text-align: center">
+            <img src="/public/assets/images/gold-cup.png" style="width: 200px; height: 200px; margin-right: 5px; visibility: visible;" data-xblocker="passed">
+        </div>
+    </div>
+</div>
+
+
+<%- contentFor('FooterJs') %>
+
+<%- contentFor('BottomJs') %>

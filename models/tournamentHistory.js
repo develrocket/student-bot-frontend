@@ -10,7 +10,8 @@ const TournamentHistorySchema = new Schema({
     created_at: String,
     isNoti: Number,
     isEnd: Number,
-    level: Number
+    level: Number,
+    score: Number
 });
 
 // create the model

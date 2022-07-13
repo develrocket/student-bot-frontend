@@ -22,7 +22,8 @@ const TournamentSchema = new Schema({
         language: String,
         exec_type: String,
         level: String,
-        session: String
+        session: String,
+        status: Number
     },
     quarterfinal: {
         start: String,
@@ -30,7 +31,8 @@ const TournamentSchema = new Schema({
         exec_type: String,
         level: String,
         session: String,
-        qualified: Number
+        qualified: Number,
+        status: Number
     },
     semifinal: {
         start: String,
@@ -38,14 +40,16 @@ const TournamentSchema = new Schema({
         exec_type: String,
         level: String,
         session: String,
-        qualified: Number
+        qualified: Number,
+        status: Number
     },
     final: {
         start: String,
         language: String,
         exec_type: String,
         level: String,
-        session: String
+        session: String,
+        status: Number
     },
     status: Number          //1: Pending 2: Ongoing, 3: Finished, 4: Hide
 });
