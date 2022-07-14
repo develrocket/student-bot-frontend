@@ -151,7 +151,7 @@ try {
                 cronService.checkComplete(bot);
                 cronService.checkTournament();
 
-                // cronService.syncFortunaData();
+                cronService.syncFortunaData();
                 // StudentApiController.getResultAll();
                 // StudentApiController.resetSkillScore();
             } catch (err) {
