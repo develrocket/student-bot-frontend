@@ -9,7 +9,7 @@ const FortunaSessionModel = require('../../models/fortunaSession');
 const QuestionModel = require('../../models/question');
 
 
-const ServerUrl = 'http://fortunaenglish.loc/api';
+const ServerUrl = 'http://fortunaenglish.com/api';
 
 module.exports = function() {
     return {
