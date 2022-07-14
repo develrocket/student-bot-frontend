@@ -106,6 +106,18 @@ module.exports = function() {
                     config.url = ServerUrl + '/fetch/question?sessId=' + item.id;
                     let qresult = await axios(config);
 
+                    for (const qitem of qresult.data) {
+                        if (questionIds.indexOf(item.id) >= 0) {
+                            await QuestionModel.update({question_id: qitem.id}, {$set: qitem});
+                        } else {
+                            let question = new QuestionModel({...qitem, question_id: qitem.id});
+                            await question.save();
+                        }
+                    }
+
+                    item.questions = qresult.data.length;
+                    if (item.questions === 0) continue;
+
                     if (sessionIds.indexOf(item.id) >= 0) {
                         await FortunaSessionModel.update({session_id: item.id}, {
                             $set: item
@@ -113,15 +125,6 @@ module.exports = function() {
                     } else {
                         let session = new FortunaSessionModel({...item, session_id: item.id});
                         await session.save();
-                    }
-
-                    for (const qitem of qresult.data) {
-                        if (questionIds.indexOf(item.id) >= 0) {
-                            await QuestionModel.update({question_id: qitem.id}, {$set: qitem});
-                        } else {
-                            let question = new QuestionModel({...qitem, question_id: item.id});
-                            await question.save();
-                        }
                     }
                 }
             } catch (e) {

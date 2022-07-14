@@ -1,0 +1,175 @@
+<%- contentFor('HeaderCss') %>
+
+<%- contentFor('breadcrumb') %>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Tournament Test</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Africa</a></li>
+                    <li class="breadcrumb-item active">Tournament Test</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<%- contentFor('body') %>
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-img-top" style="position: relative">
+                <div style="position: relative">
+                    <img src="/uploads/<%= tournament.banner %>" style="width: 100%; height: 200px;"/>
+
+                    <div class="tournament-title">
+                        <%= tournament.name %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <% if (currentTime < startTime) { %>
+                <div id="startTimeBox" style="padding: 50px 0;">
+                    <p style="font-size: 18px; text-align: center; margin-bottom: 20px;">Test will be start in</p>
+                    <div class="countdown-container justify-content-center question-start">
+                        <div data-countdown="<%= startTime %>" class="counter-number" id="countDown"></div>
+                    </div>
+                </div>
+                <% } %>
+
+                <div id="quizBox"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<%- contentFor('FooterJs') %>
+<script src="/public/assets/libs/jquery-countdown/jquery.countdown.min.js"></script>
+
+<%- contentFor('BottomJs') %>
+
+<script type="text/javascript">
+    let startTime = '<%= startTime %>';
+    let tournamentId = '<%= tournament._id %>';
+    let type = '<%= type %>';
+    let quizTime = 20;
+    let qTimer = null;
+
+    function formatDate(d) {
+        let month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        let hours = d.getHours();
+        let minutes = d.getMinutes();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+        if (hours.length < 2) hours = '0' + hours;
+        if (minutes.length < 2) minutes = '0' + minutes;
+
+
+
+        return [year, month, day].join('-') + ' ' + hours + ':' + minutes;
+    }
+
+    function runQuizTimer() {
+        quizTime = 20;
+        qTimer = setInterval(function() {
+            quizTime --;
+            let ts = quizTime >= 10 ?  quizTime: '0' + quizTime;
+            $('#questionTime').html('00:' + ts);
+            if (quizTime === 0) {
+                clearInterval(qTimer);
+                qTimer = null;
+                getQuestions();
+            }
+        }, 1000);
+    }
+
+    function getFormData($form){
+        var unindexed_array = $form.serializeArray();
+        var indexed_array = {};
+
+        $.map(unindexed_array, function(n, i){
+            indexed_array[n['name']] = n['value'];
+        });
+
+        return indexed_array;
+    }
+
+
+    function getQuestions() {
+        if (qTimer) {
+            clearInterval(qTimer);
+            qTimer = null;
+        }
+        let postData = {
+            tournament_id: tournamentId,
+            type: type
+        };
+        if ($('#quizForm').length) {
+            postData = {...postData, ...getFormData($('#quizForm'))}
+        }
+        $.ajax({
+            type: 'POST',
+            url: "/tournament/get-questions",
+            data: postData,
+            success: function(res) {
+                $('#quizBox').html(res);
+                runQuizTimer();
+            }
+        });
+    }
+
+    $(document).ready(function() {
+        let timezoneOffset = new Date().getTimezoneOffset();
+        startTime = new Date(startTime);
+        startTime.setTime(startTime.getTime() - timezoneOffset * 60 * 1000);
+        let stTime = startTime.getTime();
+        startTime = formatDate(startTime);
+
+        $('#countDown').attr('data-countdown', startTime);
+
+        $('[data-countdown]').each(function () {
+            let $this = $(this), finalDate = $(this).data('countdown');
+            $this.countdown(finalDate, function (event) {
+                $(this).html(event.strftime(''
+                    + '<div class="coming-box">%D <span>Days</span></div> '
+                    + '<div class="coming-box">%H <span>Hours</span></div> '
+                    + '<div class="coming-box">%M <span>Minutes</span></div> '
+                    + '<div class="coming-box">%S <span>Seconds</span></div> '));
+            });
+        });
+
+        let curTime = new Date().getTime();
+
+        if (curTime >= stTime) {
+            getQuestions();
+        } else {
+            let timer = setInterval(function() {
+                let curTime = new Date().getTime();
+                if (curTime >= stTime) {
+                    $('#startTimeBox').remove();
+                    getQuestions();
+                    clearInterval(timer);
+                }
+            }, 1000)
+        }
+    });
+
+</script>

@@ -149,6 +149,7 @@ try {
                 cronService.start(io, bot);
                 cronService.checkMission(bot);
                 cronService.checkComplete(bot);
+
                 // cronService.syncFortunaData();
                 // StudentApiController.getResultAll();
                 // StudentApiController.resetSkillScore();

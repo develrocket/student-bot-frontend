@@ -7,6 +7,7 @@ const SkillModel = require('../models/skill');
 const SkillHistoryModel = require('../models/skillHistory');
 const MissionHistoryModel = require('../models/missionHistory');
 const StudentPointHistoryModel = require('../models/studentPointHistory');
+const TournamentWinHistoryModel = require('../models/tournamentWinHistory');
 
 module.exports = {
     randomString(length) {
@@ -236,9 +237,10 @@ module.exports = {
         }
 
         let missions = await MissionHistoryModel.find({telegramId: telegramId}).populate('mission').lean().exec();
+        let tournaments = await TournamentWinHistoryModel.find({telegramId: telegramId}).lean().exec();
 
         console.log('get-profile-data-finished:', new Date());
 
-        return {joinDate, result, sessionCount, rank, teleUser, rResult, motto, totalFortuna, myParts, countryCode, skills, mySkills, missions, totalPoint};
+        return {joinDate, result, sessionCount, rank, teleUser, rResult, motto, totalFortuna, myParts, countryCode, skills, mySkills, missions, totalPoint, tournaments};
     }
 };

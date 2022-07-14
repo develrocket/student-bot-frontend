@@ -1,0 +1,29 @@
+<div class="question-container mt-sm-5 my-1">
+    <div class="question ml-sm-5 pl-sm-5 pt-2">
+        <div class="py-2 h5 question-title">
+            <b>Q. <%= question.question %></b>
+            <b style="float: right;"><%= questionNo + 1 %> / <%= totalCount %></b>
+        </div>
+        <div class="ml-md-3 ml-sm-3 pl-md-5 pt-sm-0 pt-3" id="options">
+            <form id="quizForm">
+                <input type="hidden" name="tournament_id" value="<%= tournament._id %>" />
+                <input type="hidden" name="question_id" value="<%= question.question_id %>" />
+                <% answers.forEach(function(answer) { %>
+                    <label class="options">
+                        <%= answer %>
+                        <input type="radio" name="radio" value="<%= answer %>">
+                        <span class="checkmark"></span>
+                    </label>
+                <% }) %>
+            </form>
+        </div>
+    </div>
+    <div class="d-flex align-items-center justify-content-between pt-3">
+        <div>
+            Time Left: <span id="questionTime" style="font-weight: bold; font-size: 18px;">00:20</span>
+        </div>
+        <div class="ml-auto mr-sm-5">
+            <button class="btn btn-success" onclick="getQuestions()">Next</button>
+        </div>
+    </div>
+</div>

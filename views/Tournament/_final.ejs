@@ -1,0 +1,38 @@
+<div class="alert alert-primary" role="alert">
+    Finals
+</div>
+
+<div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert">
+    <i class="uil uil-clock text-primary font-size-16 me-2"></i>
+    <span class="format-date"><%= tournament.final.start %></span>
+</div>
+
+<div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert" style="display: flex; justify-content: space-between; align-items: center; padding-right: 1.25rem;">
+    <span>
+        Status: <%= finalTimeDiff < 0 ? 'Planned' : (finalTimeDiff < 20 * 1000 * finalSession.questions ? 'Ongoing' : 'Ended') %>
+    </span>
+
+    <% if (finalExists && finalTimeDiff < 20 * 1000 * finalSession.questions) { %>
+        <a href="/tournament/test?type=final" class="btn btn-primary" style="float: right;" id="finalJoin">Join Test</a>
+    <% } %>
+</div>
+
+<div class="card slot-card">
+    <div class="card-body">
+        <div class="row">
+            <% finalSlots.forEach(function(slot, index) { %>
+                <div class="col-sm-12">
+                    <div class="slot-item">
+                        <% if (Object.keys(slot).length > 0) {%>
+                            <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= slot.telegramId %>">
+                                <%= slot.username %>
+                            </a>
+                        <% } else {%>
+                            <span> Empty </span>
+                        <% } %>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</div>

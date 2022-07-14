@@ -1,0 +1,116 @@
+<%- contentFor('HeaderCss') %>
+
+<%- contentFor('breadcrumb') %>
+
+<!-- start page title -->
+<div class="row">
+    <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Tournament Slot</h4>
+
+            <div class="page-title-right">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item"><a href="javascript: void(0);">Africa</a></li>
+                    <li class="breadcrumb-item active">Tournament Slot</li>
+                </ol>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- end page title -->
+
+<%- contentFor('body') %>
+<div class="row">
+    <div class="col-lg-4" id="qualiferSlot">
+        <%- include ('./_qualifier')  %>
+    </div>
+    <div class="col-lg-2" id="quarterSlot">
+        <%- include ('./_quarterfinal')  %>
+    </div>
+
+    <div class="col-lg-2" id="semiSlot">
+        <%- include ('./_semifinal')  %>
+    </div>
+
+    <div class="col-lg-2" id="finalSlot">
+        <%- include ('./_final')  %>
+    </div>
+
+    <div class="col-lg-2">
+        <div class="alert alert-primary" role="alert">
+            Winner
+        </div>
+        <div style="text-align: center">
+            <img src="/public/assets/images/gold-cup.png" style="width: 200px; height: 200px; margin-right: 5px; visibility: visible;" data-xblocker="passed">
+        </div>
+        <div id="winSlot">
+            <%- include ('./_win')  %>
+        </div>
+    </div>
+</div>
+
+
+<%- contentFor('FooterJs') %>
+
+<%- contentFor('BottomJs') %>
+
+<script type="text/javascript">
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    let tournamentId = '<%= tournament._id %>';
+
+    $(document).ready(function() {
+        async function reloadView() {
+            while(1) {
+                $.ajax({
+                    type: 'POST',
+                    url: "/tournament/get-qualifier-view",
+                    data: {tournament_id: tournamentId},
+                    success: function(res) {
+                        $('#qualiferSlot').html(res);
+                    }
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/tournament/get-quarter-view",
+                    data: {tournament_id: tournamentId},
+                    success: function(res) {
+                        $('#quarterSlot').html(res);
+                    }
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/tournament/get-semi-view",
+                    data: {tournament_id: tournamentId},
+                    success: function(res) {
+                        $('#semiSlot').html(res);
+                    }
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/tournament/get-final-view",
+                    data: {tournament_id: tournamentId},
+                    success: function(res) {
+                        $('#finalSlot').html(res);
+                    }
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/tournament/get-win-view",
+                    data: {tournament_id: tournamentId},
+                    success: function(res) {
+                        $('#winSlot').html(res);
+                    }
+                });
+
+                await sleep(1000);
+            }
+        }
+
+        reloadView();
+    });
+</script>

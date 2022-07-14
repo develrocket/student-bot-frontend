@@ -75,6 +75,7 @@ function initProfileRightbar() {
                     let mySkills = res.mySkills;
                     let totalPoint = res.totalPoint;
                     let missions = res.missions;
+                    let tournaments = res.tournaments;
 
                     let coptions = {
                         // defaultCountry: "jp",
@@ -128,6 +129,19 @@ function initProfileRightbar() {
                                 '                                </div>'
                         }
                         $('#profile-side-mission-container').html(html);
+                    }
+
+                    if (tournaments.length > 0) {
+                        $('#profile-side-tournament').removeClass('hidden');
+                        let html = '';
+                        for (let i = 0; i < tournaments.length; i ++) {
+                            let tournament = tournaments[i];
+                            html += '<div class="mission-item" style="float: left; margin-right: 10px;">\n' +
+                                '                                    <img class="rounded-circle avatar-lg" src="/uploads/' + tournament.badge + '"\n' +
+                                '                                         data-holder-rendered="true" data-xblocker="passed" style="visibility: visible;">\n' +
+                                '                                </div>'
+                        }
+                        $('#profile-side-tournament-container').html(html);
                     }
 
                     $('#profile-side-overall').removeClass('hidden');
@@ -481,7 +495,13 @@ $(document).ready(function() {
         let t = new Date($(this).html());
         t.setTime(t.getTime() - toffset * 60 * 1000);
         t = formatDateFromString(t);
-        console.log($(this).html() + ' : ' + t);
         $(this).html(t);
+    });
+
+    $('.format-date-input').each(function() {
+        let t = new Date($(this).val());
+        t.setTime(t.getTime() - toffset * 60 * 1000);
+        t = formatDateFromString(t);
+        $(this).val(t);
     });
 })

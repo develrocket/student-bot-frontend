@@ -1,0 +1,39 @@
+<div class="alert alert-primary" role="alert">
+    Quarterfinals
+</div>
+
+<div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert">
+    <i class="uil uil-clock text-primary font-size-16 me-2"></i>
+    <span class="format-date"><%= tournament.quarterfinal.start %></span>
+</div>
+
+<div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert" style="display: flex; justify-content: space-between; align-items: center; padding-right: 1.25rem;">
+    <span>
+        Status: <%= quarterTimeDiff < 0 ? 'Planned' : (quarterTimeDiff < 20 * 1000 * quarterSession.questions ? 'Ongoing' : 'Ended') %>
+    </span>
+
+    <% if (quarterExists && quarterTimeDiff < 20 * 1000 * quarterSession.questions) { %>
+        <a href="/tournament/test?type=quarterfinal" class="btn btn-primary" style="float: right;" id="quarterJoin">Join Test</a>
+    <% } %>
+
+</div>
+
+<div class="card slot-card">
+    <div class="card-body">
+        <div class="row">
+            <% quarterSlots.forEach(function(slot, index) { %>
+                <div class="col-sm-12">
+                    <div class="slot-item">
+                        <% if (Object.keys(slot).length > 0) {%>
+                            <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= slot.telegramId %>">
+                                <%= slot.username %>
+                            </a>
+                        <% } else {%>
+                            <span> Empty </span>
+                        <% } %>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</div>

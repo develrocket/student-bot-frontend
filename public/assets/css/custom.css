@@ -449,3 +449,109 @@ label.mission-fortuna {
 .award-box .award-img {
     border: 1px solid #333;
 }
+
+.slot-item {
+    border: 1px solid #5b73e8;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background: white;
+}
+
+.slot-card {
+    background: rgba(91, 115, 232, 0.07);
+}
+
+.question-container{
+    background-color: #555;
+    color: #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    font-family: 'Montserrat', sans-serif;
+    max-width: 700px;
+    margin: auto;
+}
+.question-container > p{
+    font-size: 32px;
+}
+.question-container .question{
+    width: 100%;
+}
+.question-container .options{
+    position: relative;
+    padding-left: 40px;
+}
+.question-container #options label{
+    display: block;
+    margin-bottom: 15px;
+    font-size: 14px;
+    cursor: pointer;
+}
+.question-container .options input{
+    opacity: 0;
+}
+
+.question-container .question-title {
+    color: white;
+}
+
+.question-container .checkmark {
+    position: absolute;
+    top: -1px;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #555;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+}
+.question-container .options input:checked ~ .checkmark:after {
+    display: block;
+}
+.question-container .options .checkmark:after{
+    content: "";
+    width: 10px;
+    height: 10px;
+    display: block;
+    background: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    transform: translate(-50%,-50%) scale(0);
+    transition: 300ms ease-in-out 0s;
+}
+.question-container .options input[type="radio"]:checked ~ .checkmark{
+    background: #21bf73;
+    transition: 300ms ease-in-out 0s;
+}
+.question-container .options input[type="radio"]:checked ~ .checkmark:after{
+    transform: translate(-50%,-50%) scale(1);
+}
+.question-container .btn-primary{
+    background-color: #555;
+    color: #ddd;
+    border: 1px solid #ddd;
+}
+.question-container .btn-primary:hover{
+    background-color: #21bf73;
+    border: 1px solid #21bf73;
+}
+.question-container .btn-success{
+    padding: 5px 25px;
+    background-color: #21bf73;
+}
+@media(max-width:576px){
+    .question-container .question{
+        width: 100%;
+        word-spacing: 2px;
+    }
+}
+.countdown-container.question-start {
+    position: relative;
+    background: white;
+    color: black;
+}

@@ -122,4 +122,12 @@ module.exports = function (app) {
 
     app.get('/tournament', isUserAllowed, TournamentCtrl.studentIndex);
     app.post('/tournament/enroll', isUserAllowed, urlencodeParser, TournamentCtrl.doEnroll);
+    app.get('/tournament/slot', isUserAllowed, TournamentCtrl.slot);
+    app.get('/tournament/test', isUserAllowed, TournamentCtrl.test);
+    app.post('/tournament/get-questions', isUserAllowed, urlencodeParser, TournamentCtrl.getQuestions);
+    app.post('/tournament/get-qualifier-view', isUserAllowed, urlencodeParser, TournamentCtrl.getQualifyView);
+    app.post('/tournament/get-quarter-view', isUserAllowed, urlencodeParser, TournamentCtrl.getQuarterView);
+    app.post('/tournament/get-semi-view', isUserAllowed, urlencodeParser, TournamentCtrl.getSemiView);
+    app.post('/tournament/get-final-view', isUserAllowed, urlencodeParser, TournamentCtrl.getFinalView);
+    app.post('/tournament/get-win-view', isUserAllowed, urlencodeParser, TournamentCtrl.getWinView);
 }

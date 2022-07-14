@@ -3,20 +3,18 @@ const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
 // create a schema
-const TournamentHistorySchema = new Schema({
+const TournamentWinHistorySchema = new Schema({
     telegramId: String,
     username: String,
     tournament: {type: mongoose.Schema.Types.ObjectId,ref:'tournament'},
     created_at: String,
-    finished_at: String,
-    isNoti: Number,
-    isEnd: Number,
     level: Number,
-    score: Number
+    badge: String,
+    gain: Number
 });
 
 // create the model
-const TournamentHistoryModel = mongoose.model('tournament_history', TournamentHistorySchema);
+const TournamentWinHistoryModel = mongoose.model('tournament_win_history', TournamentWinHistorySchema);
 
 // export the model
-module.exports = TournamentHistoryModel;
+module.exports = TournamentWinHistoryModel;
