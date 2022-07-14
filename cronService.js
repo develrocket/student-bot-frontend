@@ -435,6 +435,7 @@ module.exports = function(){
 
         syncFortunaData: async function() {
             while(true) {
+                await sleep(3600 * 1000 * 24);
                 console.log('===============> Start Sync Data');
                 await FortunaController.fetchLanguage();
                 console.log('===============> finished fetch language');
@@ -444,7 +445,6 @@ module.exports = function(){
                 console.log('===============> finished fetch type');
                 await FortunaController.fetchSession();
                 console.log('===============> finished fetch session');
-                await sleep(3600 * 1000);
             }
         },
 
