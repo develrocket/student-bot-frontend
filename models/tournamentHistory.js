@@ -8,6 +8,7 @@ const TournamentHistorySchema = new Schema({
     username: String,
     tournament: {type: mongoose.Schema.Types.ObjectId,ref:'tournament'},
     created_at: String,
+    finished_at: String,
     isNoti: Number,
     isEnd: Number,
     level: Number,

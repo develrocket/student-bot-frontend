@@ -1,0 +1,39 @@
+<div class="alert alert-primary" role="alert">
+    Semifinals
+</div>
+
+<div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert">
+    <i class="uil uil-clock text-primary font-size-16 me-2"></i>
+    <span class="format-date"><%= tournament.semifinal.start %></span>
+</div>
+
+<div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert" style="display: flex; justify-content: space-between; align-items: center; padding-right: 1.25rem;">
+    <span>
+        Status: <%= semiTimeDiff < 0 ? 'Planned' : (semiTimeDiff < 20 * 1000 * semiSession.questions ? 'Ongoing' : 'Ended') %>
+    </span>
+
+    <% if (semiExists && semiTimeDiff < 20 * 1000 * semiSession.questions) { %>
+        <a href="/tournament/test?type=semifinal" class="btn btn-primary" style="float: right;" id="semiJoin">Join Test</a>
+    <% } %>
+
+</div>
+
+<div class="card slot-card">
+    <div class="card-body">
+        <div class="row">
+            <% semiSlots.forEach(function(slot, index) { %>
+                <div class="col-sm-12">
+                    <div class="slot-item">
+                        <% if (Object.keys(slot).length > 0) {%>
+                            <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= slot.telegramId %>">
+                                <%= slot.username %>
+                            </a>
+                        <% } else {%>
+                            <span> Empty </span>
+                        <% } %>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</div>

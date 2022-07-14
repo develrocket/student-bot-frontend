@@ -1,0 +1,17 @@
+<div class="card slot-card" style="margin-top: 20px;">
+    <div class="card-body">
+        <div class="row">
+            <% if (finalTimeDiff > 20 * 1000 * finalSession.questions && finalSlots.length > 0) {%>
+                <div class="col-sm-12">
+                    <div class="slot-item">
+                        <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= finalSlots[0].telegramId %>">
+                            <%= finalSlots[0].username %>
+                        </a>
+                    </div>
+                </div>
+            <% } else { %>
+                <span> Empty </span>
+            <% } %>
+        </div>
+    </div>
+</div>

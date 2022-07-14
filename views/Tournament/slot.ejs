@@ -22,149 +22,19 @@
 
 <%- contentFor('body') %>
 <div class="row">
-    <div class="col-lg-4">
-        <div class="alert alert-primary" role="alert">
-            Qualifiers
-        </div>
-
-        <div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert">
-            <i class="uil uil-clock text-primary font-size-16 me-2"></i>
-            <span class="format-date"><%= tournament.qualifier.start %></span>
-        </div>
-
-        <div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert" style="display: flex; justify-content: space-between; align-items: center; padding-right: 1.25rem;">
-            <span>
-                Status: <%= tournament.qualifier.status == 0 ? 'Planned' : (tournament.qualifier.status == 1 ? 'Ongoing' : 'Ended') %>
-            </span>
-
-            <% if (exist) { %>
-                <a href="/tournament/test?type=qualifier" class="btn btn-primary" style="float: right;">Join Test</a>
-            <% } %>
-        </div>
-
-        <div class="card slot-card">
-            <div class="card-body">
-                <div class="row">
-                    <% qualifierSlots.forEach(function(slot, index) { %>
-                        <div class="col-sm-6">
-                            <div class="slot-item">
-                                <% if (Object.keys(slot).length > 0) {%>
-                                    <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= slot.telegramId %>">
-                                        <%= slot.username %>
-                                    </a>
-                                <% } else {%>
-                                    <span> Empty </span>
-                                <% } %>
-                            </div>
-                        </div>
-                    <% }); %>
-                </div>
-            </div>
-        </div>
+    <div class="col-lg-4" id="qualiferSlot">
+        <%- include ('./_qualifier')  %>
     </div>
-    <div class="col-lg-2">
-        <div class="alert alert-primary" role="alert">
-            Quarterfinals
-        </div>
-
-        <div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert">
-            <i class="uil uil-clock text-primary font-size-16 me-2"></i>
-            <span class="format-date"><%= tournament.quarterfinal.start %></span>
-        </div>
-
-        <div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert">
-            Status: <%= tournament.quarterfinal.status == 0 ? 'Planned' : (tournament.quarterfinal.status == 1 ? 'Ongoing' : 'Ended') %>
-        </div>
-
-        <div class="card slot-card">
-            <div class="card-body">
-                <div class="row">
-                    <% quarterSlots.forEach(function(slot, index) { %>
-                        <div class="col-sm-12">
-                            <div class="slot-item">
-                                <% if (Object.keys(slot).length > 0) {%>
-                                    <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= slot.telegramId %>">
-                                        <%= slot.username %>
-                                    </a>
-                                <% } else {%>
-                                    <span> Empty </span>
-                                <% } %>
-                            </div>
-                        </div>
-                    <% }); %>
-                </div>
-            </div>
-        </div>
+    <div class="col-lg-2" id="quarterSlot">
+        <%- include ('./_quarterfinal')  %>
     </div>
 
-    <div class="col-lg-2">
-        <div class="alert alert-primary" role="alert">
-            Semifinals
-        </div>
-
-        <div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert">
-            <i class="uil uil-clock text-primary font-size-16 me-2"></i>
-            <span class="format-date"><%= tournament.semifinal.start %></span>
-        </div>
-
-        <div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert">
-            Status: <%= tournament.semifinal.status == 0 ? 'Planned' : (tournament.semifinal.status == 1 ? 'Ongoing' : 'Ended') %>
-        </div>
-
-        <div class="card slot-card">
-            <div class="card-body">
-                <div class="row">
-                    <% semiSlots.forEach(function(slot, index) { %>
-                        <div class="col-sm-12">
-                            <div class="slot-item">
-                                <% if (Object.keys(slot).length > 0) {%>
-                                    <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= slot.telegramId %>">
-                                        <%= slot.username %>
-                                    </a>
-                                <% } else {%>
-                                    <span> Empty </span>
-                                <% } %>
-                            </div>
-                        </div>
-                    <% }); %>
-                </div>
-            </div>
-        </div>
+    <div class="col-lg-2" id="semiSlot">
+        <%- include ('./_semifinal')  %>
     </div>
 
-    <div class="col-lg-2">
-        <div class="alert alert-primary" role="alert">
-            Finals
-        </div>
-
-        <div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert">
-            <i class="uil uil-clock text-primary font-size-16 me-2"></i>
-            <span class="format-date"><%= tournament.final.start %></span>
-        </div>
-
-        <div class="alert alert-border alert-border-primary alert-dismissible fade show" role="alert">
-            Status: <%= tournament.final.status == 0 ? 'Planned' : (tournament.final.status == 1 ? 'Ongoing' : 'Ended') %>
-        </div>
-
-        <div class="card slot-card">
-            <div class="card-body">
-                <div class="row">
-                    <% finalSlots.forEach(function(slot, index) { %>
-                        <div class="col-sm-12">
-                            <div class="slot-item">
-                                <% if (Object.keys(slot).length > 0) {%>
-                                    <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= slot.telegramId %>">
-                                        <%= slot.username %>
-                                    </a>
-                                <% } else {%>
-                                    <span> Empty </span>
-                                <% } %>
-                            </div>
-                        </div>
-                    <% }); %>
-                </div>
-            </div>
-        </div>
+    <div class="col-lg-2" id="finalSlot">
+        <%- include ('./_final')  %>
     </div>
 
     <div class="col-lg-2">
@@ -174,6 +44,9 @@
         <div style="text-align: center">
             <img src="/public/assets/images/gold-cup.png" style="width: 200px; height: 200px; margin-right: 5px; visibility: visible;" data-xblocker="passed">
         </div>
+        <div id="winSlot">
+            <%- include ('./_win')  %>
+        </div>
     </div>
 </div>
 
@@ -181,3 +54,63 @@
 <%- contentFor('FooterJs') %>
 
 <%- contentFor('BottomJs') %>
+
+<script type="text/javascript">
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+    let tournamentId = '<%= tournament._id %>';
+
+    $(document).ready(function() {
+        async function reloadView() {
+            while(1) {
+                $.ajax({
+                    type: 'POST',
+                    url: "/tournament/get-qualifier-view",
+                    data: {tournament_id: tournamentId},
+                    success: function(res) {
+                        $('#qualiferSlot').html(res);
+                    }
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/tournament/get-quarter-view",
+                    data: {tournament_id: tournamentId},
+                    success: function(res) {
+                        $('#quarterSlot').html(res);
+                    }
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/tournament/get-semi-view",
+                    data: {tournament_id: tournamentId},
+                    success: function(res) {
+                        $('#semiSlot').html(res);
+                    }
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/tournament/get-final-view",
+                    data: {tournament_id: tournamentId},
+                    success: function(res) {
+                        $('#finalSlot').html(res);
+                    }
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/tournament/get-win-view",
+                    data: {tournament_id: tournamentId},
+                    success: function(res) {
+                        $('#winSlot').html(res);
+                    }
+                });
+
+                await sleep(1000);
+            }
+        }
+
+        reloadView();
+    });
+</script>

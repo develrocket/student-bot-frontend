@@ -6,6 +6,7 @@ const {Schema} = mongoose;
 const TournamentTestSchema = new Schema({
     telegramId: String,
     username: String,
+    testType: String,
     tournament: {type: mongoose.Schema.Types.ObjectId,ref:'tournament'},
     question_id: Number,
     answer: String,

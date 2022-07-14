@@ -11,6 +11,92 @@ const FortunaHistoryModel = require('../models/fortunaHistory');
 const StudentModel = require('../models/student');
 const QuestionModel = require('../models/question');
 const TournamentTestModel = require('../models/tournamentTest');
+const FortunaSessionModel = require('../models/fortunaSession');
+
+async function getQualifyData(tournament, currentTime, telegramId) {
+    let qualifyTimeDiff = moment.utc(moment(currentTime, "YYYY-MM-DD HH:mm:ss").diff(moment(tournament.qualifier.start + ':00', "YYYY-MM-DD HH:mm:ss"))).format("x");
+    let qualifySession = await FortunaSessionModel.findOne({session_id: tournament.qualifier.session});
+    let qualifierSlots = await TournamentHistoryModel.find({tournament: tournament, level: 1}).sort({finished_at: 1});
+    let qualifyExists = false;
+
+    qualifierSlots.sort((a, b) => b.score - a.score);
+
+    for (let i = 0; i < qualifierSlots.length; i++) {
+        if (qualifierSlots[i].telegramId + '' === telegramId + '') {
+            qualifyExists = true;
+        }
+    }
+
+    for (let i = qualifierSlots.length; i < tournament.qualifier.open; i ++) {
+        qualifierSlots.push({});
+    }
+
+    return {qualifyTimeDiff, qualifySession, qualifierSlots, qualifyExists};
+}
+
+async function getQuarterData(tournament, currentTime, telegramId) {
+    let quarterTimeDiff = moment.utc(moment(currentTime, "YYYY-MM-DD HH:mm:ss").diff(moment(tournament.quarterfinal.start + ':00', "YYYY-MM-DD HH:mm:ss"))).format("x");
+    let quarterSession = await FortunaSessionModel.findOne({session_id: tournament.quarterfinal.session});
+    let quarterSlots = await TournamentHistoryModel.find({tournament: tournament, level: 2}).sort({finished_at: 1});
+    let quarterExists = false;
+
+    quarterSlots.sort((a, b) => b.score - a.score);
+
+    for (let i = 0; i < quarterSlots.length; i++) {
+        if (quarterSlots[i].telegramId + '' === telegramId + '') {
+            quarterExists = true;
+        }
+    }
+
+    for (let i = quarterSlots.length; i < tournament.qualifier.qualified; i ++) {
+        quarterSlots.push({});
+    }
+
+    return {quarterTimeDiff, quarterSession, quarterSlots, quarterExists};
+}
+
+async function getSemiData(tournament, currentTime, telegramId) {
+    let semiTimeDiff = moment.utc(moment(currentTime, "YYYY-MM-DD HH:mm:ss").diff(moment(tournament.semifinal.start + ':00', "YYYY-MM-DD HH:mm:ss"))).format("x");
+    let semiSession = await FortunaSessionModel.findOne({session_id: tournament.semifinal.session});
+    let semiSlots = await TournamentHistoryModel.find({tournament: tournament, level: 3}).sort({finished_at: 1});
+    let semiExists = false;
+
+    semiSlots.sort((a, b) => b.score - a.score);
+
+    for (let i = 0; i < semiSlots.length; i++) {
+        if (semiSlots[i].telegramId + '' === telegramId + '') {
+            semiExists = true;
+        }
+    }
+
+
+    for (let i = semiSlots.length; i < tournament.quarterfinal.qualified; i ++) {
+        semiSlots.push({});
+    }
+
+    return {semiTimeDiff, semiSession, semiSlots, semiExists};
+}
+
+async function getFinalData(tournament, currentTime, telegramId) {
+    let finalTimeDiff = moment.utc(moment(currentTime, "YYYY-MM-DD HH:mm:ss").diff(moment(tournament.final.start + ':00', "YYYY-MM-DD HH:mm:ss"))).format("x");
+    let finalSession = await FortunaSessionModel.findOne({session_id: tournament.final.session});
+    let finalSlots = await TournamentHistoryModel.find({tournament: tournament, level: 4}).sort({finished_at: 1});
+    let finalExists = false;
+
+    finalSlots.sort((a, b) => b.score - a.score);
+
+    for (let i = 0; i < finalSlots.length; i++) {
+        if (finalSlots[i].telegramId + '' === telegramId + '') {
+            finalExists = true;
+        }
+    }
+
+    for (let i = finalSlots.length; i < tournament.semifinal.qualified; i ++) {
+        finalSlots.push({});
+    }
+
+    return {finalTimeDiff, finalSession, finalSlots, finalExists};
+}
 
 module.exports = function () {
 
@@ -115,6 +201,7 @@ module.exports = function () {
                 username: user.username,
                 tournament: tournamentId,
                 created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+                finished_at: '9999-99-99 99:99:99',
                 level: 1,
                 score: 0
             });
@@ -290,42 +377,16 @@ module.exports = function () {
             }
 
             let tournament = tournaments[0];
-            let slots = await TournamentHistoryModel.find({tournament: tournament._id});
+            currentTime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
 
-            let exist = false;
-            for (let i = 0; i < slots.length; i++) {
-                if (slots[i].telegramId + '' === telegramId + '') {
-                    exist = true;
-                }
-            }
+            let qualiferData = await getQualifyData(tournament, currentTime, telegramId);
+            let quarterData = await getQuarterData(tournament, currentTime, telegramId);
+            let semiData = await getSemiData(tournament, currentTime, telegramId);
+            let finalData = await getFinalData(tournament, currentTime, telegramId);
 
-            // if (!exist) {
-            //     return res.redirect('/tournament');
-            // }
-
-            let qualifierSlots = await TournamentHistoryModel.find({tournament: tournament, level: 1});
-
-            for (let i = qualifierSlots.length; i < tournament.qualifier.open; i ++) {
-                qualifierSlots.push({});
-            }
-
-            let quarterSlots = await TournamentHistoryModel.find({tournament: tournament, level: 2});
-            for (let i = quarterSlots.length; i < tournament.qualifier.qualified; i ++) {
-                quarterSlots.push({});
-            }
-
-            let semiSlots = await TournamentHistoryModel.find({tournament: tournament, level: 3});
-            for (let i = semiSlots.length; i < tournament.quarterfinal.qualified; i ++) {
-                semiSlots.push({});
-            }
-
-            let finalSlots = await TournamentHistoryModel.find({tournament: tournament, level: 4});
-            for (let i = finalSlots.length; i < tournament.semifinal.qualified; i ++) {
-                finalSlots.push({});
-            }
 
             res.locals = {...res.locals, title: 'Tournament'};
-            res.render('Tournament/slot', {tournament, qualifierSlots, quarterSlots, semiSlots, finalSlots, exist});
+            res.render('Tournament/slot', {tournament, ...qualiferData, ...quarterData, ...semiData, ...finalData});
         },
 
         test: async function(req, res) {
@@ -378,6 +439,7 @@ module.exports = function () {
             let questionId = req.body.question_id;
             let telegramId = res.locals.user.telegramId;
             let username = res.locals.user.username;
+            let types = ['qualifier', 'quarterfinal', 'semifinal', 'final'];
 
             try {
 
@@ -390,7 +452,8 @@ module.exports = function () {
                         tournament: tournamentId,
                         question_id: questionId,
                         created_at: currentTime,
-                        point: 0
+                        point: 0,
+                        testType: type
                     };
                     if (radio) {
                         newData.answer = radio;
@@ -403,6 +466,30 @@ module.exports = function () {
                     await item.save();
                 }
 
+                let userScore = await TournamentTestModel.aggregate([
+                    {
+                        $match: { telegramId: telegramId + '', tournament: tournamentId + '', testType: type }
+                    },
+                    {
+                        $group:
+                            {
+                                _id: "$tournament",
+                                totalScore: { $sum: "point" }
+                            }
+                    }
+                ]);
+
+                let totalScore = 0;
+                if (userScore && userScore.length > 0) {
+                    totalScore = userScore[0].totalScore;
+                }
+
+                await TournamentHistoryModel.update({
+                    telegramId: telegramId,
+                    tournament: tournamentId,
+                    level: types.indexOf(type) + 1,
+                }, {$set: {score: totalScore}})
+
                 let tests = await TournamentTestModel.find({tournament: tournamentId + '', telegramId: telegramId + ''}).sort({question_id: -1});
 
 
@@ -414,6 +501,12 @@ module.exports = function () {
                 console.log('time-diff:', timeDiff);
 
                 if (timeDiff / 1000 > questions.length * 20) {
+                    await TournamentHistoryModel.update({
+                        telegramId: telegramId,
+                        tournament: tournamentId,
+                        level: types.indexOf(type) + 1,
+                    }, {$set: {finished_at: currentTime}})
+
                     return res.render('Tournament/_end', {layout: false});
                 }
 
@@ -447,6 +540,51 @@ module.exports = function () {
                 console.log('get-question-error:', e);
                 res.render('Tournament/_end', {layout: false});
             }
+        },
+
+        getQualifyView: async function(req, res) {
+            let telegramId = res.locals.user.telegramId;
+            let tournamentId = req.body.tournament_id;
+            let tournament = await TournamentModel.findOne({_id: tournamentId});
+            let currentTime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+            let data = await getQualifyData(tournament, currentTime, telegramId);
+            res.render('Tournament/_qualifier', {...data, layout: false, tournament});
+        },
+
+        getQuarterView: async function(req, res) {
+            let telegramId = res.locals.user.telegramId;
+            let tournamentId = req.body.tournament_id;
+            let tournament = await TournamentModel.findOne({_id: tournamentId});
+            let currentTime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+            let data = await getQuarterData(tournament, currentTime, telegramId);
+            res.render('Tournament/_quarterfinal', {...data, layout: false, tournament});
+        },
+
+        getSemiView: async function(req, res) {
+            let telegramId = res.locals.user.telegramId;
+            let tournamentId = req.body.tournament_id;
+            let tournament = await TournamentModel.findOne({_id: tournamentId});
+            let currentTime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+            let data = await getSemiData(tournament, currentTime, telegramId);
+            res.render('Tournament/_semifinal', {...data, layout: false, tournament});
+        },
+
+        getFinalView: async function(req, res) {
+            let telegramId = res.locals.user.telegramId;
+            let tournamentId = req.body.tournament_id;
+            let tournament = await TournamentModel.findOne({_id: tournamentId});
+            let currentTime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+            let data = await getFinalData(tournament, currentTime, telegramId);
+            res.render('Tournament/_final', {...data, layout: false, tournament});
+        },
+
+        getWinView: async function(req, res) {
+            let telegramId = res.locals.user.telegramId;
+            let tournamentId = req.body.tournament_id;
+            let tournament = await TournamentModel.findOne({_id: tournamentId});
+            let currentTime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+            let data = await getFinalData(tournament, currentTime, telegramId);
+            res.render('Tournament/_win', {...data, layout: false, tournament});
         }
     };
 
