@@ -127,6 +127,22 @@
                         </div>
                         <% } %>
 
+                        <% if (tournaments.length > 0) {%>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title mt-0"><i class="uil-bookmark-full"></i> Tournament Badges</h4>
+                                </div>
+                                <div class="card-body">
+                                    <% tournaments.forEach(function(tournament) { %>
+                                        <div class="mission-item" style="float: left; margin-right: 10px;">
+                                            <img class="rounded-circle avatar-lg" src="/uploads/<%= tournament.badge %>"
+                                                 data-holder-rendered="true" data-xblocker="passed" style="visibility: visible;">
+                                        </div>
+                                    <% }); %>
+                                </div>
+                            </div>
+                        <% } %>
+
                         <div class="card">
                             <div class="card-header">
                                 <h4 class="card-title mt-0"><i class="uil-award-alt"></i> Skills</h4>

@@ -12,6 +12,10 @@ const MissionModel = require('./models/mission');
 const MissionHistoryModel = require('./models/missionHistory');
 const StudentPointHistoryModel = require('./models/studentPointHistory');
 const StudentModel = require('./models/student');
+const TournamentModel = require('./models/tournament');
+const TournamentHistoryModel = require('./models/tournamentHistory');
+const FortunaSessionModel = require('./models/fortunaSession');
+const TournamentWinHistoryModel = require('./models/tournamentWinHistory');
 const FortunaController = require('./controllers/Api/FortunaCtrl')();
 
 // const serverUrl = 'http://my.loc/test/';
@@ -441,6 +445,171 @@ module.exports = function(){
                 await FortunaController.fetchSession();
                 console.log('===============> finished fetch session');
                 await sleep(3600 * 1000);
+            }
+        },
+
+        checkTournament: async function() {
+            let tempData = {};
+            while(1) {
+                await sleep(1000);
+
+                let currentTime = moment.utc().format('YYYY-MM-DD HH:mm');
+
+                let searchQuery = {start_at: {$lte: currentTime}, end_at: {$gte: currentTime}, status: {$ne: 3}};
+                let tournaments = await TournamentModel.find(searchQuery).lean().exec();
+
+                if (tournaments.length === 0) continue;
+                let tournament = tournaments[0];
+                if (!tempData[tournament._id]) {
+                    tempData[tournament._id] = {
+                        qualifier: false,
+                        quarter: false,
+                        semi: false,
+                        final: false,
+                    }
+                }
+
+                currentTime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
+
+                if (!tempData[tournament._id].qualifier) {
+                    let qualifyTimeDiff = moment.utc(moment(currentTime, "YYYY-MM-DD HH:mm:ss").diff(moment(tournament.qualifier.start + ':00', "YYYY-MM-DD HH:mm:ss"))).format("x");
+                    let qualifySession = await FortunaSessionModel.findOne({session_id: tournament.qualifier.session});
+
+                    if (qualifyTimeDiff > qualifySession.questions * 20 * 1000) {
+                        let slots = await TournamentHistoryModel.find({tournament: tournament._id, level: 1}).sort({score: -1, finished_at: 1});
+
+                        for (let j = 0; j < slots.length && j < tournament.qualifier.qualified; j ++) {
+                            let item = new TournamentHistoryModel({
+                                telegramId: slots[j].telegramId,
+                                username: slots[j].username,
+                                tournament: tournament._id,
+                                created_at: currentTime,
+                                finished_at: '9999-99-99 99:99:99',
+                                level: 2,
+                                score: 0
+                            });
+                            await item.save();
+                        }
+
+                        tempData[tournament._id].qualifier = true;
+                    }
+                }
+
+                if (tempData[tournament._id].qualifier && !tempData[tournament._id].quarterfinal) {
+                    let quarterTimeDiff = moment.utc(moment(currentTime, "YYYY-MM-DD HH:mm:ss").diff(moment(tournament.quarterfinal.start + ':00', "YYYY-MM-DD HH:mm:ss"))).format("x");
+                    let quarterSession = await FortunaSessionModel.findOne({session_id: tournament.quarterfinal.session});
+                    if (quarterTimeDiff > quarterSession.questions * 20 * 1000) {
+                        let slots = await TournamentHistoryModel.find({tournament: tournament._id, level: 2}).sort({score: -1, finished_at: 1});
+
+                        for (let j = 0; j < slots.length && j < tournament.quarterfinal.qualified; j ++) {
+                            let item = new TournamentHistoryModel({
+                                telegramId: slots[j].telegramId,
+                                username: slots[j].username,
+                                tournament: tournament._id,
+                                created_at: currentTime,
+                                finished_at: '9999-99-99 99:99:99',
+                                level: 3,
+                                score: 0
+                            });
+                            await item.save();
+                        }
+
+                        tempData[tournament._id].quarterfinal = true;
+                    }
+                }
+
+                if (tempData[tournament._id].quarterfinal && !tempData[tournament._id].semifinal) {
+                    let semiTimeDiff = moment.utc(moment(currentTime, "YYYY-MM-DD HH:mm:ss").diff(moment(tournament.semifinal.start + ':00', "YYYY-MM-DD HH:mm:ss"))).format("x");
+                    let semiSession = await FortunaSessionModel.findOne({session_id: tournament.semifinal.session});
+                    if (semiTimeDiff > semiSession.questions * 20 * 1000) {
+                        let slots = await TournamentHistoryModel.find({tournament: tournament._id, level: 3}).sort({score: -1, finished_at: 1});
+
+                        for (let j = 0; j < slots.length && j < tournament.semifinal.qualified; j ++) {
+                            let item = new TournamentHistoryModel({
+                                telegramId: slots[j].telegramId,
+                                username: slots[j].username,
+                                tournament: tournament._id,
+                                created_at: currentTime,
+                                finished_at: '9999-99-99 99:99:99',
+                                level: 4,
+                                score: 0
+                            });
+                            await item.save();
+                        }
+
+                        tempData[tournament._id].semifinal = true;
+                    }
+                }
+
+                if (tempData[tournament._id].semifinal && !tempData[tournament._id].final) {
+                    let finalTimeDiff = moment.utc(moment(currentTime, "YYYY-MM-DD HH:mm:ss").diff(moment(tournament.final.start + ':00', "YYYY-MM-DD HH:mm:ss"))).format("x");
+                    let finalSession = await FortunaSessionModel.findOne({session_id: tournament.final.session});
+                    if (finalTimeDiff > finalSession.questions * 20 * 1000) {
+                        let slots = await TournamentHistoryModel.find({tournament: tournament._id, level: 4}).sort({score: -1, finished_at: 1});
+                        let slots1 = await TournamentHistoryModel.find({tournament: tournament._id, level: 3}).sort({score: -1, finished_at: 1});
+
+                        let results = slots;
+                        for (let i = slots1.length; i < slots1.length; i ++) {
+                            results.push(slots1[i]);
+                        }
+
+                        for (let i = 0; i < results.length && i < 3; i ++) {
+                            let slot = results[i];
+                            let gainKey = 'gains_' + (i + 1);
+                            let awardKey = 'award_' + (i + 1);
+                            let sp = new StudentPointHistoryModel({
+                                telegramId: slot.telegramId,
+                                username: slot.username,
+                                point: tournament[gainKey],
+                                created_at: moment().format('YYYY-MM-DD HH:mm:ss')
+                            });
+                            await sp.save();
+
+                            let totalPoint = await StudentPointHistoryModel.aggregate([
+                                {
+                                    $match: { telegramId: slot.telegramId }
+                                },
+                                {
+                                    $group:
+                                        {
+                                            _id: "$telegramId",
+                                            totalPoints: { $sum: "$point" },
+                                        }
+                                }
+                            ]);
+
+                            totalPoint = totalPoint.length > 0 ? totalPoint[0].totalPoints : 0;
+                            const title = await Utils.getTitle(totalPoint);
+
+                            await StudentModel.update({
+                                telegramId: slot.telegramId
+                            }, {
+                                $set: {
+                                    title: title,
+                                    point: totalPoint
+                                }
+                            });
+
+                            let nItem = new TournamentWinHistoryModel({
+                                telegramId: slot.telegramId,
+                                username: slot.username,
+                                tournament: slot.tournament,
+                                gain: tournament[gainKey],
+                                badge: tournament[awardKey],
+                                level: i + 1,
+                                created_at: currentTime
+                            });
+                            await nItem.save();
+                        }
+
+                        await TournamentModel.update({
+                            _id: tournament._id
+                        }, {$set: {status: 3}});
+
+                        tempData[tournament._id].final = true;
+                        tempData = {};
+                    }
+                }
             }
         }
     };
