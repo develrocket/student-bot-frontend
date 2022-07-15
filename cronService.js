@@ -544,7 +544,7 @@ module.exports = function(){
                 if (tempData[tournament._id].semifinal && !tempData[tournament._id].final) {
                     let finalTimeDiff = moment.utc(moment(currentTime, "YYYY-MM-DD HH:mm:ss").diff(moment(tournament.final.start + ':00', "YYYY-MM-DD HH:mm:ss"))).format("x");
                     let finalSession = await FortunaSessionModel.findOne({session_id: tournament.final.session});
-                    if (finalTimeDiff > finalSession.questions * 20 * 1000) {
+                    if (finalTimeDiff > finalSession.questions * (tournament.final.answer_time ? tournament.final.answer_time : 20) * 1000) {
                         let slots = await TournamentHistoryModel.find({tournament: tournament._id, level: 4}).sort({score: -1, finished_at: 1});
                         let slots1 = await TournamentHistoryModel.find({tournament: tournament._id, level: 3}).sort({score: -1, finished_at: 1});
 
@@ -580,6 +580,15 @@ module.exports = function(){
 
                             totalPoint = totalPoint.length > 0 ? totalPoint[0].totalPoints : 0;
                             const title = await Utils.getTitle(totalPoint);
+
+                            let fp = new FortunaHistoryModel({
+                                telegramId: slot.telegramId,
+                                fortuna_point: tournament[gainKey] * 0.1,
+                                state: 9,
+                                created_at: currentTime,
+                                tournament: tournament._id
+                            });
+                            await fp.save();
 
                             await StudentModel.update({
                                 telegramId: slot.telegramId

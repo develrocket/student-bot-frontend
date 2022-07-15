@@ -234,11 +234,13 @@ module.exports = function () {
 
         doCreate: async function (req, res) {
             let start = moment(req.body.start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
-            let end = moment(req.body.end).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
+            // let end = moment(req.body.end).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let firstStart = moment(req.body.first_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let secondStart = moment(req.body.second_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let thirdStart = moment(req.body.third_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let fourthStart = moment(req.body.fourth_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
+            let session = await FortunaSessionModel.findOne({session_id: req.body.fourth_session});
+            let end = moment(req.body.fourth_start).add(req.body.timezoneOffset + 90, 'm').add(session.questions * req.body.answer_time, 's').format('YYYY-MM-DD HH:mm');
 
             let data = {
                 name: req.body.name,
@@ -286,10 +288,12 @@ module.exports = function () {
                     exec_type: req.body.fourth_type,
                     level: req.body.fourth_level,
                     session: req.body.fourth_session,
+                    answer_time: req.body.answer_time,
                     status: 0
                 },
                 status: 1
             };
+
             let tournament = new TournamentModel(data);
             await tournament.save();
             res.redirect('/admin/tournament');
@@ -297,11 +301,13 @@ module.exports = function () {
 
         doUpdate: async function (req, res) {
             let start = moment(req.body.start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
-            let end = moment(req.body.end).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
+            // let end = moment(req.body.end).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let firstStart = moment(req.body.first_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let secondStart = moment(req.body.second_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let thirdStart = moment(req.body.third_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let fourthStart = moment(req.body.fourth_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
+            let end = moment(req.body.fourth_start).add(req.body.timezoneOffset + 90, 'm').add(session.questions * req.body.answer_time, 's').format('YYYY-MM-DD HH:mm');
+
             let data = {
                 name: req.body.name,
                 price: req.body.price,
@@ -344,6 +350,7 @@ module.exports = function () {
                     exec_type: req.body.fourth_type,
                     level: req.body.fourth_level,
                     session: req.body.fourth_session,
+                    answer_time: req.body.answer_time,
                     status: 0
                 },
                 status: 1

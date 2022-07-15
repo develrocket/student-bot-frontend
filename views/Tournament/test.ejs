@@ -65,7 +65,7 @@
     let startTime = '<%= startTime %>';
     let tournamentId = '<%= tournament._id %>';
     let type = '<%= type %>';
-    let quizTime = 20;
+    let quizTime = '<%= tournament[type].answer_time %>' ? ('<%= tournament[type].answer_time %>' * 1) : 20;
     let qTimer = null;
 
     function formatDate(d) {

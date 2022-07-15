@@ -158,12 +158,12 @@ module.exports = function(){
             }
 
             const [ histories, itemCount ] = await Promise.all([
-                FortunaHistoryModel.find(searchQuery).populate('person').populate('mission').populate('offer').sort({created_at: -1}).limit(req.query.limit).skip(req.skip).lean().exec(),
+                FortunaHistoryModel.find(searchQuery).populate('person').populate('mission').populate('offer').populate('tournament').sort({created_at: -1}).limit(req.query.limit).skip(req.skip).lean().exec(),
                 FortunaHistoryModel.count(searchQuery)
             ]);
             const pageCount = Math.ceil(itemCount / req.query.limit);
 
-            let types = ['Received by Answering to Quizees', 'Received by Tip', 'Send Tip', 'Withdraw to FRT Token', 'Rent Great Person', 'Buy Skill', 'Sell Skill', 'Complete Mission'];
+            let types = ['Received by Answering to Quizees', 'Received by Tip', 'Send Tip', 'Withdraw to FRT Token', 'Rent Great Person', 'Buy Skill', 'Sell Skill', 'Complete Mission', 'Enroll Tournament', 'Win Tournament'];
 
             res.render('Wallet/index', {
                 availableAmount: totalPoints,

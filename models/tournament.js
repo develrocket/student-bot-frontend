@@ -49,7 +49,8 @@ const TournamentSchema = new Schema({
         exec_type: String,
         level: String,
         session: String,
-        status: Number
+        status: Number,
+        answer_time: Number
     },
     status: Number          //1: Pending 2: Ongoing, 3: Finished, 4: Hide
 });
