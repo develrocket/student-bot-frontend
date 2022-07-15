@@ -61,17 +61,17 @@
                                     </div>
                                 </div>
 
-                                <div class="row mb-4">
-                                    <label class="col-sm-3 col-form-label">End</label>
-                                    <div class="col-sm-9">
-                                        <div class="input-group" id="datepicker2">
-                                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="end"
-                                                   id="endDateTime">
+<!--                                <div class="row mb-4">-->
+<!--                                    <label class="col-sm-3 col-form-label">End</label>-->
+<!--                                    <div class="col-sm-9">-->
+<!--                                        <div class="input-group" id="datepicker2">-->
+<!--                                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="end"-->
+<!--                                                   id="endDateTime">-->
 
-                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
-                                        </div><!-- input-group -->
-                                    </div>
-                                </div>
+<!--                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>-->
+<!--                                        </div>&lt;!&ndash; input-group &ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                </div>-->
                                 <div class="row mb-4">
                                     <label class="col-sm-3 col-form-label">Banner</label>
                                     <div class="col-sm-9">
@@ -218,29 +218,31 @@
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Language</label>
                                                     <div class="col-sm-9">
-                                                        <select class="form-control" name="first_language">
-                                                            <option value="" disabled selected>Select Language</option>
-                                                            <% languages.forEach(function(item, index) { %>
-                                                                <option value="<%= item.name %>"><%= item.name %></option>
-                                                            <% }) %>
-                                                        </select>
+<!--                                                        <select class="form-control" name="first_language">-->
+<!--                                                            <option value="" disabled selected>Select Language</option>-->
+<!--                                                            <% languages.forEach(function(item, index) { %>-->
+<!--                                                                <option value="<%= item.name %>"><%= item.name %></option>-->
+<!--                                                            <% }) %>-->
+<!--                                                        </select>-->
+                                                        <input type="text" class="form-control" name="first_language" value="Africa" />
                                                     </div>
                                                 </div>
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Exerc Type</label>
                                                     <div class="col-sm-9">
-                                                        <select class="form-control" name="first_type">
-                                                            <option value="" disabled selected>Select Type</option>
-                                                            <% types.forEach(function(item, index) { %>
-                                                                <option value="<%= item.type %>"><%= item.type %></option>
-                                                            <% }) %>
-                                                        </select>
+<!--                                                        <select class="form-control" name="first_type">-->
+<!--                                                            <option value="" disabled selected>Select Type</option>-->
+<!--                                                            <% types.forEach(function(item, index) { %>-->
+<!--                                                                <option value="<%= item.type %>"><%= item.type %></option>-->
+<!--                                                            <% }) %>-->
+<!--                                                        </select>-->
+                                                        <input type="text" class="form-control" name="first_type" value="Africa" />
                                                     </div>
                                                 </div>
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Level</label>
                                                     <div class="col-sm-9">
-                                                        <select class="form-control" name="first_level">
+                                                        <select class="form-control level-select" name="first_level" data-session="first_session">
                                                             <option value="" disabled selected>Select Level</option>
                                                             <% levels.forEach(function(item, index) { %>
                                                                 <option value="<%= item.name %>"><%= item.name %></option>
@@ -250,11 +252,11 @@
                                                 </div>
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Session</label>
-                                                    <div class="col-sm-9">
+                                                    <div class="col-sm-9" id="first_session_container">
                                                         <select class="form-control select2" name="first_session">
                                                             <option value="" disabled selected>Select Session</option>
                                                             <% sessions.forEach(function(item, index) { %>
-                                                                <option value="<%= item.session_id %>"><%= item.session + ' (' + item.session_name + ')' %></option>
+                                                                <option value="<%= item.session_id %>"><%= item.session + ' (Name: ' + item.session_name + ' Questions:' + item.questions + ')' %></option>
                                                             <% }) %>
                                                         </select>
                                                     </div>
@@ -270,7 +272,7 @@
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Qualified</label>
                                                     <div class="col-sm-9">
-                                                        <input type="text" class="form-control" name="first_qualified" required>
+                                                        <input type="text" class="form-control" name="first_qualified" required value="8" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -298,29 +300,19 @@
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Language</label>
                                                     <div class="col-sm-9">
-                                                        <select class="form-control" name="second_language">
-                                                            <option value="" disabled selected>Select Language</option>
-                                                            <% languages.forEach(function(item, index) { %>
-                                                                <option value="<%= item.name %>"><%= item.name %></option>
-                                                            <% }) %>
-                                                        </select>
+                                                        <input type="text" class="form-control" name="second_language" value="Africa" />
                                                     </div>
                                                 </div>
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Exerc Type</label>
                                                     <div class="col-sm-9">
-                                                        <select class="form-control" name="second_type">
-                                                            <option value="" disabled selected>Select Type</option>
-                                                            <% types.forEach(function(item, index) { %>
-                                                                <option value="<%= item.type %>"><%= item.type %></option>
-                                                            <% }) %>
-                                                        </select>
+                                                        <input type="text" class="form-control" name="second_type" value="Africa" />
                                                     </div>
                                                 </div>
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Level</label>
                                                     <div class="col-sm-9">
-                                                        <select class="form-control" name="second_level">
+                                                        <select class="form-control level-select" name="second_level" data-session="second_session">
                                                             <option value="" disabled selected>Select Level</option>
                                                             <% levels.forEach(function(item, index) { %>
                                                                 <option value="<%= item.name %>"><%= item.name %></option>
@@ -330,11 +322,11 @@
                                                 </div>
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Session</label>
-                                                    <div class="col-sm-9">
+                                                    <div class="col-sm-9" id="second_session_container">
                                                         <select class="form-control select2" name="second_session">
                                                             <option value="" disabled selected>Select Session</option>
                                                             <% sessions.forEach(function(item, index) { %>
-                                                                <option value="<%= item.session_id %>"><%= item.session + ' (' + item.session_name + ')' %></option>
+                                                                <option value="<%= item.session_id %>"><%= item.session + ' (Name: ' + item.session_name + ' Questions:' + item.questions + ')' %></option>
                                                             <% }) %>
                                                         </select>
                                                     </div>
@@ -344,7 +336,7 @@
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Qualified</label>
                                                     <div class="col-sm-9">
-                                                        <input type="text" class="form-control" name="second_qualified" required>
+                                                        <input type="text" class="form-control" name="second_qualified" required value="4" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -372,29 +364,19 @@
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Language</label>
                                                     <div class="col-sm-9">
-                                                        <select class="form-control" name="third_language">
-                                                            <option value="" disabled selected>Select Language</option>
-                                                            <% languages.forEach(function(item, index) { %>
-                                                                <option value="<%= item.name %>"><%= item.name %></option>
-                                                            <% }) %>
-                                                        </select>
+                                                        <input type="text" class="form-control" name="third_language" value="Africa" />
                                                     </div>
                                                 </div>
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Exerc Type</label>
                                                     <div class="col-sm-9">
-                                                        <select class="form-control" name="third_type">
-                                                            <option value="" disabled selected>Select Type</option>
-                                                            <% types.forEach(function(item, index) { %>
-                                                                <option value="<%= item.type %>"><%= item.type %></option>
-                                                            <% }) %>
-                                                        </select>
+                                                        <input type="text" class="form-control" name="third_type" value="Africa" />
                                                     </div>
                                                 </div>
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Level</label>
                                                     <div class="col-sm-9">
-                                                        <select class="form-control" name="third_level">
+                                                        <select class="form-control level-select" name="third_level" id="thirdLevel" data-session="third_session">
                                                             <option value="" disabled selected>Select Level</option>
                                                             <% levels.forEach(function(item, index) { %>
                                                                 <option value="<%= item.name %>"><%= item.name %></option>
@@ -404,11 +386,11 @@
                                                 </div>
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Session</label>
-                                                    <div class="col-sm-9">
-                                                        <select class="form-control select2" name="third_session">
+                                                    <div class="col-sm-9" id="third_session_container">
+                                                        <select class="form-control select2 session-select" name="third_session">
                                                             <option value="" disabled selected>Select Session</option>
                                                             <% sessions.forEach(function(item, index) { %>
-                                                                <option value="<%= item.session_id %>"><%= item.session + ' (' + item.session_name + ')' %></option>
+                                                                <option value="<%= item.session_id %>" data-level="<%= item.level %>"><%= item.session + ' (Name: ' + item.session_name + ' Questions:' + item.questions + ')' %></option>
                                                             <% }) %>
                                                         </select>
                                                     </div>
@@ -418,7 +400,7 @@
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Qualified</label>
                                                     <div class="col-sm-9">
-                                                        <input type="text" class="form-control" name="third_qualified" required>
+                                                        <input type="text" class="form-control" name="third_qualified" required value="2" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -446,29 +428,19 @@
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Language</label>
                                                     <div class="col-sm-9">
-                                                        <select class="form-control" name="fourth_language">
-                                                            <option value="" disabled selected>Select Language</option>
-                                                            <% languages.forEach(function(item, index) { %>
-                                                                <option value="<%= item.name %>"><%= item.name %></option>
-                                                            <% }) %>
-                                                        </select>
+                                                        <input type="text" class="form-control" name="fourth_language" value="Africa" />
                                                     </div>
                                                 </div>
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Exerc Type</label>
                                                     <div class="col-sm-9">
-                                                        <select class="form-control" name="fourth_type">
-                                                            <option value="" disabled selected>Select Type</option>
-                                                            <% types.forEach(function(item, index) { %>
-                                                                <option value="<%= item.type %>"><%= item.type %></option>
-                                                            <% }) %>
-                                                        </select>
+                                                        <input type="text" class="form-control" name="fourth_type" value="Africa" />
                                                     </div>
                                                 </div>
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Level</label>
                                                     <div class="col-sm-9">
-                                                        <select class="form-control" name="fourth_level">
+                                                        <select class="form-control level-select" name="fourth_level" data-session="fourth_session">
                                                             <option value="" disabled selected>Select Level</option>
                                                             <% levels.forEach(function(item, index) { %>
                                                                 <option value="<%= item.name %>"><%= item.name %></option>
@@ -478,12 +450,22 @@
                                                 </div>
                                                 <div class="row mb-4">
                                                     <label class="col-sm-3 col-form-label">Session</label>
-                                                    <div class="col-sm-9">
+                                                    <div class="col-sm-9" id="fourth_session_container">
                                                         <select class="form-control select2" name="fourth_session">
                                                             <option value="" disabled selected>Select Session</option>
                                                             <% sessions.forEach(function(item, index) { %>
-                                                                <option value="<%= item.session_id %>"><%= item.session + ' (' + item.session_name + ')' %></option>
+                                                                <option value="<%= item.session_id %>"><%= item.session + ' (Name: ' + item.session_name + ' Questions:' + item.questions + ')' %></option>
                                                             <% }) %>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-4">
+                                                    <label class="col-sm-3 col-form-label">Time to Answer</label>
+                                                    <div class="col-sm-9">
+                                                        <select class="form-control" name="answer_time">
+                                                            <option value="20">20</option>
+                                                            <option value="40">40</option>
+                                                            <option value="60">60</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -508,6 +490,17 @@
         </div>
     </div>
 </div>
+
+<% levels.forEach(function(item, index) { %>
+    <select class="form-control hidden" id="sessionSelect-<%= item.name %>">
+        <option value="" disabled selected>Select Session</option>
+        <% sessions.forEach(function(sitem, index) { %>
+            <% if (sitem.level == item.name) {%>
+            <option value="<%= sitem.session_id %>"><%= sitem.session + ' (Name: ' + sitem.session_name + ' Questions:' + sitem.questions + ')' %></option>
+            <% } %>
+        <% }) %>
+    </select>
+<% }) %>
 
 
 <%- contentFor('FooterJs') %>
@@ -569,13 +562,13 @@
         $('.custom-validation').parsley();
         $(".select2").select2();
 
-        $('#endDateTime').datetimepicker({
-            dayOfWeekStart : 1,
-            lang:'en',
-            startDate:	today,
-            value:today,
-            step:10
-        });
+        // $('#endDateTime').datetimepicker({
+        //     dayOfWeekStart : 1,
+        //     lang:'en',
+        //     startDate:	today,
+        //     value:today,
+        //     step:10
+        // });
 
         $('#startDateTime').datetimepicker({
             dayOfWeekStart : 1,
@@ -583,6 +576,10 @@
             startDate:	today,
             value:today, step:10
         });
+
+        $('#startDateTime').on('change', function() {
+            $('#1stStart').val($(this).val());
+        })
 
         $('#1stStart').datetimepicker({
             dayOfWeekStart : 1,
@@ -611,5 +608,19 @@
             startDate:	today,
             value:today, step:10
         });
+
+        $('.level-select').on('change', function() {
+            let level = $(this).val();
+            let sessionKey = $(this).data('session');
+            let containerKey = sessionKey + '_container';
+            let select = $('#sessionSelect-' + level).clone();
+            $(select).attr('name', sessionKey);
+            $(select).removeClass('hidden');
+            $('#' + containerKey).html('');
+            $('#' + containerKey).append(select);
+            setTimeout(function() {
+                $(select).select2();
+            }, 100);
+        })
     });
 </script>

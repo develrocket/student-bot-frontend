@@ -93,6 +93,8 @@
                                 <option value="3" <%= filter == 5 ? 'selected' : '' %>>Buy Skill</option>
                                 <option value="3" <%= filter == 6 ? 'selected' : '' %>>Sell Skill</option>
                                 <option value="3" <%= filter == 7 ? 'selected' : '' %>>Complete Mission</option>
+                                <option value="3" <%= filter == 8 ? 'selected' : '' %>>Enroll Tournament</option>
+                                <option value="3" <%= filter == 9 ? 'selected' : '' %>>Win Tournament</option>
                             </select>
                         </div>
                         <label class="col-md-1 col-form-label text-end">Delivered On</label>
@@ -149,6 +151,12 @@
                                     <% } %>
                                     <% if (history.state == 7) { %>
                                         Mission: <%= history.mission.name %>
+                                    <% } %>
+                                    <% if (history.state == 8) { %>
+                                        Enroll Tournament: <%= history.tournament.name %>
+                                    <% } %>
+                                    <% if (history.state == 9) { %>
+                                        Win Tournament: <%= history.tournament.name %>
                                     <% } %>
                                 </td>
                                 <td><%= moment(history.created_at).format('YYYY-MM-DD HH:mm:ss') %></td>
