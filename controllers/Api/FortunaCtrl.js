@@ -87,11 +87,17 @@ module.exports = function() {
         },
         fetchSession: async function(req, res) {
             let sessions = await FortunaSessionModel.find({}).lean().exec();
-            let questions = await QuestionModel.find({}).lean().exec();
+            let questions = await QuestionModel.find({}).sort({updated_at: -1}).lean().exec();
             let questionIds = questions.map(item => item.question_id);
             let sessionIds = sessions.map(item => item.session_id);
+            let lastUpdated = '';
+            if (questions.length > 0) {
+                lastUpdated = questions[0].updated_at;
+            }
+
 
             try {
+                console.log('begin-fetch-questions:', lastUpdated);
                 let config = {
                     method: 'get',
                     url: ServerUrl + '/fetch/session',
@@ -100,37 +106,44 @@ module.exports = function() {
                     }
                 };
 
-                let result = await axios(config);
-
-                for (const item of result.data) {
-                    config.url = ServerUrl + '/fetch/question?sessId=' + item.id;
+                while(1) {
+                    config.url = ServerUrl + '/fetch/question?updated_at=' + lastUpdated;
                     let qresult = await axios(config);
+                    let newIds = [];
 
                     for (const qitem of qresult.data) {
-                        if (questionIds.indexOf(item.id) >= 0) {
-                            await QuestionModel.update({question_id: qitem.id}, {$set: qitem});
+                        if (questionIds.indexOf(qitem.id) >= 0) {
+                            await QuestionModel.update({question_id: qitem.id}, {$set: {...qitem, sessionID: qitem.session1}});
                         } else {
-                            let question = new QuestionModel({...qitem, question_id: qitem.id});
+                            newIds.push(qitem.id);
+                            questionIds.push(qitem.id);
+                            let question = new QuestionModel({...qitem, question_id: qitem.id, sessionID: qitem.session1});
                             await question.save();
                         }
-                    }
+                        if (sessionIds.indexOf(qitem.session1) >= 0) {
+                            await FortunaSessionModel.update({session_id: qitem.session1}, {
+                                $inc: {questions: 1}
+                            })
+                        } else {
+                            let session = new FortunaSessionModel({
+                                session_id: qitem.session1,
+                                session: qitem.session1,
+                                level: qitem.level,
+                                language: qitem.language,
+                                questions: 1
+                            });
+                            await session.save();
+                            sessionIds.push(qitem.session1);
+                        }
 
-                    item.questions = qresult.data.length;
-                    if (item.questions === 0) continue;
-
-                    if (sessionIds.indexOf(item.id) >= 0) {
-                        await FortunaSessionModel.update({session_id: item.id}, {
-                            $set: item
-                        })
-                    } else {
-                        let session = new FortunaSessionModel({...item, session_id: item.id});
-                        await session.save();
+                        lastUpdated = qitem.updated_at;
                     }
+                    if (newIds.length === 0) break;
                 }
+
             } catch (e) {
                 console.log('fetch-livesession-error:', e);
             }
-
 
 
             // return res.json({result: 'success'});

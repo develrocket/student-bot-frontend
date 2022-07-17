@@ -5,7 +5,7 @@ const {Schema} = mongoose;
 // create a schema
 const QuestionSchema = new Schema({
     question_id: Number,
-    sessionID: Number,
+    sessionID: String,
     username: String,
     question: String,
     answer1: String,
@@ -23,7 +23,9 @@ const QuestionSchema = new Schema({
     answer4: String,
     session1: String,
     module: Number,
-    lesson: String
+    lesson: String,
+    created_at: String,
+    updated_at: String
 });
 
 // create the model
