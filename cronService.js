@@ -434,18 +434,18 @@ module.exports = function(){
         },
 
         syncFortunaData: async function() {
-            while(true) {
-                await sleep(3600 * 1000 * 24);
+            // while(true) {
+                // await sleep(3600 * 1000 * 24);
                 console.log('===============> Start Sync Data');
-                await FortunaController.fetchLanguage();
+                // await FortunaController.fetchLanguage();
                 console.log('===============> finished fetch language');
-                await FortunaController.fetchLevel();
+                // await FortunaController.fetchLevel();
                 console.log('===============> finished fetch level');
-                await FortunaController.fetchType();
+                // await FortunaController.fetchType();
                 console.log('===============> finished fetch type');
                 await FortunaController.fetchSession();
                 console.log('===============> finished fetch session');
-            }
+            // }
         },
 
         checkTournament: async function() {

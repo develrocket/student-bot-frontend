@@ -256,7 +256,7 @@
                                                         <select class="form-control select2" name="first_session">
                                                             <option value="" disabled selected>Select Session</option>
                                                             <% sessions.forEach(function(item, index) { %>
-                                                                <option value="<%= item.session_id %>"><%= item.session + ' (Name: ' + item.session_name + ' Questions:' + item.questions + ')' %></option>
+                                                                <option value="<%= item.session_id %>"><%= item.session + ' (Questions:' + item.questions + ')' %></option>
                                                             <% }) %>
                                                         </select>
                                                     </div>
@@ -326,7 +326,7 @@
                                                         <select class="form-control select2" name="second_session">
                                                             <option value="" disabled selected>Select Session</option>
                                                             <% sessions.forEach(function(item, index) { %>
-                                                                <option value="<%= item.session_id %>"><%= item.session + ' (Name: ' + item.session_name + ' Questions:' + item.questions + ')' %></option>
+                                                                <option value="<%= item.session_id %>"><%= item.session + ' (Questions:' + item.questions + ')' %></option>
                                                             <% }) %>
                                                         </select>
                                                     </div>
@@ -390,7 +390,7 @@
                                                         <select class="form-control select2 session-select" name="third_session">
                                                             <option value="" disabled selected>Select Session</option>
                                                             <% sessions.forEach(function(item, index) { %>
-                                                                <option value="<%= item.session_id %>" data-level="<%= item.level %>"><%= item.session + ' (Name: ' + item.session_name + ' Questions:' + item.questions + ')' %></option>
+                                                                <option value="<%= item.session_id %>" data-level="<%= item.level %>"><%= item.session + ' (Questions:' + item.questions + ')' %></option>
                                                             <% }) %>
                                                         </select>
                                                     </div>
@@ -454,7 +454,7 @@
                                                         <select class="form-control select2" name="fourth_session">
                                                             <option value="" disabled selected>Select Session</option>
                                                             <% sessions.forEach(function(item, index) { %>
-                                                                <option value="<%= item.session_id %>"><%= item.session + ' (Name: ' + item.session_name + ' Questions:' + item.questions + ')' %></option>
+                                                                <option value="<%= item.session_id %>"><%= item.session + ' (Questions:' + item.questions + ')' %></option>
                                                             <% }) %>
                                                         </select>
                                                     </div>
@@ -496,7 +496,7 @@
         <option value="" disabled selected>Select Session</option>
         <% sessions.forEach(function(sitem, index) { %>
             <% if (sitem.level == item.name) {%>
-            <option value="<%= sitem.session_id %>"><%= sitem.session + ' (Name: ' + sitem.session_name + ' Questions:' + sitem.questions + ')' %></option>
+            <option value="<%= sitem.session_id %>"><%= sitem.session + ' (Questions:' + sitem.questions + ')' %></option>
             <% } %>
         <% }) %>
     </select>

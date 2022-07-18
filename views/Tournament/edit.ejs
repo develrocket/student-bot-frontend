@@ -245,7 +245,7 @@
                                                             <option value="" disabled selected>Select Session</option>
                                                             <% sessions.forEach(function(item, index) { %>
                                                                 <% if (item.level === tournament.qualifier.level) {%>
-                                                                <option value="<%= item.session_id %>" <%= tournament.qualifier.session + '' === item.session_id + '' ? 'selected' : '' %>><%= item.session + ' (' + item.session_name + ')' %></option>
+                                                                <option value="<%= item.session_id %>" <%= tournament.qualifier.session + '' === item.session_id + '' ? 'selected' : '' %>><%= item.session + ' (Questions: ' + item.questions + ')' %></option>
                                                                 <% } %>
                                                             <% }) %>
                                                         </select>
@@ -317,7 +317,7 @@
                                                             <option value="" disabled selected>Select Session</option>
                                                             <% sessions.forEach(function(item, index) { %>
                                                                 <% if (tournament.quarterfinal.level == item.level) { %>
-                                                                <option value="<%= item.session_id %>" <%= tournament.quarterfinal.session + '' === item.session_id + '' ? 'selected' : '' %>><%= item.session + ' (' + item.session_name + ')' %></option>
+                                                                <option value="<%= item.session_id %>" <%= tournament.quarterfinal.session + '' === item.session_id + '' ? 'selected' : '' %>><%= item.session + ' (Questions: ' + item.questions + ')' %></option>
                                                                 <% } %>
                                                             <% }) %>
                                                         </select>
@@ -383,7 +383,7 @@
                                                             <option value="" disabled selected>Select Session</option>
                                                             <% sessions.forEach(function(item, index) { %>
                                                                 <% if (tournament.semifinal.level == item.level) {%>
-                                                                <option value="<%= item.session_id %>" <%= tournament.semifinal.session + '' === item.session_id + '' ? 'selected' : '' %>><%= item.session + ' (' + item.session_name + ')' %></option>
+                                                                <option value="<%= item.session_id %>" <%= tournament.semifinal.session + '' === item.session_id + '' ? 'selected' : '' %>><%= item.session + ' (Questions: ' + item.questions + ')' %></option>
                                                                 <% } %>
                                                             <% }) %>
                                                         </select>
@@ -449,7 +449,7 @@
                                                             <option value="" disabled selected>Select Session</option>
                                                             <% sessions.forEach(function(item, index) { %>
                                                                 <% if (tournament.final.level == item.level) { %>
-                                                                <option value="<%= item.session_id %>" <%= tournament.final.session + '' === item.session_id + '' ? 'selected' : '' %>><%= item.session + ' (' + item.session_name + ')' %></option>
+                                                                <option value="<%= item.session_id %>" <%= tournament.final.session + '' === item.session_id + '' ? 'selected' : '' %>><%= item.session + ' (Questions: ' + item.questions + ')' %></option>
                                                                 <% } %>
                                                             <% }) %>
                                                         </select>
@@ -492,7 +492,7 @@
         <option value="" disabled selected>Select Session</option>
         <% sessions.forEach(function(sitem, index) { %>
             <% if (sitem.level == item.name) {%>
-                <option value="<%= sitem.session_id %>"><%= sitem.session + ' (Name: ' + sitem.session_name + ' Questions:' + sitem.questions + ')' %></option>
+                <option value="<%= sitem.session_id %>"><%= sitem.session + ' (Questions:' + sitem.questions + ')' %></option>
             <% } %>
         <% }) %>
     </select>
