@@ -68,6 +68,7 @@
                     data: {tournament_id: tournamentId},
                     success: function(res) {
                         $('#qualiferSlot').html(res);
+						initProfileRightbar();
                     }
                 });
 
@@ -77,6 +78,7 @@
                     data: {tournament_id: tournamentId},
                     success: function(res) {
                         $('#quarterSlot').html(res);
+						initProfileRightbar();
                     }
                 });
 
@@ -86,6 +88,7 @@
                     data: {tournament_id: tournamentId},
                     success: function(res) {
                         $('#semiSlot').html(res);
+						initProfileRightbar();
                     }
                 });
 
@@ -95,6 +98,7 @@
                     data: {tournament_id: tournamentId},
                     success: function(res) {
                         $('#finalSlot').html(res);
+						initProfileRightbar();
                     }
                 });
 
@@ -104,6 +108,7 @@
                     data: {tournament_id: tournamentId},
                     success: function(res) {
                         $('#winSlot').html(res);
+						initProfileRightbar();
                     }
                 });
 

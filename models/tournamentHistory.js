@@ -6,6 +6,7 @@ const {Schema} = mongoose;
 const TournamentHistorySchema = new Schema({
     telegramId: String,
     username: String,
+	fullname: String,
     tournament: {type: mongoose.Schema.Types.ObjectId,ref:'tournament'},
     created_at: String,
     finished_at: String,

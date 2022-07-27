@@ -4,6 +4,8 @@ const router = express.Router();
 const StudentResultModel = require('../../models/studentResult');
 const SessionModel = require('../../models/sessionResult');
 const FortunaHistoryModel = require('../../models/fortunaHistory');
+const TournamentHistoryModel = require('../../models/tournamentHistory');
+const TournamentTestModel = require('../../models/tournamentTest');
 const axios = require('axios').default;
 const Utils = require('../../helpers/utils');
 const SkillModel = require('../../models/skill');
@@ -264,7 +266,53 @@ const fetchResult = async function(sessId) {
 module.exports = function(){
 
     return {
+		resetTournamentHistory: async function(req, res) {
+			let userScores = await TournamentTestModel.aggregate([
+                    {
+                        $match: { 
+                            testType: 'quarterfinal' 
+                        }
+                    },
+                    {
+                        $group:
+                            {
+                                _id: "$telegramId",
+                                totalScore: { $sum: "$point" }
+                            }
+                    }
+                ]);
+				
+			for (let i = 0; i < userScores.length; i ++ ) {
+				await TournamentHistoryModel.update({
+                    telegramId: userScores[i]._id,
+                    level: 2,
+                }, {$set: {score: userScores[i].totalScore}});
+			}
+			
+			return res.json({result:'success'});
+		},
 
+		
+		updateTournamentHistory: async function(req, res) {
+
+			let items = await TournamentHistoryModel.find({}).lean().exec();
+			for (let i = 0; i < items.length; i ++) {
+				let item = items[i];
+				let student = await StudentModel.findOne({telegramId: item.telegramId});
+				let fullname = student.firstName && student.firstName != 'undefined' ? student.firstName: '';
+				if (student.lastName && student.lastName != 'undefined') {fullname += ' ' + student.lastName;}
+				if (!fullname) {fullname = student.username;}
+				fullname = fullname.trim();
+				if (fullname == "" || encodeURI(fullname).indexOf('%E3%85%A4') >= 0) {fullname = '[Name not set]';}
+				if (student) {
+					console.log('set-fullname-1:', fullname);
+					await TournamentHistoryModel.update({_id: item._id}, {$set: {fullname:fullname}});
+				}
+			}
+			
+			return res.json({result: 'succes'});
+		},
+		
         resetMission: async function(req, res) {
             let users = {};
             let missions = await MissionHistoryModel.find({});
@@ -439,7 +487,7 @@ module.exports = function(){
         },
 
         getResultAll: async function(req, res) {
-            for (let i = 8097; i <= 9081; i ++) {
+            for (let i = 9533; i <= 9545; i ++) {
                 console.log('fetch-session-no:', i);
                 await fetchSession(i);
                 await fetchResult(i);

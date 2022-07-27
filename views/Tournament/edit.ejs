@@ -49,6 +49,17 @@
                                         <img src="/public/assets/images/fortuna-icon.jpg" style="height: 30px; margin-left: 10px;"/>
                                     </div>
                                 </div>
+								<div class="row mb-4">
+                                    <label class="col-sm-3 col-form-label">Publish At</label>
+                                    <div class="col-sm-9">
+                                        <div class="input-group" id="datepicker0">
+                                            <input type="text" class="form-control" placeholder="yyyy-mm-dd" name="publish"
+                                                   id="publishDateTime">
+
+                                            <span class="input-group-text"><i class="mdi mdi-calendar"></i></span>
+                                        </div><!-- input-group -->
+                                    </div>
+                                </div>
                                 <div class="row mb-4">
                                     <label class="col-sm-3 col-form-label">Start</label>
                                     <div class="col-sm-9">
@@ -513,6 +524,7 @@
     let today = '<%= today %>';
     let endTime = '<%= tournament.end_at %>';
     let startTime = '<%= tournament.start_at %>';
+	let publishTime = '<%= tournament.publish_at %>';
     let firstTime = '<%= tournament.qualifier.start %>';
     let secondTime = '<%= tournament.quarterfinal.start %>';
     let thirdTime = '<%= tournament.semifinal.start %>';
@@ -593,6 +605,7 @@
         $(".select2").select2();
 
         startTime = reformatDate(startTime, timezoneOffset);
+		publishTime = reformatDate(publishTime, timezoneOffset);
         endTime = reformatDate(endTime, timezoneOffset);
         firstTime = reformatDate(firstTime, timezoneOffset);
         secondTime = reformatDate(secondTime, timezoneOffset);
@@ -608,6 +621,13 @@
         //     value:endTime,
         //     step:10
         // });
+		
+		$('#publishDateTime').datetimepicker({
+            dayOfWeekStart : 1,
+            lang:'en',
+            startDate:	today,
+            value:publishTime, step:10
+        });
 
         $('#startDateTime').datetimepicker({
             dayOfWeekStart : 1,

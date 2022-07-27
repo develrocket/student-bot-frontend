@@ -15,14 +15,18 @@ const { body } = require('express-validator');
 const moment = require('moment');
 const MissionHistoryModel = require('../models/missionHistory');
 const MissionModel = require('../models/mission');
+const TournamentHistoryModel = require('../models/tournamentHistory');
+const TournamentModel = require('../models/tournament');
 
-module.exports = function (app) {
+
+module.exports = function (app, bot) {
 
     async function isUserAllowed(req, res, next) {
         let sess = req.session;
+		let currentTime = moment.utc().format('YYYY-MM-DD HH:mm');
+		let searchQuery = {start_at: {$lte: currentTime}, end_at: {$gte: currentTime}};
+		let tSearchQuery = {publish_at: {$lte: currentTime}, end_at: {$gte: currentTime}};
         if (config.isDev) {
-            let currentTime = moment.utc().format('YYYY-MM-DD HH:mm');
-            let searchQuery = {start_at: {$lte: currentTime}, end_at: {$gte: currentTime}};
             let telegramId = '865996339';
             let missionHistories = await MissionHistoryModel.find({telegramId: telegramId}).lean().exec();
             let missionIds = missionHistories.map(item => item.mission);
@@ -30,6 +34,19 @@ module.exports = function (app) {
                 searchQuery = {...searchQuery, _id: {$nin: missionIds}};
             }
             let missionCount = await MissionModel.count(searchQuery);
+			
+			// Get current tournament
+			let tournamentHistories = await TournamentHistoryModel.find({
+                telegramId: telegramId,
+                isEnd: 1
+            }).lean().exec();
+            let tournamentIds = tournamentHistories.map(item => item.tournament);
+            if (tournamentIds.length > 0) {
+                tSearchQuery = {...tSearchQuery, _id: {$nin: tournamentIds}};
+            }
+
+            let tournaments = await TournamentModel.find(tSearchQuery).lean().exec();
+			let tournamentCount = tournaments.length;
 
             res.locals = {...res.locals, user: {
                     _id: "62811745edc9450e0b407e96",
@@ -37,12 +54,10 @@ module.exports = function (app) {
                     title: 'student',
                     telegramId: 865996339
                     // telegramId: 893468109
-                }, searchKey: '', missionCount};
+                }, searchKey: '', missionCount, tournamentCount};
             return next();
         } else {
             if (sess.user) {
-                let currentTime = moment.utc().format('YYYY-MM-DD HH:mm');
-                let searchQuery = {start_at: {$lte: currentTime}, end_at: {$gte: currentTime}};
                 let telegramId = sess.user.telegramId;
                 let missionHistories = await MissionHistoryModel.find({telegramId: telegramId}).lean().exec();
                 let missionIds = missionHistories.map(item => item.mission);
@@ -51,7 +66,20 @@ module.exports = function (app) {
                 }
                 let missionCount = await MissionModel.count(searchQuery);
 
-                res.locals = {...res.locals, user: sess.user, searchKey: '', missionCount};
+
+				let tournamentHistories = await TournamentHistoryModel.find({
+					telegramId: telegramId,
+					isEnd: 1
+				}).lean().exec();
+				let tournamentIds = tournamentHistories.map(item => item.tournament);
+				if (tournamentIds.length > 0) {
+					tSearchQuery = {...tSearchQuery, _id: {$nin: tournamentIds}};
+				}
+
+				let tournaments = await TournamentModel.find(tSearchQuery).lean().exec();
+				let tournamentCount = tournaments.length;
+			
+                res.locals = {...res.locals, user: sess.user, searchKey: '', missionCount, tournamentCount};
                 return next();
             }
             else { res.redirect('/login'); }
@@ -121,7 +149,9 @@ module.exports = function (app) {
     app.post('/mission/rent-great', isUserAllowed, urlencodeParser, MissionCtrl.rentGreat);
 
     app.get('/tournament', isUserAllowed, TournamentCtrl.studentIndex);
-    app.post('/tournament/enroll', isUserAllowed, urlencodeParser, TournamentCtrl.doEnroll);
+    app.post('/tournament/enroll', isUserAllowed, urlencodeParser, function(req, res) {
+		TournamentCtrl.doEnroll(req, res, bot);
+	});
     app.get('/tournament/slot', isUserAllowed, TournamentCtrl.slot);
     app.get('/tournament/test', isUserAllowed, TournamentCtrl.test);
     app.post('/tournament/get-questions', isUserAllowed, urlencodeParser, TournamentCtrl.getQuestions);

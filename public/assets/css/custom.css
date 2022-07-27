@@ -438,6 +438,7 @@ label.mission-fortuna {
     color: white;
     font-weight: bold;
     font-size: 21px;
+	padding-bottom: 60px;
 }
 
 .award-box {
@@ -452,7 +453,7 @@ label.mission-fortuna {
 
 .slot-item {
     border: 1px solid #5b73e8;
-    height: 30px;
+    min-height: 30px;
     display: flex;
     justify-content: center;
     align-items: center;

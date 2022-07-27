@@ -13,10 +13,14 @@ const QuestionModel = require('../models/question');
 const TournamentTestModel = require('../models/tournamentTest');
 const FortunaSessionModel = require('../models/fortunaSession');
 
+const groupId = -1001495582810;
+// const groupId = -518755245;
+
 async function getQualifyData(tournament, currentTime, telegramId) {
+	
     let qualifyTimeDiff = moment.utc(moment(currentTime, "YYYY-MM-DD HH:mm:ss").diff(moment(tournament.qualifier.start + ':00', "YYYY-MM-DD HH:mm:ss"))).format("x");
     let qualifySession = await FortunaSessionModel.findOne({session_id: tournament.qualifier.session});
-    let qualifierSlots = await TournamentHistoryModel.find({tournament: tournament, level: 1}).sort({finished_at: 1});
+    let qualifierSlots = await TournamentHistoryModel.find({tournament: tournament, level: 1}).sort({score: -1, finished_at: 1});
     let qualifyExists = false;
 
     qualifierSlots.sort((a, b) => b.score - a.score);
@@ -37,7 +41,7 @@ async function getQualifyData(tournament, currentTime, telegramId) {
 async function getQuarterData(tournament, currentTime, telegramId) {
     let quarterTimeDiff = moment.utc(moment(currentTime, "YYYY-MM-DD HH:mm:ss").diff(moment(tournament.quarterfinal.start + ':00', "YYYY-MM-DD HH:mm:ss"))).format("x");
     let quarterSession = await FortunaSessionModel.findOne({session_id: tournament.quarterfinal.session});
-    let quarterSlots = await TournamentHistoryModel.find({tournament: tournament, level: 2}).sort({finished_at: 1});
+    let quarterSlots = await TournamentHistoryModel.find({tournament: tournament, level: 2}).sort({score: -1, finished_at: 1});
     let quarterExists = false;
 
     quarterSlots.sort((a, b) => b.score - a.score);
@@ -58,7 +62,7 @@ async function getQuarterData(tournament, currentTime, telegramId) {
 async function getSemiData(tournament, currentTime, telegramId) {
     let semiTimeDiff = moment.utc(moment(currentTime, "YYYY-MM-DD HH:mm:ss").diff(moment(tournament.semifinal.start + ':00', "YYYY-MM-DD HH:mm:ss"))).format("x");
     let semiSession = await FortunaSessionModel.findOne({session_id: tournament.semifinal.session});
-    let semiSlots = await TournamentHistoryModel.find({tournament: tournament, level: 3}).sort({finished_at: 1});
+    let semiSlots = await TournamentHistoryModel.find({tournament: tournament, level: 3}).sort({score: -1, finished_at: 1});
     let semiExists = false;
 
     semiSlots.sort((a, b) => b.score - a.score);
@@ -80,7 +84,7 @@ async function getSemiData(tournament, currentTime, telegramId) {
 async function getFinalData(tournament, currentTime, telegramId) {
     let finalTimeDiff = moment.utc(moment(currentTime, "YYYY-MM-DD HH:mm:ss").diff(moment(tournament.final.start + ':00', "YYYY-MM-DD HH:mm:ss"))).format("x");
     let finalSession = await FortunaSessionModel.findOne({session_id: tournament.final.session});
-    let finalSlots = await TournamentHistoryModel.find({tournament: tournament, level: 4}).sort({finished_at: 1});
+    let finalSlots = await TournamentHistoryModel.find({tournament: tournament, level: 4}).sort({score: -1, finished_at: 1});
     let finalExists = false;
 
     finalSlots.sort((a, b) => b.score - a.score);
@@ -109,7 +113,7 @@ module.exports = function () {
 
         studentIndex: async function (req, res) {
             let currentTime = moment.utc().format('YYYY-MM-DD HH:mm');
-            let searchQuery = {start_at: {$lte: currentTime}, end_at: {$gte: currentTime}};
+            let searchQuery = {publish_at: {$lte: currentTime}, end_at: {$gte: currentTime}};
             let telegramId = res.locals.user.telegramId;
             let tournamentHistories = await TournamentHistoryModel.find({
                 telegramId: telegramId,
@@ -137,7 +141,7 @@ module.exports = function () {
             }
         },
 
-        doEnroll: async function (req, res) {
+        doEnroll: async function (req, res, bot) {
             let telegramId = res.locals.user.telegramId;
             let tournamentId = req.body.tournament_id;
             let tournament = await TournamentModel.findOne({_id: tournamentId});
@@ -195,10 +199,18 @@ module.exports = function () {
             await fHistory.save();
 
             let user = await StudentModel.findOne({telegramId: telegramId});
+			
+			let fullname = user.firstName && user.firstName != 'undefined' ? user.firstName: '';
+			if (user.lastName && user.lastName != 'undefined') {fullname +=' ' + user.lastName;}
+			if (!fullname) {fullname = user.username;}
+			if (!fullname.trim()) {fullname = '[Name not set]';}
+			
+			bot.sendMessage(groupId, '⛳User <a href="tg://user?id=' + telegramId + '">' + fullname + '</a>! has just enrolled in the knock-out tournament! ' + (tournament.qualifier - 1 - (counts.length > 0 ? counts[0].count : 0)) +' slots left.', {parse_mode: 'Html'});
 
             let tHistory = new TournamentHistoryModel({
                 telegramId: telegramId,
                 username: user.username,
+				fullname: fullname,
                 tournament: tournamentId,
                 created_at: moment().format('YYYY-MM-DD HH:mm:ss'),
                 finished_at: '9999-99-99 99:99:99',
@@ -234,6 +246,7 @@ module.exports = function () {
 
         doCreate: async function (req, res) {
             let start = moment(req.body.start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
+			let publish = moment(req.body.publish).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             // let end = moment(req.body.end).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let firstStart = moment(req.body.first_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let secondStart = moment(req.body.second_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
@@ -249,6 +262,7 @@ module.exports = function () {
                 award_2: req.files.awards_1[0].filename,
                 award_3: req.files.awards_3[0].filename,
                 price: req.body.price,
+				publish_at: publish,
                 start_at: start,
                 end_at: end,
                 gains_1: req.body.gains_1,
@@ -301,16 +315,19 @@ module.exports = function () {
 
         doUpdate: async function (req, res) {
             let start = moment(req.body.start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
+			let publish = moment(req.body.publish).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             // let end = moment(req.body.end).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let firstStart = moment(req.body.first_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let secondStart = moment(req.body.second_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let thirdStart = moment(req.body.third_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let fourthStart = moment(req.body.fourth_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
+            let session = await FortunaSessionModel.findOne({session_id: req.body.fourth_session});
             let end = moment(req.body.fourth_start).add(req.body.timezoneOffset + 90, 'm').add(session.questions * req.body.answer_time, 's').format('YYYY-MM-DD HH:mm');
 
             let data = {
                 name: req.body.name,
                 price: req.body.price,
+				publish_at: publish,
                 start_at: start,
                 end_at: end,
                 gains_1: req.body.gains_1,
@@ -376,11 +393,11 @@ module.exports = function () {
         slot: async function (req, res) {
             let telegramId = res.locals.user.telegramId;
             let currentTime = moment.utc().format('YYYY-MM-DD HH:mm');
-            let searchQuery = {start_at: {$lte: currentTime}, end_at: {$gte: currentTime}};
+            let searchQuery = {publish_at: {$lte: currentTime}, end_at: {$gte: currentTime}};
             let tournaments = await TournamentModel.find(searchQuery).lean().exec();
 
-            if (tournaments.length === 0) {
-                res.redirect('/tournament');
+            if (tournaments.length == 0) {
+                return res.redirect('/tournament');
             }
 
             let tournament = tournaments[0];
@@ -398,7 +415,7 @@ module.exports = function () {
 
         test: async function(req, res) {
             let currentTime = moment.utc().format('YYYY-MM-DD HH:mm');
-            let searchQuery = {start_at: {$lte: currentTime}, end_at: {$gte: currentTime}};
+            let searchQuery = {publish_at: {$lte: currentTime}, end_at: {$gte: currentTime}};
             let tournaments = await TournamentModel.find(searchQuery);
             let telegramId = res.locals.user.telegramId;
 
@@ -473,15 +490,20 @@ module.exports = function () {
                     await item.save();
                 }
 
+				let tournament = await TournamentModel.findOne({_id: tournamentId});
                 let userScore = await TournamentTestModel.aggregate([
                     {
-                        $match: { telegramId: telegramId + '', tournament: tournamentId + '', testType: type }
+                        $match: { 
+							telegramId: telegramId + '', 
+							tournament: tournament._id, 
+							testType: type 
+						}
                     },
                     {
                         $group:
                             {
                                 _id: "$tournament",
-                                totalScore: { $sum: "point" }
+                                totalScore: { $sum: "$point" }
                             }
                     }
                 ]);
@@ -497,10 +519,10 @@ module.exports = function () {
                     level: types.indexOf(type) + 1,
                 }, {$set: {score: totalScore}})
 
-                let tests = await TournamentTestModel.find({tournament: tournamentId + '', telegramId: telegramId + ''}).sort({question_id: -1});
+                let tests = await TournamentTestModel.find({tournament: tournamentId + '', telegramId: telegramId + '', testType: type}).sort({question_id: -1});
 
 
-                let tournament = await TournamentModel.findOne({_id: tournamentId});
+                
                 let sessionNo = tournament[type].session;
                 let questions = await QuestionModel.find({sessionID: sessionNo}).sort({question_id: 1}).lean().exec();
 
@@ -514,7 +536,7 @@ module.exports = function () {
                         level: types.indexOf(type) + 1,
                     }, {$set: {finished_at: currentTime}})
 
-                    return res.render('Tournament/_end', {layout: false});
+                    return res.render('Tournament/_end', {layout: false, totalScore});
                 }
 
                 let questionNo = Math.floor(timeDiff / 1000 / 20);
@@ -528,7 +550,7 @@ module.exports = function () {
                         }
                     }
                     if (questionNo === questions.length) {
-                        return res.render('Tournament/_end', {layout: false});
+                        return res.render('Tournament/_end', {layout: false, totalScore});
                     }
                 }
                 let totalCount = questions.length;
@@ -544,8 +566,9 @@ module.exports = function () {
                 res.render('Tournament/_quiz', {layout: false, question, questionNo, totalCount, answers, tournament});
 
             } catch (e) {
+				let totalScore = 0;
                 console.log('get-question-error:', e);
-                res.render('Tournament/_end', {layout: false});
+                res.render('Tournament/_end', {layout: false, totalScore});
             }
         },
 

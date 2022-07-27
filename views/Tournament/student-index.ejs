@@ -34,6 +34,10 @@
                     <div class="tournament-title">
                         <%= tournament.name %>
                     </div>
+					
+					<div class="countdown-container justify-content-center">
+						<div data-countdown="<%= tournament.qualifier.start %>" class="counter-number" id="countDown"></div>
+					</div>
                 </div>
             </div>
             <div class="card-body">
@@ -48,7 +52,7 @@
                                 <img src="/uploads/<%= tournament.award_1 %>" style="width: 200px; height: 200px; border-radius: 50%" class="award-img"/>
 
                                 <div style="width: 200px; text-align: center; margin-top: 10px;">
-                                    <%= tournament.gains_1 %> <img src="/public/assets/images/fortuna-icon.jpg" style="height: 30px; margin-left: 10px;"/>
+                                    <%= tournament.gains_1 %> rank points
                                 </div>
                             </div>
 
@@ -56,7 +60,7 @@
                                 <img src="/uploads/<%= tournament.award_2 %>" style="width: 200px; height: 200px; border-radius: 50%" class="award-img"/>
 
                                 <div style="width: 200px; text-align: center; margin-top: 10px;">
-                                    <%= tournament.gains_2 %> <img src="/public/assets/images/fortuna-icon.jpg" style="height: 30px; margin-left: 10px;"/>
+                                    <%= tournament.gains_2 %> rank points
                                 </div>
                             </div>
 
@@ -64,7 +68,7 @@
                                 <img src="/uploads/<%= tournament.award_3 %>" style="width: 200px; height: 200px; border-radius: 50%" class="award-img"/>
 
                                 <div style="width: 200px; text-align: center; margin-top: 10px;">
-                                    <%= tournament.gains_3 %> <img src="/public/assets/images/fortuna-icon.jpg" style="height: 30px; margin-left: 10px;"/>
+                                    <%= tournament.gains_3 %> rank points
                                 </div>
                             </div>
 
@@ -79,10 +83,10 @@
                         <div class="mb-3 row">
                             <label for="example-text-input" class="col-md-2 col-form-label">Qualifier</label>
                             <div class="col-md-5">
-                                <input class="form-control format-date-input" type="text" value="<%= tournament.qualifier.start %>" id="example-text-input">
+                                <input class="form-control format-date-input" type="text" value="<%= tournament.qualifier.start %>" id="example-text-input" readonly>
                             </div>
                             <div class="col-md-3">
-                                <input class="form-control" type="text" value="<%= tournament.qualifier.qualified %>">
+                                <input class="form-control" type="text" value="<%= tournament.qualifier.qualified %>" readonly>
                             </div>
                             <label for="example-text-input" class="col-md-2 col-form-label">will qualify</label>
                         </div>
@@ -90,10 +94,10 @@
                         <div class="mb-3 row">
                             <label for="example-text-input" class="col-md-2 col-form-label">Quarterfinals</label>
                             <div class="col-md-5">
-                                <input class="form-control format-date-input" type="text" value="<%= tournament.quarterfinal.start %>" id="example-text-input">
+                                <input class="form-control format-date-input" type="text" value="<%= tournament.quarterfinal.start %>" id="example-text-input" readonly>
                             </div>
                             <div class="col-md-3">
-                                <input class="form-control" type="text" value="<%= tournament.quarterfinal.qualified %>">
+                                <input class="form-control" type="text" value="<%= tournament.quarterfinal.qualified %>" readonly>
                             </div>
                             <label for="example-text-input" class="col-md-2 col-form-label">will qualify</label>
                         </div>
@@ -101,10 +105,10 @@
                         <div class="mb-3 row">
                             <label for="example-text-input" class="col-md-2 col-form-label">Semifinals</label>
                             <div class="col-md-5">
-                                <input class="form-control format-date-input" type="text" value="<%= tournament.semifinal.start %>" id="example-text-input">
+                                <input class="form-control format-date-input" type="text" value="<%= tournament.semifinal.start %>" id="example-text-input" readonly>
                             </div>
                             <div class="col-md-3">
-                                <input class="form-control" type="text" value="<%= tournament.semifinal.qualified %>">
+                                <input class="form-control" type="text" value="<%= tournament.semifinal.qualified %>" readonly>
                             </div>
                             <label for="example-text-input" class="col-md-2 col-form-label">will qualify</label>
                         </div>
@@ -114,14 +118,14 @@
                                 <img src="public/assets/images/gold-cup.png" style="width: 20px; height: 20px; margin-right: 5px; visibility: visible;" data-xblocker="passed"> Finals
                             </label>
                             <div class="col-md-5">
-                                <input class="form-control format-date-input" type="text" value="<%= tournament.final.start %>" id="example-text-input">
+                                <input class="form-control format-date-input" type="text" value="<%= tournament.final.start %>" id="example-text-input" readonly>
                             </div>
                         </div>
 
                         <div class="mb-3 row">
                             <label for="example-text-input" class="col-md-4 col-form-label">Enrollment fee</label>
                             <div class="col-md-4">
-                                <input class="form-control" type="text" value="<%= tournament.price %>" id="example-text-input">
+                                <input class="form-control" type="text" value="<%= tournament.price %>" id="example-text-input" readonly>
                             </div>
                             <div class="col-md-4">
                                 <button type="button" class="btn btn-primary waves-effect waves-light <%= isSlot ? 'hidden' : '' %>"  id="btnEnroll">Enroll</button>
@@ -137,9 +141,31 @@
 
 <%- contentFor('FooterJs') %>
 <script src="/public/assets/libs/jquery-toastr-plugin/jquery.toast.min.js"></script>
+<script src="/public/assets/libs/jquery-countdown/jquery.countdown.min.js"></script>
+
 <%- contentFor('BottomJs') %>
 <script type="text/javascript">
     let tournamentId = '<%= tournament._id %>';
+	let endTime = '<%= tournament.qualifier.start %>';
+    function formatDate(d) {
+        let month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        let hours = d.getHours();
+        let minutes = d.getMinutes();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+        if (hours.length < 2) hours = '0' + hours;
+        if (minutes.length < 2) minutes = '0' + minutes;
+
+
+
+        return [year, month, day].join('-') + ' ' + hours + ':' + minutes;
+    }
+	
     $('#btnEnroll').on('click', function() {
         $.ajax({
             type: 'post',
@@ -158,4 +184,26 @@
             }
         });
     });
+	
+	$(document).ready(function() {
+        let timezoneOffset = new Date().getTimezoneOffset();
+        endTime = new Date(endTime);
+        endTime.setTime(endTime.getTime() - timezoneOffset * 60 * 1000);
+        endTime = formatDate(endTime);
+
+        $('#countDown').attr('data-countdown', endTime);
+
+        $('[data-countdown]').each(function () {
+            var $this = $(this), finalDate = $(this).data('countdown');
+            $this.countdown(finalDate, function (event) {
+                $(this).html(event.strftime(''
+                    + '<div class="coming-box">%D <span>Days</span></div> '
+                    + '<div class="coming-box">%H <span>Hours</span></div> '
+                    + '<div class="coming-box">%M <span>Minutes</span></div> '
+                    + '<div class="coming-box">%S <span>Seconds</span></div> '));
+            }).on('finish.countdown', function() {
+				$('#btnEnroll').remove();
+			});
+        });
+	});
 </script>

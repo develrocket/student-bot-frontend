@@ -448,14 +448,14 @@ module.exports = function(){
             }
         },
 
-        checkTournament: async function() {
+        checkTournament: async function(bot) {
             let tempData = {};
             while(1) {
                 await sleep(1000);
 
                 let currentTime = moment.utc().format('YYYY-MM-DD HH:mm');
 
-                let searchQuery = {start_at: {$lte: currentTime}, end_at: {$gte: currentTime}, status: {$ne: 3}};
+                let searchQuery = {publish_at: {$lte: currentTime}, end_at: {$gte: currentTime}, status: {$ne: 3}};
                 let tournaments = await TournamentModel.find(searchQuery).lean().exec();
 
                 if (tournaments.length === 0) continue;
@@ -468,6 +468,12 @@ module.exports = function(){
                         final: false,
                     }
                 }
+				
+				if (!tournament.isNoti) {
+					bot.sendMessage(groupId, '⛳A new knock-out tournament is available. Visit <a href="https://myafrica.link">myafrica.link</a> to register!', {parse_mode: 'Html'});
+					await TournamentModel.update({_id: tournament._id}, {$set: {isNoti: true}});
+				}
+				
 
                 currentTime = moment.utc().format('YYYY-MM-DD HH:mm:ss');
 
@@ -475,21 +481,31 @@ module.exports = function(){
                     let qualifyTimeDiff = moment.utc(moment(currentTime, "YYYY-MM-DD HH:mm:ss").diff(moment(tournament.qualifier.start + ':00', "YYYY-MM-DD HH:mm:ss"))).format("x");
                     let qualifySession = await FortunaSessionModel.findOne({session_id: tournament.qualifier.session});
 
+					let quarterSlots = await TournamentHistoryModel.find({tournament: tournament._id, level: 2}).lean().exec();
+					
                     if (qualifyTimeDiff > qualifySession.questions * 20 * 1000) {
-                        let slots = await TournamentHistoryModel.find({tournament: tournament._id, level: 1}).sort({score: -1, finished_at: 1});
+						if (quarterSlots.length == 0) {
+							let slots = await TournamentHistoryModel.find({tournament: tournament._id, level: 1}).sort({score: -1, finished_at: 1});
 
-                        for (let j = 0; j < slots.length && j < tournament.qualifier.qualified; j ++) {
-                            let item = new TournamentHistoryModel({
-                                telegramId: slots[j].telegramId,
-                                username: slots[j].username,
-                                tournament: tournament._id,
-                                created_at: currentTime,
-                                finished_at: '9999-99-99 99:99:99',
-                                level: 2,
-                                score: 0
-                            });
-                            await item.save();
-                        }
+							let botMessage = '⛳User ';
+							for (let j = 0; j < slots.length && j < tournament.qualifier.qualified; j ++) {
+								let item = new TournamentHistoryModel({
+									telegramId: slots[j].telegramId,
+									fullname: slots[j].fullname,
+									username: slots[j].username,
+									tournament: tournament._id,
+									created_at: currentTime,
+									finished_at: '9999-99-99 99:99:99',
+									level: 2,
+									score: 0
+								});
+								await item.save();
+								if (j != 0) botMessage += ', ';
+								botMessage += '<a href="tg://user?id=' + slots[j].telegramId+ '">' + slots[j].fullname + '</a>';
+							}
+							botMessage += ' qualified for the quarterfinals. Congratulations!';
+							bot.sendMessage(groupId, botMessage, {parse_mode: 'Html'});
+						}
 
                         tempData[tournament._id].qualifier = true;
                     }
@@ -498,21 +514,30 @@ module.exports = function(){
                 if (tempData[tournament._id].qualifier && !tempData[tournament._id].quarterfinal) {
                     let quarterTimeDiff = moment.utc(moment(currentTime, "YYYY-MM-DD HH:mm:ss").diff(moment(tournament.quarterfinal.start + ':00', "YYYY-MM-DD HH:mm:ss"))).format("x");
                     let quarterSession = await FortunaSessionModel.findOne({session_id: tournament.quarterfinal.session});
+					let semiSlots = await TournamentHistoryModel.find({tournament: tournament._id, level: 3}).lean().exec();
                     if (quarterTimeDiff > quarterSession.questions * 20 * 1000) {
-                        let slots = await TournamentHistoryModel.find({tournament: tournament._id, level: 2}).sort({score: -1, finished_at: 1});
+						if (semiSlots.length == 0) {
+							let slots = await TournamentHistoryModel.find({tournament: tournament._id, level: 2}).sort({score: -1, finished_at: 1});
 
-                        for (let j = 0; j < slots.length && j < tournament.quarterfinal.qualified; j ++) {
-                            let item = new TournamentHistoryModel({
-                                telegramId: slots[j].telegramId,
-                                username: slots[j].username,
-                                tournament: tournament._id,
-                                created_at: currentTime,
-                                finished_at: '9999-99-99 99:99:99',
-                                level: 3,
-                                score: 0
-                            });
-                            await item.save();
-                        }
+							let botMessage = '⛳User ';
+							for (let j = 0; j < slots.length && j < tournament.quarterfinal.qualified; j ++) {
+								let item = new TournamentHistoryModel({
+									telegramId: slots[j].telegramId,
+									fullname: slots[j].fullname,
+									username: slots[j].username,
+									tournament: tournament._id,
+									created_at: currentTime,
+									finished_at: '9999-99-99 99:99:99',
+									level: 3,
+									score: 0
+								});
+								await item.save();
+								if (j != 0) botMessage += ', ';
+								botMessage += '<a href="tg://user?id=' + slots[j].telegramId+ '">' + slots[j].fullname + '</a>';
+							}
+							botMessage += ' qualified for the semifinals. Congratulations!';
+							bot.sendMessage(groupId, botMessage, {parse_mode: 'Html'});
+						}
 
                         tempData[tournament._id].quarterfinal = true;
                     }
@@ -521,21 +546,29 @@ module.exports = function(){
                 if (tempData[tournament._id].quarterfinal && !tempData[tournament._id].semifinal) {
                     let semiTimeDiff = moment.utc(moment(currentTime, "YYYY-MM-DD HH:mm:ss").diff(moment(tournament.semifinal.start + ':00', "YYYY-MM-DD HH:mm:ss"))).format("x");
                     let semiSession = await FortunaSessionModel.findOne({session_id: tournament.semifinal.session});
+					let finalSlots = await TournamentHistoryModel.find({tournament: tournament._id, level: 4}).lean().exec();
                     if (semiTimeDiff > semiSession.questions * 20 * 1000) {
-                        let slots = await TournamentHistoryModel.find({tournament: tournament._id, level: 3}).sort({score: -1, finished_at: 1});
-
-                        for (let j = 0; j < slots.length && j < tournament.semifinal.qualified; j ++) {
-                            let item = new TournamentHistoryModel({
-                                telegramId: slots[j].telegramId,
-                                username: slots[j].username,
-                                tournament: tournament._id,
-                                created_at: currentTime,
-                                finished_at: '9999-99-99 99:99:99',
-                                level: 4,
-                                score: 0
-                            });
-                            await item.save();
-                        }
+						if (finalSlots.length == 0){
+							let slots = await TournamentHistoryModel.find({tournament: tournament._id, level: 3}).sort({score: -1, finished_at: 1});
+							let botMessage = '⛳User ';
+							for (let j = 0; j < slots.length && j < tournament.semifinal.qualified; j ++) {
+								let item = new TournamentHistoryModel({
+									telegramId: slots[j].telegramId,
+									fullname: slots[j].fullname,
+									username: slots[j].username,
+									tournament: tournament._id,
+									created_at: currentTime,
+									finished_at: '9999-99-99 99:99:99',
+									level: 4,
+									score: 0
+								});
+								await item.save();
+								if (j != 0) botMessage += ', ';
+								botMessage += '<a href="tg://user?id=' + slots[j].telegramId+ '">' + slots[j].fullname + '</a>';
+							}
+							botMessage += ' qualified for the finale. Congratulations!';
+							bot.sendMessage(groupId, botMessage, {parse_mode: 'Html'});
+						}
 
                         tempData[tournament._id].semifinal = true;
                     }
@@ -544,17 +577,23 @@ module.exports = function(){
                 if (tempData[tournament._id].semifinal && !tempData[tournament._id].final) {
                     let finalTimeDiff = moment.utc(moment(currentTime, "YYYY-MM-DD HH:mm:ss").diff(moment(tournament.final.start + ':00', "YYYY-MM-DD HH:mm:ss"))).format("x");
                     let finalSession = await FortunaSessionModel.findOne({session_id: tournament.final.session});
-                    if (finalTimeDiff > finalSession.questions * (tournament.final.answer_time ? tournament.final.answer_time : 20) * 1000) {
+					let wins = await TournamentWinHistoryModel.find({tournament: tournament._id}).lean().exec();
+					
+                    if (finalTimeDiff > finalSession.questions * (tournament.final.answer_time ? tournament.final.answer_time : 20) * 1000 && wins.length == 0) {
                         let slots = await TournamentHistoryModel.find({tournament: tournament._id, level: 4}).sort({score: -1, finished_at: 1});
                         let slots1 = await TournamentHistoryModel.find({tournament: tournament._id, level: 3}).sort({score: -1, finished_at: 1});
 
                         let results = slots;
-                        for (let i = slots1.length; i < slots1.length; i ++) {
+                        for (let i = 0; i < slots1.length; i ++) {
                             results.push(slots1[i]);
                         }
 
+						let botMessage = '⛳User ';
                         for (let i = 0; i < results.length && i < 3; i ++) {
                             let slot = results[i];
+							if (i == 0) {
+								botMessage += '<a href="tg://user?id=' + slot.telegramId+ '">' + slot.fullname + '</a>';
+							}
                             let gainKey = 'gains_' + (i + 1);
                             let awardKey = 'award_' + (i + 1);
                             let sp = new StudentPointHistoryModel({
@@ -610,6 +649,9 @@ module.exports = function(){
                             });
                             await nItem.save();
                         }
+						
+						botMessage += ' won the knock-out tournament. Congratulations!';
+						bot.sendMessage(groupId, botMessage, {parse_mode: 'Html'});
 
                         await TournamentModel.update({
                             _id: tournament._id

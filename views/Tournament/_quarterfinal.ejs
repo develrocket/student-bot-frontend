@@ -26,7 +26,7 @@
                     <div class="slot-item">
                         <% if (Object.keys(slot).length > 0) {%>
                             <a href="javascript:void(0);" class="profile-right-bar-toggle" data-id="<%= slot.telegramId %>">
-                                <%= slot.username %>
+                                <%= index + 1 %>. <%= slot.fullname %> <%= slot.score %> p
                             </a>
                         <% } else {%>
                             <span> Empty </span>

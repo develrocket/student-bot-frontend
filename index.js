@@ -40,7 +40,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        expires: 1200000
+        expires: 253402300000000
     }
 }));
 
@@ -70,7 +70,6 @@ app.set('view engine', 'ejs');
 app.use(expressLayouts);
 
 // Define All Route
-pageRouter(app);
 require('./routers/api')(app);
 
 
@@ -138,6 +137,8 @@ async function transferFortuan(senderId, senderName, receiverId, receiverName, v
 
 try {
     const bot = new TelegramBot(token, {polling: true});
+	
+	pageRouter(app, bot);
 
     db.on('connected', () => {
         server.listen(config.server.port, () => {
@@ -149,7 +150,7 @@ try {
                 cronService.start(io, bot);
                 cronService.checkMission(bot);
                 cronService.checkComplete(bot);
-                cronService.checkTournament();
+                cronService.checkTournament(bot);
 
                 cronService.syncFortunaData();
                 // StudentApiController.getResultAll();

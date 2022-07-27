@@ -28,9 +28,11 @@ module.exports = function (app) {
     app.get('/api/get-profile', studentCont.getProfile);
     app.get('/api/fetch-result', studentCont.getResultBySessNo);
     app.get('/api/reset-result', studentCont.resetRank);
-    // app.get('/api/fetch-result-all', studentCont.getResultAll);
+    app.get('/api/fetch-result-all', studentCont.getResultAll);
     app.get('/api/insert-skill', studentCont.insertSkills);
     app.get('/api/reset-skill-score', studentCont.resetSkillScore);
     app.get('/api/reset-student-point', studentCont.resetUserPoint);
     app.get('/api/reset-mission', studentCont.resetMission);
+	app.get('/api/reset-tournament-history', studentCont.resetTournamentHistory);
+	app.get('/api/update-tournament-history', studentCont.updateTournamentHistory);
 };

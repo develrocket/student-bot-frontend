@@ -6,6 +6,7 @@ const {Schema} = mongoose;
 const TournamentSchema = new Schema({
     name: String,
     price: Number,
+	publish_at: String,
     start_at: String,
     end_at: String,
     banner: String,
@@ -52,6 +53,7 @@ const TournamentSchema = new Schema({
         status: Number,
         answer_time: Number
     },
+	isNoti: Number,
     status: Number          //1: Pending 2: Ongoing, 3: Finished, 4: Hide
 });
 
