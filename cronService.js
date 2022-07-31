@@ -584,7 +584,7 @@ module.exports = function(){
                         let slots1 = await TournamentHistoryModel.find({tournament: tournament._id, level: 3}).sort({score: -1, finished_at: 1});
 
                         let results = slots;
-                        for (let i = 0; i < slots1.length; i ++) {
+                        for (let i = slots.length; i < slots1.length; i ++) {
                             results.push(slots1[i]);
                         }
 
