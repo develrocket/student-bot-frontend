@@ -330,7 +330,7 @@ module.exports = function(){
                             // });
                             // await news.save();
 
-                            console.log(firstTeleId + ' : ' + results[0].telegramId);
+                            // console.log(firstTeleId + ' : ' + results[0].telegramId);
                             if (firstTeleId != results[0].telegramId && i === newSessionIds.length - 1) {
                                 let msg = await bot.sendMessage(groupId, '🔥<a href="tg://user?id=' + results[0].telegramId+ '">' + results[0].username + '</a> you are the leader now!', {parse_mode: 'Html'});
                                 setTimeout(function() {
@@ -384,13 +384,13 @@ module.exports = function(){
         checkMission: async function(bot) {
             while(true) {
                 let currentTime = moment.utc().format('YYYY-MM-DD HH:mm');
-                console.log('current-time:', currentTime);
+                // console.log('current-time:', currentTime);
                 let searchQuery = {start_at: {$lte: currentTime}, end_at: {$gte: currentTime}, isNoti: {$ne: 1}};
                 let missions = await MissionModel.find(searchQuery).lean().exec();
 
                 let missionIds = missions.map(item => item._id);
 
-                console.log(missionIds);
+                // console.log(missionIds);
 
                 if (missionIds.length > 0) {
                     bot.sendMessage(groupId, '🔥A new mission is available! Go to <a href="https://myafrica.link/tasks">myafrica.link</a> to check the details!', {parse_mode: 'Html'});
@@ -436,15 +436,15 @@ module.exports = function(){
         syncFortunaData: async function() {
             while(true) {
                 await sleep(3600 * 1000);
-                console.log('===============> Start Sync Data');
+                // console.log('===============> Start Sync Data');
                 await FortunaController.fetchLanguage();
-                console.log('===============> finished fetch language');
+                // console.log('===============> finished fetch language');
                 await FortunaController.fetchLevel();
-                console.log('===============> finished fetch level');
+                // console.log('===============> finished fetch level');
                 await FortunaController.fetchType();
-                console.log('===============> finished fetch type');
+                // console.log('===============> finished fetch type');
                 await FortunaController.fetchSession();
-                console.log('===============> finished fetch session');
+                // console.log('===============> finished fetch session');
             }
         },
 

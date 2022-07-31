@@ -162,7 +162,7 @@ try {
     });
 
     bot.on('message', async (msg) => {
-        console.log('tele-new-message:', msg);
+        // console.log('tele-new-message:', msg);
 
         if (msg.reply_to_message && Object.keys(msg.reply_to_message).length > 0) {
             try {
