@@ -12,6 +12,7 @@ const StudentModel = require('../models/student');
 const QuestionModel = require('../models/question');
 const TournamentTestModel = require('../models/tournamentTest');
 const FortunaSessionModel = require('../models/fortunaSession');
+const mongoose = require('mongoose');
 
 const groupId = -1001495582810;
 // const groupId = -518755245;
@@ -153,7 +154,7 @@ module.exports = function () {
 
             let counts = await TournamentHistoryModel.aggregate([
                 {
-                    $match: {tournament: tournamentId}
+                    $match: {tournament: new mongoose.Types.ObjectId(tournamentId), level: 1}
                 },
                 {
                     $group: {
@@ -205,7 +206,7 @@ module.exports = function () {
 			if (!fullname) {fullname = user.username;}
 			if (!fullname.trim()) {fullname = '[Name not set]';}
 			
-			bot.sendMessage(groupId, '⛳User <a href="tg://user?id=' + telegramId + '">' + fullname + '</a>! has just enrolled in the knock-out tournament! ' + (tournament.qualifier - 1 - (counts.length > 0 ? counts[0].count : 0)) +' slots left.', {parse_mode: 'Html'});
+			bot.sendMessage(groupId, '⛳User <a href="tg://user?id=' + telegramId + '">' + fullname + '</a>! has just enrolled in the knock-out tournament! ' + (tournament.qualifier.open - 1 - (counts.length > 0 ? counts[0].count : 0)) +' slots left.', {parse_mode: 'Html'});
 
             let tHistory = new TournamentHistoryModel({
                 telegramId: telegramId,
@@ -260,7 +261,7 @@ module.exports = function () {
                 name: req.body.name,
                 banner: req.files.banner[0].filename,
                 award_1: req.files.awards_1[0].filename,
-                award_2: req.files.awards_1[0].filename,
+                award_2: req.files.awards_2[0].filename,
                 award_3: req.files.awards_3[0].filename,
                 price: req.body.price,
 				publish_at: publish,
