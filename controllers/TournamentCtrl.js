@@ -253,7 +253,8 @@ module.exports = function () {
             let thirdStart = moment(req.body.third_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let fourthStart = moment(req.body.fourth_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let session = await FortunaSessionModel.findOne({session_id: req.body.fourth_session});
-            let end = moment(req.body.fourth_start).add(req.body.timezoneOffset + 90, 'm').add(session.questions * req.body.answer_time, 's').format('YYYY-MM-DD HH:mm');
+            let endOffset = req.body.timezoneOffset * 1 + 90;
+            let end = moment(req.body.fourth_start).add(endOffset, 'm').add(session.questions * req.body.answer_time, 's').format('YYYY-MM-DD HH:mm');
 
             let data = {
                 name: req.body.name,
@@ -322,7 +323,8 @@ module.exports = function () {
             let thirdStart = moment(req.body.third_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let fourthStart = moment(req.body.fourth_start).add(req.body.timezoneOffset, 'm').format('YYYY-MM-DD HH:mm');
             let session = await FortunaSessionModel.findOne({session_id: req.body.fourth_session});
-            let end = moment(req.body.fourth_start).add(req.body.timezoneOffset + 90, 'm').add(session.questions * req.body.answer_time, 's').format('YYYY-MM-DD HH:mm');
+            let endOffset = req.body.timezoneOffset * 1 + 90;
+            let end = moment(req.body.fourth_start).add(endOffset, 'm').add(session.questions * req.body.answer_time, 's').format('YYYY-MM-DD HH:mm');
 
             let data = {
                 name: req.body.name,
