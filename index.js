@@ -167,7 +167,7 @@ try {
 
         if (msg.reply_to_message && Object.keys(msg.reply_to_message).length > 0) {
             try {
-                if (msg.text.indexOf('/give') >= 0) {
+                if (msg.text && msg.text.indexOf('/give') >= 0) {
                     let value = 0;
                     let parts = msg.text.split(' ');
                     for (let i = 1; i < parts.length; i++) {
