@@ -193,7 +193,7 @@ try {
                         bot.sendMessage(msg.chat.id, "🤑 Value must be between 0.05 to 5 FRT otherwise rejected.");
                     }
                 } else {
-                    console.log('**** not found tip:', msg.text.indexOf('/give'));
+                    console.log('**** not found tip');
                 }
             } catch (error) {
                 console.log('+++++++++++ error occurred:', error);
