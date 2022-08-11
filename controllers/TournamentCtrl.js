@@ -452,10 +452,14 @@ module.exports = function () {
             // }
 
             let startTime = tournament[type].start;
+            let sessionNo = tournament[type].session;
+            let questions = await QuestionModel.find({sessionID: sessionNo}).sort({question_id: 1}).lean().exec();
+            let endOffset = questions.length * (type === 'final' ? tournament[type].answer_time : 20);
+            let endTime = moment(startTime).add(endOffset, 's').format('YYYY-MM-DD HH:mm');
 
             res.locals = {...res.locals, title: 'Tournament'};
             res.render('Tournament/test', {
-                tournament, type, startTime, currentTime
+                tournament, type, startTime, currentTime, endTime
             });
         },
 

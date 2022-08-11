@@ -38,13 +38,21 @@
 
             <div class="card-body">
                 <% if (currentTime < startTime) { %>
-                <div id="startTimeBox" style="padding: 50px 0;">
-                    <p style="font-size: 18px; text-align: center; margin-bottom: 20px;">Test starts in</p>
+                    <div id="startTimeBox" style="padding: 50px 0;">
+                        <p style="font-size: 18px; text-align: center; margin-bottom: 20px;">Test starts in</p>
+                        <div class="countdown-container justify-content-center question-start">
+                            <div data-countdown="<%= startTime %>" class="counter-number" id="countDown"></div>
+                        </div>
+                    </div>
+                <% } %>
+
+                <div id="endTimeBox" class="<%= currentTime < startTime ? 'hidden' : '' %>" style="padding: 50px 0;">
+                    <p style="font-size: 18px; text-align: center; margin-bottom: 20px;">Test end in</p>
                     <div class="countdown-container justify-content-center question-start">
-                        <div data-countdown="<%= startTime %>" class="counter-number" id="countDown"></div>
+                        <div data-countdown="<%= endTime %>" class="counter-number" id="endCountDown"></div>
                     </div>
                 </div>
-                <% } %>
+
 
                 <div id="quizBox"></div>
             </div>
@@ -63,6 +71,7 @@
 
 <script type="text/javascript">
     let startTime = '<%= startTime %>';
+    let endTime = '<%= endTime %>';
     let tournamentId = '<%= tournament._id %>';
     let type = '<%= type %>';
     let quizTime = '<%= tournament[type].answer_time %>' ? ('<%= tournament[type].answer_time %>' * 1) : 20;
@@ -131,7 +140,7 @@
             data: postData,
             success: function(res) {
                 $('#quizBox').html(res);
-                runQuizTimer();
+                // runQuizTimer();
             }
         });
     }
@@ -143,7 +152,12 @@
         let stTime = startTime.getTime();
         startTime = formatDate(startTime);
 
+        endTime = new Date(endTime);
+        endTime.setTime(endTime.getTime() - timezoneOffset * 60 * 1000);
+        endTime = formatDate(endTime);
+
         $('#countDown').attr('data-countdown', startTime);
+        $('#endCountDown').attr('data-countdown', endTime);
 
         $('[data-countdown]').each(function () {
             let $this = $(this), finalDate = $(this).data('countdown');
@@ -165,6 +179,7 @@
                 let curTime = new Date().getTime();
                 if (curTime >= stTime) {
                     $('#startTimeBox').remove();
+                    $('#endTimeBox').removeClass('hidden');
                     getQuestions();
                     clearInterval(timer);
                 }
