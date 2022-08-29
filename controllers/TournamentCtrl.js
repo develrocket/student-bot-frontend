@@ -548,6 +548,7 @@ module.exports = function () {
 
                 let questionNo = Math.floor(timeDiff / 1000 / 20);
                 if (tests && tests.length > 0) {
+                    questionNo = 0;
                     for (let i = 0; i < questions.length; i ++) {
                         if (questions[i].question_id + '' === tests[0].question_id + '') {
                             if (questionNo < i + 1) {
