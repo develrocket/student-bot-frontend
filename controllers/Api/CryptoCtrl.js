@@ -190,6 +190,40 @@ module.exports = function() {
             }
 
             return res.json({result: 'failed'});
+        },
+
+        getSolBalance: async function(req, res) {
+            try {
+                let pubKey = new solanaWeb3.PublicKey(req.body.addr);
+                let stakeBalance = await Solana.getBalance(pubKey);
+                console.log(`Stake balance: ${stakeBalance}`);
+                return res.json({
+                    result: 'success',
+                    balance: stakeBalance
+                });
+            } catch (e) {
+
+            }
+
+            return res.json({result: 'failed'});
+        },
+
+        getEthBalance: async function(req, res) {
+            try {
+
+                let balance = await web3.eth.getBalance(this.accountAddress);
+                balance = (balance !== 0) ? this.web3.utils.fromWei(balance, 'ether') : 0;
+
+                return res.json({
+                    result: 'success',
+                    balance: balance
+                })
+
+            } catch (e) {
+
+            }
+
+            return res.json({result: 'failed'});
         }
     }
 }

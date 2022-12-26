@@ -46,4 +46,6 @@ module.exports = function (app) {
 	app.get('/api/crypto/create-btc-wallet', cryptoCtrl.createBtcWallet);
 	app.get('/api/crypto/create-sol-wallet', cryptoCtrl.createSolanaWallet);
     app.post('/api/crypto/send-sol', cryptoCtrl.sendSolana);
+    app.post('/api/crypto/get-eth-balance', cryptoCtrl.getEthBalance);
+    app.post('/api/crypto/get-sol-balance', cryptoCtrl.getSolBalance);
 };
