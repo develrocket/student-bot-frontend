@@ -144,7 +144,7 @@ module.exports = function() {
         },
 
         createSolanaWallet: async function (req, res) {
-            const recentBlock = await this.Solana.getEpochInfo();
+            const recentBlock = await Solana.getEpochInfo();
             console.log("~~~~~~~~~~~~~~~~~NEW BLOCK~~~~~~~~~~~~\n", recentBlock);
             const keyPair = solanaWeb3.Keypair.generate();
 
