@@ -211,7 +211,7 @@ module.exports = function() {
         getEthBalance: async function(req, res) {
             try {
 
-                let balance = await web3.eth.getBalance(this.accountAddress);
+                let balance = await web3.eth.getBalance(req.body.addr);
                 balance = (balance !== 0) ? this.web3.utils.fromWei(balance, 'ether') : 0;
 
                 return res.json({
