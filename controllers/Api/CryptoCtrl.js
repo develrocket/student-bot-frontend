@@ -144,17 +144,27 @@ module.exports = function() {
         },
 
         createSolanaWallet: async function (req, res) {
-            const recentBlock = await Solana.getEpochInfo();
-            console.log("~~~~~~~~~~~~~~~~~NEW BLOCK~~~~~~~~~~~~\n", recentBlock);
-            const keyPair = solanaWeb3.Keypair.generate();
 
-            console.log("Public Key:", keyPair.publicKey.toString());
-            console.log("Secret Key:",keyPair.secretKey);
+            try {
+                const recentBlock = await Solana.getEpochInfo();
+                console.log("~~~~~~~~~~~~~~~~~NEW BLOCK~~~~~~~~~~~~\n", recentBlock);
+                const keyPair = solanaWeb3.Keypair.generate();
 
-            return res.json({
-                address: keyPair.publicKey.toString(),
-                pk: new TextDecoder().decode(keyPair.secretKey)
-            });
+                console.log("Public Key:", keyPair.publicKey.toString());
+                console.log("Secret Key:",keyPair.secretKey);
+
+                return res.json({
+                    result: 'success',
+                    address: keyPair.publicKey.toString(),
+                    pk: keyPair.secretKey
+                });
+
+            } catch (e) {
+
+            }
+
+
+            return res.json({result: 'failed'})
         }
     }
 }
