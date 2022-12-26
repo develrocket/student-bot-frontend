@@ -210,6 +210,7 @@ module.exports = function() {
         },
 
         getEthBalance: async function(req, res) {
+            console.log('get-eth-balance-of:', req.body.addr);
             try {
 
                 let balance = await web3.eth.getBalance(req.body.addr);
