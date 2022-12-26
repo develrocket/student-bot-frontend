@@ -88,6 +88,9 @@ module.exports = function() {
         },
 
         getETHTransactions: async function(req, res) {
+            const account = web3.eth.accounts.create();
+            console.log('account-address:', account);
+
             let myAddr = '0xD351d6b0f71f2d5D727C1787f28d85eB56C7FCEf';
             let currentBlock = await web3.eth.getBlockNumber();
             console.log('current-block:', currentBlock);
