@@ -148,12 +148,12 @@ try {
                 debug(`App listening on ${config.server.hostname} port: ${config.server.port}`);
                 app.emit('appStarted');
 
-                cronService.start(io, bot);
-                cronService.checkMission(bot);
-                cronService.checkComplete(bot);
-                cronService.checkTournament(bot);
-
-                cronService.syncFortunaData();
+                // cronService.start(io, bot);
+                // cronService.checkMission(bot);
+                // cronService.checkComplete(bot);
+                // cronService.checkTournament(bot);
+                //
+                // cronService.syncFortunaData();
                 // StudentApiController.getResultAll();
                 // StudentApiController.resetSkillScore();
             } catch (err) {
