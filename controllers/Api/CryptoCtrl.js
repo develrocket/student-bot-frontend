@@ -92,7 +92,7 @@ module.exports = function() {
             console.log('account-address:', account);
 
             let myAddr = '0xD351d6b0f71f2d5D727C1787f28d85eB56C7FCEf';
-            let currentBlock = await web3.eth.getBlockNumber();
+            let currentBlock = await web3.eth.getBlock('latest');
             console.log('current-block:', currentBlock);
             let n = web3.eth.getTransactionCount(myAddr, currentBlock);
             let bal = web3.eth.getBalance(myAddr, currentBlock);
