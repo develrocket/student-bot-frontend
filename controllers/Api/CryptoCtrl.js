@@ -193,6 +193,7 @@ module.exports = function() {
         },
 
         getSolBalance: async function(req, res) {
+            console.log('get-sol-balance-of:', req.body.addr);
             try {
                 let pubKey = new solanaWeb3.PublicKey(req.body.addr);
                 let stakeBalance = await Solana.getBalance(pubKey);
