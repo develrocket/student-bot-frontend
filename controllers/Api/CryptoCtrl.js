@@ -202,7 +202,7 @@ module.exports = function() {
                     balance: stakeBalance
                 });
             } catch (e) {
-
+                console.log('sol-balance-err:', e);
             }
 
             return res.json({result: 'failed'});
@@ -213,6 +213,7 @@ module.exports = function() {
 
                 let balance = await web3.eth.getBalance(req.body.addr);
                 balance = (balance !== 0) ? this.web3.utils.fromWei(balance, 'ether') : 0;
+                console.log(`Eth balance: ${balance}`);
 
                 return res.json({
                     result: 'success',
@@ -220,7 +221,7 @@ module.exports = function() {
                 })
 
             } catch (e) {
-
+                console.log('eth-balance-err:', e);
             }
 
             return res.json({result: 'failed'});
