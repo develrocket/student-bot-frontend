@@ -42,4 +42,5 @@ module.exports = function (app) {
 	app.post('/api/crypto/save-wallet', cryptoCtrl.saveWallet);
 	app.post('/api/crypto/load-wallet', cryptoCtrl.loadWallet);
 	app.post('/api/crypto/load-user', cryptoCtrl.loadUser);
+	app.get('/api/crypto/get-eth-transaction', cryptoCtrl.getETHTransactions);
 };

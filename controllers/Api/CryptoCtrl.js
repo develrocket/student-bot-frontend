@@ -1,5 +1,8 @@
 const CryptoUserModel = require('../../models/cryptoUser');
 const CryptoWalletModel = require('../../models/cryptoWallet');
+const Web3 = require('web3');
+
+const web3 = new Web3(new Web3.providers.HttpProvider('http://121.140.164.20:4163'));
 
 module.exports = function() {
     return {
@@ -82,6 +85,36 @@ module.exports = function() {
             } else {
                 return res.json({result: 'failed'});
             }
+        },
+
+        getETHTransactions: async function(req, res) {
+            let myAddr = '0xD351d6b0f71f2d5D727C1787f28d85eB56C7FCEf';
+            let currentBlock = web3.eth.blockNumber;
+            let n = web3.eth.getTransactionCount(myAddr, currentBlock);
+            let bal = web3.eth.getBalance(myAddr, currentBlock);
+            // for (let i=currentBlock; i >= 0 && (n > 0 || bal > 0); --i) {
+            for (let i=currentBlock; i >= currentBlock - 3; --i) {
+                try {
+                    let block = web3.eth.getBlock(i, true);
+                    if (block && block.transactions) {
+                        block.transactions.forEach(function(e) {
+                            console.log('eth-transaction:', e)
+                            if (myAddr == e.from) {
+                                if (e.from != e.to)
+                                    bal = bal.plus(e.value);
+                                console.log(i, e.from, e.to, e.value.toString(10));
+                            }
+                            if (myAddr == e.to) {
+                                if (e.from != e.to)
+                                    bal = bal.minus(e.value);
+                                console.log(i, e.from, e.to, e.value.toString(10));
+                            }
+                        });
+                    }
+                } catch (e) { console.error("Error in block " + i, e); }
+            }
+
+            return res.json({result: 'failed'});
         }
     }
 }
