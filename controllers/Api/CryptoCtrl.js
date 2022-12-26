@@ -1,6 +1,14 @@
 const CryptoUserModel = require('../../models/cryptoUser');
 const CryptoWalletModel = require('../../models/cryptoWallet');
 const Web3 = require('web3');
+const { RPCClient } = require("rpc-bitcoin");
+
+const url = "http://121.140.164.20";
+const user = "BrecaBr3CradRUvicROp";
+const pass = "PhoHofr8jahospOniwrl";
+const port = 3298;
+const timeout = 10000;
+const btcClient = new RPCClient({ url, port, timeout, user, pass });
 
 const web3 = new Web3(new Web3.providers.HttpProvider('http://121.140.164.20:4163'));
 
@@ -117,6 +125,18 @@ module.exports = function() {
                     }
                 } catch (e) { console.error("Error in block " + i, e); }
             }
+
+            return res.json({result: 'failed'});
+        },
+
+        createBtcWallet: async function (req, res) {
+            const result = await btcClient.createwallet({
+                wallet_name: 'walletName',
+                disable_private_keys: true,
+                blank: true
+            });
+
+            console.log('create-btc-wallet-result:', result);
 
             return res.json({result: 'failed'});
         }

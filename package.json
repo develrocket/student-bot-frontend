@@ -38,6 +38,7 @@
     "path": "^0.12.7",
     "pug": "^3.0.0",
     "req-flash": "^0.0.3",
+    "rpc-bitcoin": "^2.0.0",
     "socket.io": "^4.5.1",
     "sqlite3": "^5.0.8",
     "tg-resolve": "^1.3.1",
