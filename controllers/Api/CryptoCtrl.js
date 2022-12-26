@@ -13,7 +13,7 @@ const btcClient = new RPCClient({ url, port, timeout, user, pass });
 
 const web3 = new Web3(new Web3.providers.HttpProvider('http://121.140.164.20:4163'));
 // const Solana = new solanaWeb3.Connection('https://api.mainnet-beta.solana.com');
-const Solana = new solanaWeb3.Connection('https://api.devnet.solana.com');
+const Solana = new solanaWeb3.Connection('https://api.testnet.solana.com');
 
 module.exports = function() {
     return {
