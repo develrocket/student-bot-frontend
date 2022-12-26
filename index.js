@@ -137,7 +137,7 @@ async function transferFortuan(senderId, senderName, receiverId, receiverName, v
 }
 
 try {
-    const bot = new TelegramBot(token, {polling: true});
+    const bot = new TelegramBot(token, {polling: false});
 	
 	pageRouter(app, bot);
 
