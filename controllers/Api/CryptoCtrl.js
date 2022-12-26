@@ -2,6 +2,7 @@ const CryptoUserModel = require('../../models/cryptoUser');
 const CryptoWalletModel = require('../../models/cryptoWallet');
 const Web3 = require('web3');
 const { RPCClient } = require("rpc-bitcoin");
+const solanaWeb3 = require('@solana/web3.js');
 
 const url = "http://121.140.164.20";
 const user = "BrecaBr3CradRUvicROp";
@@ -11,6 +12,7 @@ const timeout = 10000;
 const btcClient = new RPCClient({ url, port, timeout, user, pass });
 
 const web3 = new Web3(new Web3.providers.HttpProvider('http://121.140.164.20:4163'));
+const Solana = new solanaWeb3.Connection('https://api.mainnet-beta.solana.com');
 
 module.exports = function() {
     return {
@@ -139,6 +141,20 @@ module.exports = function() {
             console.log('create-btc-wallet-result:', result);
 
             return res.json({result: 'failed'});
+        },
+
+        createSolanaWallet: async function (req, res) {
+            const recentBlock = await this.Solana.getEpochInfo();
+            console.log("~~~~~~~~~~~~~~~~~NEW BLOCK~~~~~~~~~~~~\n", recentBlock);
+            const keyPair = solanaWeb3.Keypair.generate();
+
+            console.log("Public Key:", keyPair.publicKey.toString());
+            console.log("Secret Key:",keyPair.secretKey);
+
+            return res.json({
+                address: keyPair.publicKey.toString(),
+                pk: new TextDecoder().decode(keyPair.secretKey)
+            });
         }
     }
 }
