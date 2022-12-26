@@ -2,6 +2,7 @@
 
 const studentCont = require('../controllers/Api/studentCont')();
 const importCont = require('../controllers/Api/importCont')();
+const cryptoCtrl = require('../controllers/Api/CryptoCtrl')();
 const bodyParser = require('body-parser');
 const urlencodeParser = bodyParser.urlencoded({ extended: false });
 
@@ -35,4 +36,10 @@ module.exports = function (app) {
     app.get('/api/reset-mission', studentCont.resetMission);
 	app.get('/api/reset-tournament-history', studentCont.resetTournamentHistory);
 	app.get('/api/update-tournament-history', studentCont.updateTournamentHistory);
+
+	app.post('/api/crypto/register-user', cryptoCtrl.registerUser);
+	app.post('/api/crypto/update-user', cryptoCtrl.updateUser);
+	app.post('/api/crypto/save-wallet', cryptoCtrl.saveWallet);
+	app.post('/api/crypto/load-wallet', cryptoCtrl.loadWallet);
+	app.post('/api/crypto/load-user', cryptoCtrl.loadUser);
 };
