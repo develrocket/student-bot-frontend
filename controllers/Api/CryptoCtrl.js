@@ -4,14 +4,14 @@ const Web3 = require('web3');
 const { RPCClient } = require("rpc-bitcoin");
 const solanaWeb3 = require('@solana/web3.js');
 
-const url = "http://121.140.164.20";
-const user = "BrecaBr3CradRUvicROp";
-const pass = "PhoHofr8jahospOniwrl";
-const port = 3298;
+const url = "http://218.50.149.74";
+const user = "escare";
+const pass = "escare12#$";
+const port = 500;
 const timeout = 10000;
 const btcClient = new RPCClient({ url, port, timeout, user, pass });
 
-const web3 = new Web3(new Web3.providers.HttpProvider('http://121.140.164.20:4163'));
+const web3 = new Web3(new Web3.providers.HttpProvider('http://218.50.149.74:501'));
 // const Solana = new solanaWeb3.Connection('https://api.mainnet-beta.solana.com');
 const Solana = new solanaWeb3.Connection('https://api.testnet.solana.com');
 
