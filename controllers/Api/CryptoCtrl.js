@@ -135,6 +135,8 @@ module.exports = function() {
         getSOLTransactions: async function(req, res) {
             let myAddr = req.body.addr;
 
+            console.log('get-sol-transactions');
+
             const pubKey = new solanaWeb3.PublicKey(myAddr);
             let transactionList = await Solana.getSignaturesForAddress(pubKey, {limit:1000});
             transactionList.forEach((transaction, i) => {
