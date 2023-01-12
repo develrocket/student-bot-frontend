@@ -143,24 +143,24 @@ module.exports = function() {
             let signatureList = transactionList.map(transaction=>transaction.signature);
             let transactionDetails = await Solana.getParsedTransactions(signatureList, {maxSupportedTransactionVersion:0});
 
-            transactionList.forEach((transaction, i) => {
-                const date = new Date(transaction.blockTime*1000);
-                const transactionInstructions = transactionDetails[i].transaction.message.instructions;
-                console.log(`Transaction No: ${i+1}`);
-                console.log(`Signature: ${transaction.signature}`);
-                console.log(`Time: ${date}`);
-                console.log(`Status: ${transaction.confirmationStatus}`);
-                console.log("TransactionItem:", transaction);
-                transactionInstructions.forEach((instruction, n)=>{
-                    console.log(`---Instructions ${n+1}: ${instruction.programId.toString()}`);
-                })
-                console.log(("-").repeat(20));
-            });
+            let result = [];
+            for (let i = 0; i < transactionDetails.length; i ++) {
+                let item = transactionDetails[i];
+                let destination = item.transaction.message.instructions[0].parsed.info.destination;
+                let source = item.transaction.message.instructions[0].parsed.info.source;
+                let amount = item.transaction.message.instructions[0].parsed.info.lamports / solanaWeb3.LAMPORTS_PER_SOL;
+                let address = destination == myAddr ? source : destination;
+                let transType = destination == myAddr ? 'Received' : 'Sent';
+                result.push({
+                    crypto_type: 'sol',
+                    address: address,
+                    amount: amount,
+                    transaction_type: transType,
+                    time: item.blockTime * 1000
+                });
+            }
 
-            console.log('sol-transaction-list:', transactionList);
-            console.log('sol-transaction-details:', JSON.stringify(transactionDetails));
-
-            return res.json({result: transactionList});
+            return res.json({result: result});
         },
 
         createBtcWallet: async function (req, res) {
