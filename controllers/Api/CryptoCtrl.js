@@ -138,13 +138,22 @@ module.exports = function() {
             console.log('get-sol-transactions');
 
             const pubKey = new solanaWeb3.PublicKey(myAddr);
-            let transactionList = await Solana.getSignaturesForAddress(pubKey, {limit:1000});
+            let transactionList = await Solana.getSignaturesForAddress(pubKey, {limit:numTx});
+
+            let signatureList = transactionList.map(transaction=>transaction.signature);
+            let transactionDetails = await Solana.getParsedTransactions(signatureList, {maxSupportedTransactionVersion:0});
+
             transactionList.forEach((transaction, i) => {
                 const date = new Date(transaction.blockTime*1000);
+                const transactionInstructions = transactionDetails[i].transaction.message.instructions;
                 console.log(`Transaction No: ${i+1}`);
                 console.log(`Signature: ${transaction.signature}`);
                 console.log(`Time: ${date}`);
                 console.log(`Status: ${transaction.confirmationStatus}`);
+                console.log("TransactionItem:", transaction);
+                transactionInstructions.forEach((instruction, n)=>{
+                    console.log(`---Instructions ${n+1}: ${instruction.programId.toString()}`);
+                })
                 console.log(("-").repeat(20));
             });
 
