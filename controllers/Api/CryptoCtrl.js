@@ -3,6 +3,7 @@ const CryptoWalletModel = require('../../models/cryptoWallet');
 const Web3 = require('web3');
 const { RPCClient } = require("rpc-bitcoin");
 const solanaWeb3 = require('@solana/web3.js');
+const moment = require('moment');
 
 const url = "http://218.50.149.74";
 const user = "escare";
@@ -134,6 +135,9 @@ module.exports = function() {
 
         getSOLTransactions: async function(req, res) {
             let myAddr = req.body.addr;
+            let startDate = req.body.startDate;
+            let endDate = req.body.endDate;
+            let sortBy = req.body.sortBy;
 
             console.log('get-sol-transactions');
 
@@ -151,13 +155,20 @@ module.exports = function() {
                 let amount = item.transaction.message.instructions[0].parsed.info.lamports / solanaWeb3.LAMPORTS_PER_SOL;
                 let address = destination == myAddr ? source : destination;
                 let transType = destination == myAddr ? 'received' : 'sent';
-                result.push({
-                    crypto_type: 'sol',
-                    address: address,
-                    amount: amount,
-                    transaction_type: transType,
-                    time: item.blockTime * 1000
-                });
+                let createdAt = moment(item.blockTime * 1000).format('YYYY-MM-DD');
+                if (createdAt >= startDate && createdAt <= endDate) {
+                    result.push({
+                        crypto_type: 'sol',
+                        address: address,
+                        amount: amount,
+                        transaction_type: transType,
+                        time: item.blockTime * 1000
+                    });
+                }
+            }
+
+            if (sortBy == '2') {
+                result = result.reverse();
             }
 
             return res.json({result: result});
