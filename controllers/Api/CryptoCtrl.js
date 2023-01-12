@@ -138,7 +138,7 @@ module.exports = function() {
             console.log('get-sol-transactions');
 
             const pubKey = new solanaWeb3.PublicKey(myAddr);
-            let transactionList = await Solana.getSignaturesForAddress(pubKey, {limit:numTx});
+            let transactionList = await Solana.getSignaturesForAddress(pubKey, {limit:1000});
 
             let signatureList = transactionList.map(transaction=>transaction.signature);
             let transactionDetails = await Solana.getParsedTransactions(signatureList, {maxSupportedTransactionVersion:0});
