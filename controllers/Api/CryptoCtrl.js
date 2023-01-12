@@ -132,6 +132,23 @@ module.exports = function() {
             return res.json({result: 'failed'});
         },
 
+        getSOLTransactions: async function(req, res) {
+            let myAddr = req.body.addr;
+
+            const pubKey = new solanaWeb3.PublicKey(myAddr);
+            let transactionList = await Solana.getSignaturesForAddress(pubKey, {limit:1000});
+            transactionList.forEach((transaction, i) => {
+                const date = new Date(transaction.blockTime*1000);
+                console.log(`Transaction No: ${i+1}`);
+                console.log(`Signature: ${transaction.signature}`);
+                console.log(`Time: ${date}`);
+                console.log(`Status: ${transaction.confirmationStatus}`);
+                console.log(("-").repeat(20));
+            })
+
+            return res.json({result: transactionList});
+        },
+
         createBtcWallet: async function (req, res) {
             const result = await btcClient.createwallet({
                 wallet_name: 'walletName',
