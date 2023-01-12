@@ -150,7 +150,7 @@ module.exports = function() {
                 let source = item.transaction.message.instructions[0].parsed.info.source;
                 let amount = item.transaction.message.instructions[0].parsed.info.lamports / solanaWeb3.LAMPORTS_PER_SOL;
                 let address = destination == myAddr ? source : destination;
-                let transType = destination == myAddr ? 'Received' : 'Sent';
+                let transType = destination == myAddr ? 'received' : 'sent';
                 result.push({
                     crypto_type: 'sol',
                     address: address,
