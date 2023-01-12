@@ -158,7 +158,7 @@ module.exports = function() {
             });
 
             console.log('sol-transaction-list:', transactionList);
-            console.log('sol-transaction-details:', transactionDetails);
+            console.log('sol-transaction-details:', JSON.stringify(transactionDetails));
 
             return res.json({result: transactionList});
         },
