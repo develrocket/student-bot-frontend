@@ -144,7 +144,9 @@ module.exports = function() {
                 console.log(`Time: ${date}`);
                 console.log(`Status: ${transaction.confirmationStatus}`);
                 console.log(("-").repeat(20));
-            })
+            });
+
+            console.log('sol-transaction-list:', transactionList);
 
             return res.json({result: transactionList});
         },
