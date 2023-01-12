@@ -201,7 +201,7 @@ module.exports = function() {
                 console.log(`Stake balance: ${stakeBalance}`);
                 return res.json({
                     result: 'success',
-                    balance: stakeBalance
+                    balance: stakeBalance / solanaWeb3.LAMPORTS_PER_SOL
                 });
             } catch (e) {
                 console.log('sol-balance-err:', e);
