@@ -174,7 +174,9 @@ module.exports = function() {
                         fee: fee,
                         txId: txId,
                         memo: memo,
-                        status: status
+                        status: status,
+                        source: source,
+                        destination: destination
                     });
                 }
             }
