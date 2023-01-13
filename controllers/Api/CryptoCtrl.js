@@ -158,7 +158,8 @@ module.exports = function() {
                 let source = item.transaction.message.instructions[0].parsed.info.source;
                 let amount = item.transaction.message.instructions[0].parsed.info.lamports / solanaWeb3.LAMPORTS_PER_SOL;
                 let fee = item.meta.fee / solanaWeb3.LAMPORTS_PER_SOL;
-
+                let txId = transactionList[i].signature;
+                let memo = transactionList[i].memo;
                 let address = destination == myAddr ? source : destination;
                 let transType = destination == myAddr ? 'received' : 'sent';
                 let createdAt = moment(item.blockTime * 1000).format('YYYY-MM-DD');
@@ -169,7 +170,9 @@ module.exports = function() {
                         amount: amount,
                         transaction_type: transType,
                         time: item.blockTime * 1000,
-                        fee: fee
+                        fee: fee,
+                        txId: txId,
+                        memo: memo
                     });
                 }
             }
