@@ -138,6 +138,7 @@ module.exports = function() {
             let startDate = req.body.startDate;
             let endDate = req.body.endDate;
             let sortBy = req.body.sortBy;
+            let searchKey = req.body.searchKey;
 
             console.log('get-sol-transactions');
 
@@ -165,6 +166,9 @@ module.exports = function() {
                 let transType = destination == myAddr ? 'received' : 'sent';
                 let createdAt = moment(item.blockTime * 1000).format('YYYY-MM-DD');
                 if (createdAt >= startDate && createdAt <= endDate) {
+                    if (searchKey) {
+                        if (source.toLowerCase().indexOf(searchKey.toLowerCase()) < 0 && destination.toLowerCase().indexOf(searchKey.toLowerCase()) < 0) continue;
+                    }
                     result.push({
                         crypto_type: 'sol',
                         address: address,
