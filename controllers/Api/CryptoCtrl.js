@@ -234,7 +234,7 @@ module.exports = function() {
                 let amount = req.body.amount;
                 let memo = req.body.memo;
 
-                let fromKeyPair = solanaWeb3.Keypair.fromSecretKey(Uint8Array.from(fromSecret.explode(',')));
+                let fromKeyPair = solanaWeb3.Keypair.fromSecretKey(Uint8Array.from(fromSecret.split(',')));
 
                 let transaction = new solanaWeb3.Transaction();
 
