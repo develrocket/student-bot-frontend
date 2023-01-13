@@ -226,6 +226,9 @@ module.exports = function() {
 
         sendSolana: async function(req, res) {
             try {
+
+                console.log('send-solana-body:', JSON.stringify(req.body));
+
                 let toAddress = new solanaWeb3.PublicKey(req.body.to_addr);
                 let fromSecret = req.body.from_secret;
                 let amount = req.body.amount;
