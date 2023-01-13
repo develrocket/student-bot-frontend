@@ -147,6 +147,9 @@ module.exports = function() {
             let signatureList = transactionList.map(transaction=>transaction.signature);
             let transactionDetails = await Solana.getParsedTransactions(signatureList, {maxSupportedTransactionVersion:0});
 
+
+            console.log('transactions:', transactionDetails);
+
             let result = [];
             for (let i = 0; i < transactionDetails.length; i ++) {
                 let item = transactionDetails[i];
