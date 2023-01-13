@@ -229,6 +229,7 @@ module.exports = function() {
                 let toAddress = new solanaWeb3.PublicKey(req.body.to_addr);
                 let fromSecret = req.body.from_secret;
                 let amount = req.body.amount;
+                let memo = req.body.memo;
 
                 let fromKeyPair = solanaWeb3.Keypair.fromSecretKey(Uint8Array.from(fromSecret.explode(',')));
 
@@ -237,7 +238,8 @@ module.exports = function() {
                 transaction.add(solanaWeb3.SystemProgram.transfer({
                     fromPubkey: fromKeyPair.publicKey,
                     toPubkey: toAddress,
-                    lamports: solanaWeb3.LAMPORTS_PER_SOL * amount
+                    lamports: solanaWeb3.LAMPORTS_PER_SOL * amount,
+                    seed: memo
                 }));
 
                 solanaWeb3.sendAndConfirmTransaction(Solana, transaction, [fromKeyPair]);
