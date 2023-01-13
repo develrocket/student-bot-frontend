@@ -148,6 +148,7 @@ module.exports = function() {
             let transactionDetails = await Solana.getParsedTransactions(signatureList, {maxSupportedTransactionVersion:0});
 
 
+            console.log('transaction-list:', JSON.stringify(transactionList));
             console.log('transactions:', JSON.stringify(transactionDetails));
 
             let result = [];
@@ -156,6 +157,8 @@ module.exports = function() {
                 let destination = item.transaction.message.instructions[0].parsed.info.destination;
                 let source = item.transaction.message.instructions[0].parsed.info.source;
                 let amount = item.transaction.message.instructions[0].parsed.info.lamports / solanaWeb3.LAMPORTS_PER_SOL;
+                let fee = item.meta.fee / solanaWeb3.LAMPORTS_PER_SOL;
+
                 let address = destination == myAddr ? source : destination;
                 let transType = destination == myAddr ? 'received' : 'sent';
                 let createdAt = moment(item.blockTime * 1000).format('YYYY-MM-DD');
@@ -165,7 +168,8 @@ module.exports = function() {
                         address: address,
                         amount: amount,
                         transaction_type: transType,
-                        time: item.blockTime * 1000
+                        time: item.blockTime * 1000,
+                        fee: fee
                     });
                 }
             }
