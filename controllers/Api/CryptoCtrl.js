@@ -160,6 +160,7 @@ module.exports = function() {
                 let fee = item.meta.fee / solanaWeb3.LAMPORTS_PER_SOL;
                 let txId = transactionList[i].signature;
                 let memo = transactionList[i].memo;
+                let status = transactionList[i].confirmationStatus;
                 let address = destination == myAddr ? source : destination;
                 let transType = destination == myAddr ? 'received' : 'sent';
                 let createdAt = moment(item.blockTime * 1000).format('YYYY-MM-DD');
@@ -172,7 +173,8 @@ module.exports = function() {
                         time: item.blockTime * 1000,
                         fee: fee,
                         txId: txId,
-                        memo: memo
+                        memo: memo,
+                        status: status
                     });
                 }
             }
