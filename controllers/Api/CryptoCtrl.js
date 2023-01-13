@@ -148,7 +148,7 @@ module.exports = function() {
             let transactionDetails = await Solana.getParsedTransactions(signatureList, {maxSupportedTransactionVersion:0});
 
 
-            console.log('transactions:', transactionDetails);
+            console.log('transactions:', JSON.stringify(transactionDetails));
 
             let result = [];
             for (let i = 0; i < transactionDetails.length; i ++) {
