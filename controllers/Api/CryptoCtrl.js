@@ -104,12 +104,12 @@ module.exports = function() {
             console.log('account-address:', account);
 
             let myAddr = '0xD351d6b0f71f2d5D727C1787f28d85eB56C7FCEf';
-            let currentBlock = await web3.eth.getBlock('latest');
+            let currentBlock = await web3.eth.getBlockNumber();
             console.log('current-block:', currentBlock);
-            let n = web3.eth.getTransactionCount(myAddr, currentBlock);
-            let bal = web3.eth.getBalance(myAddr, currentBlock);
+            // let n = web3.eth.getTransactionCount(myAddr);
+            // let bal = web3.eth.getBalance(myAddr);
             // for (let i=currentBlock; i >= 0 && (n > 0 || bal > 0); --i) {
-            for (let i=currentBlock; i >= currentBlock - 3; --i) {
+            for (let i=currentBlock; i >= currentBlock - 10; --i) {
                 try {
                     let block = web3.eth.getBlock(i, true);
                     if (block && block.transactions) {
