@@ -281,7 +281,7 @@ module.exports = function() {
 
                 let balance = await web3.eth.getBalance(req.body.addr);
                 console.log(`Eth balance-1: ${balance}`);
-                balance = (balance !== 0) ? this.web3.utils.fromWei(balance, 'ether') : 0;
+                balance = (balance !== 0) ? web3.utils.fromWei(balance, 'ether') : 0;
                 console.log(`Eth balance-2: ${balance}`);
 
                 return res.json({
