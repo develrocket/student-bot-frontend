@@ -278,8 +278,10 @@ module.exports = function() {
         getEthBalance: async function(req, res) {
             console.log('get-eth-balance-of:', req.body.addr);
             try {
+                // let address = req.body.addr;
+                let address = '0xD351d6b0f71f2d5D727C1787f28d85eB56C7FCEf';
 
-                let balance = await web3.eth.getBalance(req.body.addr);
+                let balance = await web3.eth.getBalance(address);
                 console.log(`Eth balance-1: ${balance}`);
                 balance = (balance !== 0) ? web3.utils.fromWei(balance, 'ether') : 0;
                 console.log(`Eth balance-2: ${balance}`);
