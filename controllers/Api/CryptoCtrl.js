@@ -204,6 +204,16 @@ module.exports = function() {
             return res.json({result: 'failed'});
         },
 
+        createEthWallet: async function (req, res) {
+            const account = web3.eth.accounts.create();
+            let accountAddress = account.address.substr(2);
+            let privateKey = account.privateKey.substr(2);
+
+            console.log('create-eth-wallet-result:', accountAddress, privateKey);
+
+            return res.json({result: 'success', addr: accountAddress, pk: privateKey});
+        },
+
         createSolanaWallet: async function (req, res) {
 
             try {
