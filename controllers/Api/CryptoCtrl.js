@@ -13,8 +13,8 @@ const timeout = 10000;
 const btcClient = new RPCClient({ url, port, timeout, user, pass });
 
 const web3 = new Web3(new Web3.providers.HttpProvider('http://218.50.149.74:8546'));
-// const Solana = new solanaWeb3.Connection('https://api.mainnet-beta.solana.com');
-const Solana = new solanaWeb3.Connection('https://api.testnet.solana.com');
+const Solana = new solanaWeb3.Connection('https://api.mainnet-beta.solana.com');
+// const Solana = new solanaWeb3.Connection('https://api.testnet.solana.com');
 
 module.exports = function() {
     return {
