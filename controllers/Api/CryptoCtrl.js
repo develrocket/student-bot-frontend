@@ -206,8 +206,8 @@ module.exports = function() {
 
         createEthWallet: async function (req, res) {
             const account = web3.eth.accounts.create();
-            let accountAddress = account.address.substr(2);
-            let privateKey = account.privateKey.substr(2);
+            let accountAddress = account.address;
+            let privateKey = account.privateKey;
 
             console.log('create-eth-wallet-result:', accountAddress, privateKey);
 
