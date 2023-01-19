@@ -158,7 +158,7 @@ module.exports = function() {
                             address: address,
                             amount: amount,
                             transaction_type: transType,
-                            time: item.blockTime * 1000,
+                            time: item.timeStamp * 1000,
                             fee: fee,
                             txId: txId,
                             memo: memo,
