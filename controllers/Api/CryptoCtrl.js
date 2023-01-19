@@ -114,7 +114,7 @@ module.exports = function() {
                 '?module=account' +
                 '&action=txlist' +
                 '&address=' + myAddr +
-                '&tag=latest' +
+                '&sort=desc' +
                 '&apikey=' + ETH_API_KEY;
 
             let config = {
@@ -126,6 +126,8 @@ module.exports = function() {
             };
 
             let response = await axios(config);
+
+            console.log('get-eth-transaction-res:', response.data);
 
             let result = [];
 
