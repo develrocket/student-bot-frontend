@@ -4,6 +4,7 @@ const Web3 = require('web3');
 const { RPCClient } = require("rpc-bitcoin");
 const solanaWeb3 = require('@solana/web3.js');
 const moment = require('moment');
+const axios = require('axios').default;
 
 const url = "http://218.50.149.74";
 const user = "escare";
@@ -15,6 +16,7 @@ const btcClient = new RPCClient({ url, port, timeout, user, pass });
 const web3 = new Web3(new Web3.providers.HttpProvider('http://218.50.149.74:8546'));
 // const Solana = new solanaWeb3.Connection('https://api.mainnet-beta.solana.com');
 const Solana = new solanaWeb3.Connection('https://api.testnet.solana.com');
+const ETH_API_KEY = "KCXYS8CQZTSMQPFCHF2A42N3DBX577IBCI";
 
 module.exports = function() {
     return {
@@ -293,10 +295,37 @@ module.exports = function() {
                 let address = req.body.addr;
                 // let address = '0xD351d6b0f71f2d5D727C1787f28d85eB56C7FCEf';
 
-                let balance = await web3.eth.getBalance(address);
-                console.log(`Eth balance-1: ${balance}`);
-                balance = (balance !== 0) ? web3.utils.fromWei(balance, 'ether') : 0;
-                console.log(`Eth balance-2: ${balance}`);
+                // let balance = await web3.eth.getBalance(address);
+                // console.log(`Eth balance-1: ${balance}`);
+                // balance = (balance !== 0) ? web3.utils.fromWei(balance, 'ether') : 0;
+                // console.log(`Eth balance-2: ${balance}`);
+
+
+                let url = 'https://api.etherscan.io/api' +
+                    '   ?module=account' +
+                    '   &action=balance' +
+                    '   &address=' + address +
+                    '   &tag=latest' +
+                    '   &apikey=' + AppConfig.ethereum.apiKey;
+
+
+                let config = {
+                    method: 'get',
+                    url: url,
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                };
+
+                let result = await axios(config);
+                let balance = 0;
+
+                console.log('get-eth-balance-result:', result);
+
+                if (result.data.status == 1) {
+                    balance = result.data.result;
+                    balance = (balance !== 0) ? web3.utils.fromWei(balance, 'ether') : 0;
+                }
 
                 return res.json({
                     result: 'success',
