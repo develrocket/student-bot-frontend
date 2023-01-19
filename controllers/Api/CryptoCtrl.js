@@ -306,7 +306,7 @@ module.exports = function() {
                     '   &action=balance' +
                     '   &address=' + address +
                     '   &tag=latest' +
-                    '   &apikey=' + AppConfig.ethereum.apiKey;
+                    '   &apikey=' + ETH_API_KEY;
 
 
                 let config = {
