@@ -113,7 +113,7 @@ module.exports = function() {
             let url = 'https://api.etherscan.io/api' +
                 '?module=account' +
                 '&action=txlist' +
-                '&address=' + address +
+                '&address=' + myAddr +
                 '&tag=latest' +
                 '&apikey=' + ETH_API_KEY;
 
