@@ -102,37 +102,77 @@ module.exports = function() {
         },
 
         getETHTransactions: async function(req, res) {
-            const account = web3.eth.accounts.create();
-            console.log('account-address:', account);
+            let myAddr = req.body.addr;
+            let startDate = req.body.startDate;
+            let endDate = req.body.endDate;
+            let sortBy = req.body.sortBy;
+            let searchKey = req.body.searchKey;
 
-            let myAddr = '0xD351d6b0f71f2d5D727C1787f28d85eB56C7FCEf';
-            let currentBlock = await web3.eth.getBlockNumber();
-            console.log('current-block:', currentBlock);
-            // let n = web3.eth.getTransactionCount(myAddr);
-            // let bal = web3.eth.getBalance(myAddr);
-            // for (let i=currentBlock; i >= 0 && (n > 0 || bal > 0); --i) {
-            for (let i=currentBlock; i >= currentBlock - 10; --i) {
-                try {
-                    let block = web3.eth.getBlock(i, true);
-                    if (block && block.transactions) {
-                        block.transactions.forEach(function(e) {
-                            console.log('eth-transaction:', e)
-                            if (myAddr == e.from) {
-                                if (e.from != e.to)
-                                    bal = bal.plus(e.value);
-                                console.log(i, e.from, e.to, e.value.toString(10));
-                            }
-                            if (myAddr == e.to) {
-                                if (e.from != e.to)
-                                    bal = bal.minus(e.value);
-                                console.log(i, e.from, e.to, e.value.toString(10));
-                            }
+            console.log('get-eth-transactions');
+
+            let url = 'https://api.etherscan.io/api' +
+                '?module=account' +
+                '&action=txlist' +
+                '&address=' + address +
+                '&tag=latest' +
+                '&apikey=' + ETH_API_KEY;
+
+            let config = {
+                method: 'get',
+                url: url,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            };
+
+            let response = await axios(config);
+
+            let result = [];
+
+            if (response.data.status == 1) {
+                let list = response.data.result;
+
+                for (let i = 0; i < list.length; i++) {
+                    let item = list[i];
+                    let source = item.from;
+                    let destination = item.to;
+                    let amount = item.value;
+                    amount = (amount !== 0) ? web3.utils.fromWei(amount, 'ether') : 0;
+                    let fee = item.gasUsed;
+                    fee = (fee !== 0) ? web3.utils.fromWei(fee, 'ether') : 0;
+                    let txId = item.hash;
+                    let memo = web3.utils.hexToAscii(item.input);
+                    let status = item.txreceipt_status == 1 ? 'confirmed' : 'failed';
+                    let address = destination == myAddr ? source : destination;
+                    let transType = destination == myAddr ? 'received' : 'sent';
+                    let createdAt = moment(item.timeStamp * 1000).format('YYYY-MM-DD');
+
+                    if (createdAt >= startDate && createdAt <= endDate) {
+                        if (searchKey) {
+                            if (source.toLowerCase().indexOf(searchKey.toLowerCase()) < 0 && destination.toLowerCase().indexOf(searchKey.toLowerCase()) < 0) continue;
+                        }
+                        result.push({
+                            crypto_type: 'eth',
+                            address: address,
+                            amount: amount,
+                            transaction_type: transType,
+                            time: item.blockTime * 1000,
+                            fee: fee,
+                            txId: txId,
+                            memo: memo,
+                            status: status,
+                            source: source,
+                            destination: destination
                         });
                     }
-                } catch (e) { console.error("Error in block " + i, e); }
+                }
+
+                if (sortBy == '2') {
+                    result = result.reverse();
+                }
             }
 
-            return res.json({result: 'failed'});
+            return res.json({result: result});
         },
 
         getSOLTransactions: async function(req, res) {
@@ -322,7 +362,7 @@ module.exports = function() {
                 let result = await axios(config);
                 let balance = 0;
 
-                console.log('get-eth-balance-result:', result);
+                console.log('get-eth-balance-result:', result.data);
 
                 if (result.data.status == 1) {
                     balance = result.data.result;
