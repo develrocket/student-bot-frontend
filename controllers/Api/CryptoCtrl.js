@@ -302,11 +302,13 @@ module.exports = function() {
 
 
                 let url = 'https://api.etherscan.io/api' +
-                    '   ?module=account' +
-                    '   &action=balance' +
-                    '   &address=' + address +
-                    '   &tag=latest' +
-                    '   &apikey=' + ETH_API_KEY;
+                    '?module=account' +
+                    '&action=balance' +
+                    '&address=' + address +
+                    '&tag=latest' +
+                    '&apikey=' + ETH_API_KEY;
+
+                console.log('get-eth-balance-url:', url);
 
 
                 let config = {
