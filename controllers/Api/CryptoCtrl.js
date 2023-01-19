@@ -127,8 +127,6 @@ module.exports = function() {
 
             let response = await axios(config);
 
-            console.log('get-eth-transaction-res:', response.data);
-
             let result = [];
 
             if (response.data.status == 1) {
@@ -148,6 +146,8 @@ module.exports = function() {
                     let address = destination == myAddr ? source : destination;
                     let transType = destination == myAddr ? 'received' : 'sent';
                     let createdAt = moment(item.timeStamp * 1000).format('YYYY-MM-DD');
+
+                    console.log('eth-trans-item-time:', createdAt);
 
                     if (createdAt >= startDate && createdAt <= endDate) {
                         if (searchKey) {
